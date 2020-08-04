@@ -10,7 +10,7 @@
 *.sln.docstates
 
 # Build results
-.vs/*
+.vs/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
