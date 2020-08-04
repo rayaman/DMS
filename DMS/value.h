@@ -25,7 +25,7 @@ namespace dms {
 	};
 	struct dms_string {
 		size_t length = 0;
-		uint8_t* val = nullptr;
+		char16_t* val = nullptr;
 		std::string getValue();
 		friend std::ostream& operator << (std::ostream& out, const dms_string& c) {
 			for (size_t i = 0; i < c.length; i++) {
@@ -86,6 +86,11 @@ namespace dms {
 			return out;
 		};
 	};
+	value* buildValue(std::string str);
+	value* buildValue(double dbl);
+	value* buildValue(int i);
+	value* buildValue(bool b);
+
 	struct dms_args {
 		std::vector<value> args;
 	};

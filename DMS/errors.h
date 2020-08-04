@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 namespace dms::errors {
 	enum errortype {
 		unknown,
@@ -9,6 +10,7 @@ namespace dms::errors {
 	};
 	struct error {
 		errortype code=unknown;
-		bool crash = false; // Set if you would like the state to exit
+		std::string err_msg;
+		bool crash = true; // Set if you would like the state to exit
 	};
 }

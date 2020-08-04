@@ -6,6 +6,6 @@ namespace dms {
 	struct cmd
 	{
 		dms::codes::op opcode;
-		std::vector<dms::value> arguments;
+		dms_args args;
 	};
 }

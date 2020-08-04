@@ -1,6 +1,6 @@
 #pragma once
-#include "byte.h"
 #include <vector>
+#include <string>
 namespace dms::codes {
 	enum op {
 		NOOP,
@@ -32,7 +32,7 @@ namespace dms::codes {
 		INST
 	};
 	extern const std::string list[];
-	static bool isControl(const dms::byte code) {
+	static bool isControl(const op code) {
 		return (code == STAT || code == CHOI || code == FORE || code == WHLE || code == IFFF || code == ELIF || code == ELSE);
 	};
 }

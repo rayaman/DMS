@@ -21,9 +21,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="byte.cpp">
-      <Filter>Source Files\DMS</Filter>
-    </ClCompile>
     <ClCompile Include="cmd.cpp">
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
@@ -31,9 +28,6 @@
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
     <ClCompile Include="dms_exceptions.cpp">
-      <Filter>Source Files\DMS</Filter>
-    </ClCompile>
-    <ClCompile Include="dmsstring.cpp">
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
     <ClCompile Include="LineParser.cpp">
@@ -51,15 +45,21 @@
     <ClCompile Include="DMS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="string_utils.cpp">
+      <Filter>Source Files\DMS</Filter>
+    </ClCompile>
+    <ClCompile Include="dms_state.cpp">
+      <Filter>Source Files\DMS</Filter>
+    </ClCompile>
+    <ClCompile Include="chunk.cpp">
+      <Filter>Source Files\DMS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="value.h">
       <Filter>Header Files\DMS</Filter>
     </ClInclude>
     <ClInclude Include="utils.h">
-      <Filter>Header Files\DMS</Filter>
-    </ClInclude>
-    <ClInclude Include="byte.h">
       <Filter>Header Files\DMS</Filter>
     </ClInclude>
     <ClInclude Include="cmd.h">
@@ -69,9 +69,6 @@
       <Filter>Header Files\DMS</Filter>
     </ClInclude>
     <ClInclude Include="dms_exceptions.h">
-      <Filter>Header Files\DMS</Filter>
-    </ClInclude>
-    <ClInclude Include="dmsstring.h">
       <Filter>Header Files\DMS</Filter>
     </ClInclude>
     <ClInclude Include="LineParser.h">
@@ -84,6 +81,18 @@
       <Filter>Header Files\DMS</Filter>
     </ClInclude>
     <ClInclude Include="errors.h">
+      <Filter>Header Files\DMS</Filter>
+    </ClInclude>
+    <ClInclude Include="string_utils.h">
+      <Filter>Header Files\DMS</Filter>
+    </ClInclude>
+    <ClInclude Include="dms_state.h">
+      <Filter>Header Files\DMS</Filter>
+    </ClInclude>
+    <ClInclude Include="chunk.h">
+      <Filter>Header Files\DMS</Filter>
+    </ClInclude>
+    <ClInclude Include="token.h">
       <Filter>Header Files\DMS</Filter>
     </ClInclude>
   </ItemGroup>

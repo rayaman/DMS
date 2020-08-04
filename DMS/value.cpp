@@ -1,6 +1,5 @@
 #include "value.h"
 #include "utils.h"
-#include "byte.h"
 #include "string"
 #include <sstream>
 #include <map>
@@ -8,7 +7,7 @@
 namespace dms {
 	dms_string* buildString(std::string str) {
 		size_t len = str.length();
-		uint8_t* arr = new uint8_t[len];
+		char16_t* arr = new char16_t[len];
 		for (size_t i = 0; i < len; i++) {
 			arr[i] = str.at(i);
 		}
@@ -27,6 +26,26 @@ namespace dms {
 		std::stringstream temp;
 		temp << this;
 		return temp.str();
+	}
+	value* buildValue(std::string str) {
+		value* val = new value{};
+		val->set(buildString(str));
+		return val;
+	}
+	value* buildValue(double dbl) {
+		value* val = new value{};
+		val->set(buildNumber(dbl));
+		return val;
+	}
+	value* buildValue(int i) {
+		value* val = new value{};
+		val->set(buildNumber((double)i));
+		return val;
+	}
+	value* buildValue(bool b) {
+		value* val = new value{};
+		val->set(buildBool(b));
+		return val;
 	}
 	bool value::typeMatch(const value o) const {
 		return type == o.type;
