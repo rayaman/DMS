@@ -1,5 +1,26 @@
 #include "utils.h"
 namespace dms::utils {
+	bool isalphanum(std::string str) {
+		for (size_t i = 0; i < str.size(); i++) {
+			if (!isalnum(str[i]) && str[i]!='_')
+				return false;
+		}
+		return true;
+	}
+	bool isalpha(std::string str) {
+		for (size_t i = 0; i < str.size(); i++) {
+			if (!std::isalpha(str[i]) && str[i] != '_')
+				return false;
+		}
+		return true;
+	}
+	bool isNum(std::string str) {
+		for (size_t i = 0; i < str.size(); i++) {
+			if (!std::isdigit(str[i]) && str[i] != '.')
+				return false;
+		}
+		return true;
+	}
 	std::string random_string(size_t length)
 	{
 		auto randchar = []() -> char

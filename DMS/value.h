@@ -25,7 +25,7 @@ namespace dms {
 	};
 	struct dms_string {
 		size_t length = 0;
-		char16_t* val = nullptr;
+		uint8_t* val = nullptr;
 		std::string getValue();
 		friend std::ostream& operator << (std::ostream& out, const dms_string& c) {
 			for (size_t i = 0; i < c.length; i++) {
@@ -47,10 +47,11 @@ namespace dms {
 		dms_string* s = nullptr;
 		dms_env* e = nullptr;
 		dms_custom* c = nullptr;
-		bool set(dms_string* str);
-		bool set(dms_boolean* bo);
-		bool set(dms_number* num);
-		bool set(dms_env* en);
+		void set(dms_string* str);
+		void set(dms_boolean* bo);
+		void set(dms_number* num);
+		void set(dms_env* en);
+		void set();
 		bool typeMatch(const value o) const;
 		std::string toString();
 		friend bool operator<(const value& l, const value& r)
@@ -99,7 +100,9 @@ namespace dms {
 		std::map<std::string, value> hpart;
 		std::map<double, value> ipart;
 		void pushValue(value val);
-		void pushValue(value str, value val);
+		void pushValue(value ind, value val);
 		value getValue(value val);
+	private:
+		size_t count = 0;
 	};
 }

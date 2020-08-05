@@ -7,7 +7,7 @@
 namespace dms {
 	dms_string* buildString(std::string str) {
 		size_t len = str.length();
-		char16_t* arr = new char16_t[len];
+		uint8_t* arr = new uint8_t[len];
 		for (size_t i = 0; i < len; i++) {
 			arr[i] = str.at(i);
 		}
@@ -50,77 +50,66 @@ namespace dms {
 	bool value::typeMatch(const value o) const {
 		return type == o.type;
 	}
-	bool value::set(dms_string* str) {
-		try {
-			s = str;
-			delete[] b;
-			delete[] n;
-			delete[] e;
-			delete[] c;
-			b = nullptr;
-			n = nullptr;
-			e = nullptr;
-			c = nullptr;
-			type = dms::string;
-			return true;
-		}
-		catch (...) {
-			return false;
-		}
+	void value::set(dms_string* str) {
+		s = str;
+		delete[] b;
+		delete[] n;
+		delete[] e;
+		delete[] c;
+		b = nullptr;
+		n = nullptr;
+		e = nullptr;
+		c = nullptr;
+		type = string;
 	}
-	bool value::set(dms_boolean* bo) {
-		try {
-			b = bo;
-			delete[] s;
-			delete[] n;
-			delete[] e;
-			delete[] c;
-			s = nullptr;
-			n = nullptr;
-			e = nullptr;
-			c = nullptr;
-			type = dms::boolean;
-			return true;
-		}
-		catch (...) {
-			return false;
-		}
+	void value::set(dms_boolean* bo) {
+		b = bo;
+		delete[] s;
+		delete[] n;
+		delete[] e;
+		delete[] c;
+		s = nullptr;
+		n = nullptr;
+		e = nullptr;
+		c = nullptr;
+		type = boolean;
 	}
-	bool value::set(dms_number* num) {
-		try {
-			n = num;
-			delete[] b;
-			delete[] s;
-			delete[] e;
-			delete[] c;
-			b = nullptr;
-			s = nullptr;
-			e = nullptr;
-			c = nullptr;
-			type = dms::number;
-			return true;
-		}
-		catch (...) {
-			return false;
-		}
+	void value::set(dms_number* num) {
+		n = num;
+		delete[] b;
+		delete[] s;
+		delete[] e;
+		delete[] c;
+		b = nullptr;
+		s = nullptr;
+		e = nullptr;
+		c = nullptr;
+		type = number;
 	}
-	bool dms::value::set(dms_env* en) {
-		try {
-			e = en;
-			delete[] b;
-			delete[] s;
-			delete[] n;
-			delete[] c;
-			b = nullptr;
-			n = nullptr;
-			s = nullptr;
-			c = nullptr;
-			type = dms::env;
-			return true;
-		}
-		catch (...) {
-			return false;
-		}
+	void dms::value::set(dms_env* en) {
+		e = en;
+		delete[] b;
+		delete[] s;
+		delete[] n;
+		delete[] c;
+		b = nullptr;
+		n = nullptr;
+		s = nullptr;
+		c = nullptr;
+		type = env;
+	}
+	void value::set() {
+		delete[] b;
+		delete[] s;
+		delete[] n;
+		delete[] e;
+		delete[] c;
+		s = nullptr;
+		n = nullptr;
+		e = nullptr;
+		c = nullptr;
+		b = nullptr;
+		type = nil;
 	}
 	std::string dms_string::getValue() {
 		std::stringstream temp;
@@ -137,10 +126,23 @@ namespace dms {
 	void dms_env::pushValue(value ind, value val) {
 		if (ind.type == number) {
 			size_t size = ipart.size();
-			ipart.insert_or_assign(ind.n->val,val);
-		}
-		else {
-			hpart.insert_or_assign(ind.toString(), val);
+			if (val.type == nil) {
+				ipart.erase(ind.n->val);
+				count--;
+			}
+			else {
+				ipart.insert_or_assign(ind.n->val, val);
+				count++;
+			}
+		} else {
+			if (val.type == nil) {
+				hpart.erase(ind.toString());
+				count--;
+			}
+			else {
+				hpart.insert_or_assign(ind.toString(), val);
+				count++;
+			}
 		}
 	}
 	value dms_env::getValue(value ind) {

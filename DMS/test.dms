@@ -1,17 +1,15 @@
 entry main
 enable warnings
 //enable debugging
-define 
-loadfile loadtest.dms
-define
+loadfile "loadtest.dms"
 version 1.2
-using extendedDefine as
+using extendedDefine
 
 [main]
 	"This works!"
 	"What's up"
 
-	Ryan "Hello how are you doing?" // this is a comment
+	Ryan "Hello \"how\" are you doing?" // this is a comment
 	Bob "I'm good you?"
 	
 	tester = "Hello"
@@ -22,12 +20,7 @@ using extendedDefine as
 
 	list,test = {{1,2+food,hi[3]},true,tester,123,"This is a string!",false, {3,2,1}},5
 	a = list[1]
-	/*
-		heheheh
-		sdfsdf
-		ghgfh
-		kjuty
-	*/
+
 	hungry = (-2+4-((5*5)/sqrt(144+5)))^2*2+2
 	list[1] = "Hello"
 	var1,var2 = func(1,"string", 2+5)
@@ -36,33 +29,36 @@ using extendedDefine as
 	::label::
 	//Hello im testing stuff
 	
-	choice "Pick one:"  
+	choice "Pick one:"{
 		"first" func()
 		"second" func()
 		"third" func()
 		"forth" func()
+	}
 
 	for x = 1,10
 		for y = 1,10
-			for z = 1,10
+			for z = 1,10 {
 				"test"
 				"$x$ $y$ $z$"
-
+			}
 	test = true
 	test2 = false
 	
 	while cond
 		...
-	if (func(123)!=name[1] or true == "Bob") and foodCount >= 10.34
+	if (func(123)!=name[1] or true == "Bob") and foodCount >= 10.34 {
 		"test=true or test2=false!"
 		"help me"
-		if cool == true
+		if cool == true {
 			"We are here"
 			"Nested if"
+		}
 		elseif food >= 21
 			"This is getting weird"
 		"Hi"
-	elseif (func2(321)!=name2[1] or true == "Bob2") and foodCount2 >= 100.78
+	}
+	elseif (func2(321)!=name2[1] or true == "Bob2") and foodCount2 >= 1.78
 		"This Block"
 	else
 		"That Block"

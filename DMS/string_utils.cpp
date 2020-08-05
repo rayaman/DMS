@@ -1,12 +1,12 @@
 #include "string_utils.h"
 
-char16_t* copyStr(dms::dms_string str, size_t start, size_t size) {
-	char16_t* newptr = new char16_t[size];
+uint8_t* copyStr(dms::dms_string str, size_t start, size_t size) {
+	uint8_t* newptr = new uint8_t[size];
 	std::copy(str.val + start, str.val + start + size, newptr);
 	return newptr;
 }
-char16_t* copyStr(dms::dms_string str, dms::dms_number start, dms::dms_number size) {
-	char16_t* newptr = new char16_t[size.getValue()];
+uint8_t* copyStr(dms::dms_string str, dms::dms_number start, dms::dms_number size) {
+	uint8_t* newptr = new uint8_t[size.getValue()];
 	std::copy(str.val + (size_t)start.getValue(), str.val + (size_t)start.getValue() + (size_t)size.getValue(), newptr);
 	return newptr;
 }
@@ -19,7 +19,7 @@ namespace dms::string_utils {
 		}
 		if (utils::typeassert(state, args, string)) {
 			size_t size = args.args[0].s->length;
-			char16_t* newptr = copyStr(*args.args[0].s, 0, size);
+			uint8_t* newptr = copyStr(*args.args[0].s, 0, size);
 			std::reverse(newptr, newptr + size);
 			dms_string* newstr = new dms_string{ size, newptr };
 			return newstr;
@@ -42,11 +42,12 @@ namespace dms::string_utils {
 			}
 			else
 			{
-				char16_t* newptr = copyStr(str, start, size);
+				uint8_t* newptr = copyStr(str, start, size);
 				dms_string* newstr = new dms_string{ size,newptr };
 				return newstr;
 			}
 		}
+		return buildString("");
 	}
 	//string
 	dms_string* upper(dms_state* state, dms_args args) {
@@ -56,7 +57,7 @@ namespace dms::string_utils {
 		}
 		if (utils::typeassert(state, args, string)) {
 			dms_string str = *args.args[0].s;
-			char16_t* newptr = copyStr(str, 0, str.length);
+			uint8_t* newptr = copyStr(str, 0, str.length);
 			std::transform(newptr, newptr + str.length, newptr, toupper);
 			dms_string* newstr = new dms_string{ str.length, newptr };
 			return newstr;
@@ -71,7 +72,7 @@ namespace dms::string_utils {
 		}
 		if (utils::typeassert(state, args, string)) {
 			dms_string str = *args.args[0].s;
-			char16_t* newptr = copyStr(str, 0, str.length);
+			uint8_t* newptr = copyStr(str, 0, str.length);
 			std::transform(newptr, newptr + str.length, newptr, tolower);
 			dms_string* newstr = new dms_string{ str.length, newptr };
 			return newstr;
@@ -166,6 +167,7 @@ namespace dms::string_utils {
 		if (utils::typeassert(state, args, string, string)) {
 			return buildBool(indexOf(state, args)->val != -1);
 		}
+		return buildBool(false);
 	}
 	//string number
 	dms_string* repeat(dms_state* state, dms_args args) {
@@ -182,5 +184,6 @@ namespace dms::string_utils {
 				temp << newstr;
 			return buildString(temp.str());
 		}
+		return buildString("");
 	}
 }
