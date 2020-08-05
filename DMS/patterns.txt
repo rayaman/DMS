@@ -1,0 +1,12 @@
+PAT[func]: name->parao->[.*]->parac
+PAT[math]: number|func->*[plus|minus|multiply|divide|pow|mod->number|func]
+
+PAT: flag->name											:= ENAB, ENTRY, USING
+PAT: flag->string 										:= LOAD
+PAT: flag->number 										:= VERN
+PAT: newline->bracketo->name->bracketc					:= STAT
+PAT: *tab->string										:= DISP
+PAT: *tab->name->string									:= DISP
+PAT: *tab->name->%equal|[seperator->name->%]			:= ASGN
+PAT: *tab->cbracketo->*[value->seperator]->cbracketc	:= ENV
+PAT: *tab->name->bracketo->name|value|math->

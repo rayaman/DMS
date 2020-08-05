@@ -3,6 +3,35 @@
 using namespace dms::tokens;
 using namespace dms::utils;
 namespace dms {
+	uint8_t passer::next() {
+		if (stream.size() == pos) {
+			return NULL;
+		}
+		else {
+			return stream[pos++];
+		}
+	}
+	void passer::next(uint8_t c) {
+		next();
+		while (peek() != c) {
+			next();
+		}
+	}
+	uint8_t passer::prev() {
+		if (0 == pos) {
+			return NULL;
+		}
+		return stream[--pos];
+	}
+	uint8_t passer::peek() {
+		if (stream.size() == pos) {
+			return NULL;
+		}
+		return stream[pos];
+	}
+	std::string passer::processBuffer(std::vector<uint8_t> buf) {
+		return std::string(buf.begin(), buf.end());
+	}
 	void doCheck(passer* stream,std::vector<token>* t_vec, size_t line, bool &isNum, bool &hasDec, std::vector<uint8_t>* buffer) {
 		if (isNum) {
 			t_vec->push_back(token{ tokens::number,codes::NOOP,stream->processBuffer(*buffer),line });
@@ -28,10 +57,18 @@ namespace dms {
 			}
 		}
 	}
-	cmd* tokenizer(std::vector<token>* tok) {
-		cmd* c = new cmd{};
-		// turn toke data into
+	cmd* LineParser::getPattern(std::vector<tokens::token> &tok) {
+		cmd* c = new cmd();
+
 		return c;
+	}
+	std::vector<chunk> LineParser::tokenizer(std::vector<token> &tok) {
+		std::vector<chunk> chunks;
+		// turn token data into
+		return chunks;
+	}
+	void LineParser::tolower(std::string &s1) {
+		std::transform(s1.begin(), s1.end(), s1.begin(), std::tolower);
 	}
 	LineParser::LineParser(std::string f) {
 		fn = f;
@@ -77,13 +114,15 @@ namespace dms {
 		bool isNum = false;
 		bool hasDec = false;
 		bool labelStart = false;
-		size_t line = 0;
+		size_t line = 1;
 		while (data != NULL) {			
 			if (data == '/' && stream.peek()=='/') {
 				line++;
 				stream.next('\n'); // Seek until you find a newline
 			} 
 			else if (data == '\n') {
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::newline,codes::NOOP,"",line });
 				if (isNum) {
 					t_vec.push_back(token{ tokens::number,codes::NOOP,stream.processBuffer(buffer),line });
 					buffer.clear();
@@ -193,13 +232,18 @@ namespace dms {
 				t_vec.push_back(token{ tokens::bracket,codes::NOOP,"",line });
 			}
 			else if (data == '!') {
-			doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-			t_vec.push_back(token{ tokens::Not,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::Not,codes::NOOP,"",line });
+			}
+			else if (data == '\t') {
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::tab,codes::NOOP,"",line });
 			}
 
 			if (data == ' ' && !isStr) { // tokens end with a space
 				token tok;
 				std::string str = stream.processBuffer(buffer);
+				tolower(str);
 				buffer.clear();
 				if (str == "enable") {
 					tok.build(tokens::flag, codes::ENAB);
@@ -242,6 +286,9 @@ namespace dms {
 				else if (str == "for") {
 					tok.build(tokens::For, codes::NOOP);
 				}
+				else if (str == "choice") {
+					tok.build(tokens::control, codes::CHOI);
+				}
 				else if (utils::isalphanum(str) && str.size()>0) {
 					tok.build(tokens::name, str);
 				}
@@ -249,6 +296,8 @@ namespace dms {
 					// Unknown command!
 					tok.build(tokens::noop, codes::UNWN);
 					tok.name = str;
+					tok.line_num = line;
+					std::cout << tok;
 				}
 				if (tok.raw!=codes::UNWN && tok.type != tokens::noop) {
 					tok.line_num = line;
@@ -257,12 +306,14 @@ namespace dms {
 			}
 			data = stream.next();
 		} 
-		std::cout << "Done!" << std::endl;
+		std::ofstream outputFile("dump.txt");
+		outputFile << "Token Dump:" << std::endl;
 		for (size_t i = 0; i < t_vec.size(); i++) {
-			std::cout << t_vec[i] << std::endl;
+			outputFile << t_vec[i] << std::endl;
 		}
-		// Data is good now let's parse
-
+		outputFile.close();
+		// Tokens build let's parse
+		tokenizer(t_vec);
 		return state;
 	}
 }

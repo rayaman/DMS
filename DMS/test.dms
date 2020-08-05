@@ -29,35 +29,35 @@ using extendedDefine
 	::label::
 	//Hello im testing stuff
 	
-	choice "Pick one:"{
+	CHOICE "Pick one:"
 		"first" func()
 		"second" func()
 		"third" func()
 		"forth" func()
-	}
 
 	for x = 1,10
-		for y = 1,10
-			for z = 1,10 {
+		for y = 1,10,1
+			for z = 1,10
 				"test"
 				"$x$ $y$ $z$"
-			}
 	test = true
 	test2 = false
 	
-	while cond
-		...
-	if (func(123)!=name[1] or true == "Bob") and foodCount >= 10.34 {
+	count = 0
+	
+	while count != 100
+		count++;
+		"Count = $count$"
+	
+	if (func(123)!=name[1] or true == "Bob") and foodCount >= 10.34
 		"test=true or test2=false!"
 		"help me"
-		if cool == true {
+		if cool == true
 			"We are here"
 			"Nested if"
-		}
 		elseif food >= 21
 			"This is getting weird"
 		"Hi"
-	}
 	elseif (func2(321)!=name2[1] or true == "Bob2") and foodCount2 >= 1.78
 		"This Block"
 	else

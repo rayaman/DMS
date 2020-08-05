@@ -31,7 +31,9 @@ namespace dms::tokens {
 		And,
 		Not,
 		For,
-		label
+		label,
+		newline,
+		tab
 	};//stream, t_vec, line, isNum, buffer
 	struct token {
 		tokentype type = noop;
@@ -44,6 +46,11 @@ namespace dms::tokens {
 		}
 		void build(tokentype tt, std::string s) {
 			type = tt;
+			name = s;
+		}
+		void build(tokentype tt, codes::op o, std::string s) {
+			type = tt;
+			raw = o;
 			name = s;
 		}
 		friend std::ostream& operator << (std::ostream& out, const token& c) {
@@ -76,7 +83,9 @@ namespace dms::tokens {
 				"and",
 				"not",
 				"for",
-				"label"
+				"label",
+				"newline",
+				"tab"
 			};
 			out << "Line <" << c.line_num << ">" << codes::list[c.raw] << " " << temp1[c.type]  << " \t\t " << c.name;
 			return out;
