@@ -3,6 +3,7 @@
 #include "codes.h"
 namespace dms::tokens {
 	enum tokentype {
+		none,
 		noop,
 		flag,
 		name,
@@ -23,7 +24,7 @@ namespace dms::tokens {
 		pow,
 		mod,
 		equal,
-		bracket,
+		colon,
 		control,
 		True,
 		False,
@@ -33,7 +34,8 @@ namespace dms::tokens {
 		For,
 		label,
 		newline,
-		tab
+		tab,
+		eof
 	};//stream, t_vec, line, isNum, buffer
 	struct token {
 		tokentype type = noop;
@@ -55,6 +57,7 @@ namespace dms::tokens {
 		}
 		friend std::ostream& operator << (std::ostream& out, const token& c) {
 			const std::string temp1[] = { 
+				"none",
 				"noop",
 				"flag",
 				"name",
@@ -75,7 +78,7 @@ namespace dms::tokens {
 				"pow",
 				"mod",
 				"equal",
-				"bracket",
+				"colon",
 				"control",
 				"true",
 				"false",
@@ -85,7 +88,8 @@ namespace dms::tokens {
 				"for",
 				"label",
 				"newline",
-				"tab"
+				"tab",
+				"eof"
 			};
 			out << "Line <" << c.line_num << ">" << codes::list[c.raw] << " " << temp1[c.type]  << " \t\t " << c.name;
 			return out;

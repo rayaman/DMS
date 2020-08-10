@@ -4,8 +4,8 @@
 #include <string>
 #include <iostream>
 #include <iterator>
-#include<stdio.h>
-#include<ctype.h>
+#include <stdio.h>
+#include <ctype.h>
 #include "codes.h"
 #include "cmd.h"
 #include "dms_state.h"
@@ -13,7 +13,16 @@
 #include "token.h"
 #include "utils.h"
 
+
 namespace dms {
+	struct tokenstream {
+		std::vector<tokens::token> tokens;
+		size_t pos = 0;
+		void init(std::vector<tokens::token>* ptr);
+		tokens::token next();
+		tokens::token peek();
+		std::vector<tokens::token> next(tokens::tokentype tk, size_t n=0);
+	};
 	struct passer {
 		std::string stream;
 		uint8_t next();
@@ -33,8 +42,9 @@ namespace dms {
 		dms_state* Parse(dms_state* state, std::string l);
 		LineParser(std::string fn);
 		LineParser();
+		//Matches tokens from the stream, if the tokens match it will return true and YOU should call next on the stream. This method does not change the current position
+		bool match(tokenstream stream, tokens::tokentype t1=tokens::none, tokens::tokentype t2 = tokens::none, tokens::tokentype t3 = tokens::none, tokens::tokentype t4 = tokens::none, tokens::tokentype t5 = tokens::none, tokens::tokentype t6 = tokens::none, tokens::tokentype t7 = tokens::none, tokens::tokentype t8 = tokens::none, tokens::tokentype t9 = tokens::none, tokens::tokentype t10 = tokens::none, tokens::tokentype t11 = tokens::none, tokens::tokentype t12 = tokens::none);
 		void tolower(std::string &str);
-		std::vector<chunk> tokenizer(std::vector<tokens::token> &tok);
-		cmd* getPattern(std::vector<tokens::token>& tok);
+		std::map<std::string, chunk> tokenizer(dms_state* state, std::vector<tokens::token> &tok);
 	};
 }

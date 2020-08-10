@@ -7,10 +7,12 @@ namespace dms::errors {
 		invalid_arguments,
 		invalie_type,
 		array_out_of_bounds,
+		badtoken
 	};
 	struct error {
 		errortype code=unknown;
 		std::string err_msg;
 		bool crash = true; // Set if you would like the state to exit
+		size_t linenum = 0;
 	};
 }

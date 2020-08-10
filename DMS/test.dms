@@ -1,9 +1,14 @@
 entry main
 enable warnings
 //enable debugging
-loadfile "loadtest.dms"
+//loadfile "loadtest.dms"
 version 1.2
 using extendedDefine
+
+[Ryan:char]{
+	name = "Ryan"
+	age = 21
+}
 
 [main]
 	"This works!"

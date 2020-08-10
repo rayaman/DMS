@@ -2,21 +2,24 @@
 //
 
 #include <iostream>
-#include <string>
-#include <exception>
+//#include <string>
+//#include <exception>
+#include "value.h"
+#include "codes.h"
+#include "cmd.h"
+#include "dms_exceptions.h"
+#include "errors.h"
+#include "utils.h"
+#include "number_utils.h"
+#include "string_utils.h"
+#include "LineParser.h"
 #include "dms.h"
+#include "chunk.h"
+#include "token.h"
 using namespace dms;
 using namespace dms::utils;
-
 int main()
 {
-    /*
-        TODO
-
-        Work on LineParser, chunk and state
-        We need to parse the dms file.
-        Might need to rework the syntax a bit 
-    */
     LineParser parser = LineParser("test.dms");
     parser.Parse();
     print("Goodbye!");

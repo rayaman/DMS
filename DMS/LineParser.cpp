@@ -3,6 +3,25 @@
 using namespace dms::tokens;
 using namespace dms::utils;
 namespace dms {
+	void tokenstream::init(std::vector<token>* ptr) {
+		this->tokens = *ptr;
+	}
+	token tokenstream::next() {
+		if (pos > this->tokens.size())
+			return token{ tokentype::noop,codes::NOOP,"EOF",0 };
+		return this->tokens[pos++];
+	}
+	token tokenstream::peek() {
+		return this->tokens[pos];
+	}
+	std::vector<token> tokenstream::next(tokens::tokentype tk, size_t n) {
+		std::vector<token> temp;
+		while (peek().type!=tk) {
+			temp.push_back(next());
+		}
+		temp.push_back(next());
+		return temp;
+	}
 	uint8_t passer::next() {
 		if (stream.size() == pos) {
 			return NULL;
@@ -57,14 +76,102 @@ namespace dms {
 			}
 		}
 	}
-	cmd* LineParser::getPattern(std::vector<tokens::token> &tok) {
-		cmd* c = new cmd();
-
-		return c;
+	void wait() {
+		std::cin.ignore();
 	}
-	std::vector<chunk> LineParser::tokenizer(std::vector<token> &tok) {
-		std::vector<chunk> chunks;
-		// turn token data into
+	bool LineParser::match(tokenstream stream, tokens::tokentype t1, tokens::tokentype t2, tokens::tokentype t3, tokens::tokentype t4, tokens::tokentype t5, tokens::tokentype t6, tokens::tokentype t7, tokens::tokentype t8, tokens::tokentype t9, tokens::tokentype t10, tokens::tokentype t11, tokens::tokentype t12) {
+		tokens::tokentype types[12] = { t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12 };
+		for (size_t i = 0; i < 12; i++) {
+			if (types[i] == tokens::none)
+				return true;
+			if (stream.tokens[stream.pos+i].type != types[i])
+				return false;
+			print(stream.tokens[stream.pos + i].type, " | ", types[i]);
+		}
+		return true;
+	}
+	std::map<std::string, chunk> LineParser::tokenizer(dms_state* state,std::vector<token> &toks) {
+		std::map<std::string,chunk> chunks;
+		chunk* current_chunk = nullptr;
+		std::string chunk_name;
+		blocktype chunk_type;
+
+		tokenstream stream;
+		stream.init(&toks);
+		token current = stream.next();
+		std::vector<token> temp;
+		while (stream.peek().type != tokens::eof) {
+			print(current);
+			if (current.type == tokens::flag) {
+				temp = stream.next(tokens::newline);
+				if (temp.size() != 2) {
+					std::cout << "";
+				}
+				codes::op code = current.raw;
+				tokens::tokentype tok = temp[0].type;
+				if (code == codes::ENAB && tok == tokens::name) {
+					state->enables.insert_or_assign(temp[0].name,true);
+				}
+				else if (code == codes::ENTR && tok == tokens::name) {
+					state->entry = temp[0].name;
+				}
+				else if (code == codes::DISA && tok == tokens::name) {
+					state->enables.insert_or_assign(temp[0].name, false);
+				}
+				else if (code == codes::VERN && tok == tokens::number) {
+					state->version = std::stod(temp[0].name);
+				}
+				else if (code == codes::USIN && tok == tokens::name) {
+					// TODO add usings, kinda useless since everything will be packed in. Perhaps extensions might work
+				}
+				else if (code == codes::LOAD && tok == tokens::string) {
+					Parse(state, temp[0].name); // Load another file
+				}
+				else {
+					std::stringstream str;
+					str << "Expected <FLAG IDENTIFIER> " << " got: " << current << " ";
+					state->push_error(errors::error{errors::badtoken,str.str(),true,current.line_num});
+				}
+				std::cout << temp.size() << std::endl;
+				std::cout << temp[0] << std::endl;
+			}
+			// To implement function we need to match stuff
+
+			//Todo Finish the chunk data stuff
+			if (match(stream,tokens::newline,tokens::bracketo,tokens::name,tokens::bracketc)) {
+				stream.next();
+				if (current_chunk != nullptr)
+					chunks.insert_or_assign(current_chunk->name, *current_chunk);
+
+				current_chunk = new chunk;
+				stream.next(); // Consume
+				current_chunk->name = stream.next().name;
+				stream.next(); // Consume
+			}
+			else if (match(stream, tokens::newline, tokens::bracketo, tokens::name,tokens::colon,tokens::name, tokens::bracketc)) {
+				stream.next();
+				stream.next();
+				if (current_chunk != nullptr)
+					chunks.insert_or_assign(current_chunk->name, *current_chunk);
+
+				current_chunk = new chunk;
+				current_chunk->name = stream.next().name;
+				stream.next();
+				std::string temp = stream.next().name;
+				if (temp == "char") {
+					current_chunk->type = bt_character;
+				}
+				else if (temp == "env") {
+					current_chunk->type = bt_env;
+				}
+				else if (temp == "menu") {
+					current_chunk->type = bt_menu;
+				}
+				stream.next();
+			}
+			wait();
+			current = stream.next();
+		}
 		return chunks;
 	}
 	void LineParser::tolower(std::string &s1) {
@@ -229,7 +336,7 @@ namespace dms {
 			}
 			else if (data == ':') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::bracket,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::colon,codes::NOOP,"",line });
 			}
 			else if (data == '!') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
@@ -241,79 +348,78 @@ namespace dms {
 			}
 
 			if (data == ' ' && !isStr) { // tokens end with a space
-				token tok;
 				std::string str = stream.processBuffer(buffer);
 				tolower(str);
 				buffer.clear();
 				if (str == "enable") {
-					tok.build(tokens::flag, codes::ENAB);
+					t_vec.push_back(token{ tokens::flag,codes::ENAB,"",line });
 				} else if (str == "entry") {
-					tok.build(tokens::flag, codes::ENTR);
+					t_vec.push_back(token{ tokens::flag,codes::ENTR,"",line });
 				}
 				else if (str == "loadfile") {
-					tok.build(tokens::flag, codes::LOAD);
+					t_vec.push_back(token{ tokens::flag,codes::LOAD,"",line });
 				}
 				else if (str == "version") {
-					tok.build(tokens::flag,codes::VERN);
+					t_vec.push_back(token{ tokens::flag,codes::VERN,"",line });
 				}
 				else if (str == "using") {
-					tok.build(tokens::flag, codes::USIN);
+					t_vec.push_back(token{ tokens::flag,codes::USIN,"",line });
+				}
+				else if (str == "disable") {
+					t_vec.push_back(token{ tokens::flag,codes::DISA,"",line });
 				}
 				else if (str == "if") {
-					tok.build(tokens::control, codes::IFFF);
+					t_vec.push_back(token{ tokens::control,codes::IFFF,"",line });
 				}
 				else if (str == "elseif") {
-					tok.build(tokens::control, codes::ELIF);
+					t_vec.push_back(token{ tokens::control,codes::ELIF,"",line });
 				}
 				else if (str == "while") {
-					tok.build(tokens::control, codes::WHLE);
+					t_vec.push_back(token{ tokens::control,codes::WHLE,"",line });
 				}
 				else if (str == "true") {
-					tok.build(tokens::True, codes::NOOP);
+					t_vec.push_back(token{ tokens::True,codes::NOOP,"",line });
 				}
 				else if (str == "False") {
-					tok.build(tokens::False, codes::NOOP);
+					t_vec.push_back(token{ tokens::False,codes::NOOP,"",line });
 				}
 				else if (str == "else") {
-					tok.build(tokens::control, codes::ELSE);
+					t_vec.push_back(token{ tokens::control,codes::ELSE,"",line });
 				}
 				else if (str == "and") {
-					tok.build(tokens::And, codes::NOOP);
+					t_vec.push_back(token{ tokens::And,codes::NOOP,"",line });
 				}
 				else if (str == "or") {
-					tok.build(tokens::Or, codes::NOOP);
+					t_vec.push_back(token{ tokens::Or,codes::NOOP,"",line });
 				}
 				else if (str == "for") {
-					tok.build(tokens::For, codes::NOOP);
+					t_vec.push_back(token{ tokens::For,codes::NOOP,"",line });
 				}
 				else if (str == "choice") {
-					tok.build(tokens::control, codes::CHOI);
+					t_vec.push_back(token{ tokens::control,codes::CHOI,"",line });
 				}
 				else if (utils::isalphanum(str) && str.size()>0) {
-					tok.build(tokens::name, str);
+					t_vec.push_back(token{ tokens::name,codes::NOOP,str,line });
 				}
 				else {
 					// Unknown command!
-					tok.build(tokens::noop, codes::UNWN);
+					/*tok.build(tokens::noop, codes::UNWN);
 					tok.name = str;
-					tok.line_num = line;
-					std::cout << tok;
-				}
-				if (tok.raw!=codes::UNWN && tok.type != tokens::noop) {
-					tok.line_num = line;
-					t_vec.push_back(tok);
+					tok.line_num = line;*/
 				}
 			}
 			data = stream.next();
 		} 
+		t_vec.push_back(token{ tokens::eof,codes::NOOP,"",line+1 });
 		std::ofstream outputFile("dump.txt");
 		outputFile << "Token Dump:" << std::endl;
 		for (size_t i = 0; i < t_vec.size(); i++) {
 			outputFile << t_vec[i] << std::endl;
 		}
 		outputFile.close();
+		print("Running tokenizer");
 		// Tokens build let's parse
-		tokenizer(t_vec);
+		tokenizer(state, t_vec);
 		return state;
 	}
 }
