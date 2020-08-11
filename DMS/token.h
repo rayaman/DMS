@@ -35,7 +35,9 @@ namespace dms::tokens {
 		label,
 		newline,
 		tab,
-		eof
+		eof,
+		ret,
+		nil
 	};//stream, t_vec, line, isNum, buffer
 	struct token {
 		tokentype type = noop;
@@ -89,7 +91,9 @@ namespace dms::tokens {
 				"label",
 				"newline",
 				"tab",
-				"eof"
+				"eof",
+				"ret",
+				"nil"
 			};
 			out << "Line <" << c.line_num << ">" << codes::list[c.raw] << " " << temp1[c.type]  << " \t\t " << c.name;
 			return out;

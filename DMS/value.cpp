@@ -5,6 +5,9 @@
 #include <map>
 #include <vector>
 namespace dms {
+	void dms_args::push(value val) {
+		args.push_back(val);
+	}
 	dms_string* buildString(std::string str) {
 		size_t len = str.length();
 		uint8_t* arr = new uint8_t[len];
@@ -22,7 +25,7 @@ namespace dms {
 		dms_number* dms_num = new dms_number{ num };
 		return dms_num;
 	}
-	std::string value::toString() {
+	std::string value::toString() const {
 		std::stringstream temp;
 		temp << this;
 		return temp.str();
@@ -46,6 +49,18 @@ namespace dms {
 		value* val = new value{};
 		val->set(buildBool(b));
 		return val;
+	}
+	void value::nuke() {
+		delete[] s;
+		delete[] b;
+		delete[] n;
+		delete[] e;
+		delete[] c;
+		s = nullptr;
+		b = nullptr;
+		n = nullptr;
+		e = nullptr;
+		c = nullptr;
 	}
 	bool value::typeMatch(const value o) const {
 		return type == o.type;

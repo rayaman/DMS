@@ -5,10 +5,14 @@ enable warnings
 version 1.2
 using extendedDefine
 
-[Ryan:char]{
+[Ryan:char]
 	name = "Ryan"
 	age = 21
-}
+
+[step:function(a,b,c)]
+	"Testing..."
+	d = (100 + b) / c nil
+	return d
 
 [main]
 	"This works!"

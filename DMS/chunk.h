@@ -12,9 +12,11 @@ namespace dms {
 	struct chunk
 	{
 		blocktype type = bt_block;
+		dms_args params;
 		std::string name = "";
 		std::vector<cmd> cmds = std::vector<cmd>();
 		size_t pos = 0;
+		size_t line = 0;
 		void addCmd(cmd c);
 	};
 }

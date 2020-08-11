@@ -1,2 +1,5 @@
-﻿  LineParser.cpp
+﻿  DMS.cpp
+  LineParser.cpp
+  chunk.cpp
+  Generating Code...
   DMS.vcxproj -> C:\Users\Ryan\source\repos\DMS\Debug\DMS.exe

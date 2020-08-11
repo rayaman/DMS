@@ -14,7 +14,7 @@ namespace dms {
 	token tokenstream::peek() {
 		return this->tokens[pos];
 	}
-	std::vector<token> tokenstream::next(tokens::tokentype tk, size_t n) {
+	std::vector<token> tokenstream::next(tokens::tokentype tk) {
 		std::vector<token> temp;
 		while (peek().type!=tk) {
 			temp.push_back(next());
@@ -86,16 +86,16 @@ namespace dms {
 				return true;
 			if (stream.tokens[stream.pos+i].type != types[i])
 				return false;
-			print(stream.tokens[stream.pos + i].type, " | ", types[i]);
+			//print(stream.tokens[stream.pos + i].type, " | ", types[i]);
 		}
 		return true;
 	}
-	std::map<std::string, chunk> LineParser::tokenizer(dms_state* state,std::vector<token> &toks) {
-		std::map<std::string,chunk> chunks;
+	std::map<std::string, chunk*> LineParser::tokenizer(dms_state* state,std::vector<token> &toks) {
+		std::map<std::string,chunk*> chunks;
 		chunk* current_chunk = nullptr;
 		std::string chunk_name;
 		blocktype chunk_type;
-
+		size_t line=1;
 		tokenstream stream;
 		stream.init(&toks);
 		token current = stream.next();
@@ -105,7 +105,7 @@ namespace dms {
 			if (current.type == tokens::flag) {
 				temp = stream.next(tokens::newline);
 				if (temp.size() != 2) {
-					std::cout << "";
+					std::cout << "Error";
 				}
 				codes::op code = current.raw;
 				tokens::tokentype tok = temp[0].type;
@@ -129,49 +129,120 @@ namespace dms {
 				}
 				else {
 					std::stringstream str;
-					str << "Expected <FLAG IDENTIFIER> " << " got: " << current << " ";
-					state->push_error(errors::error{errors::badtoken,str.str(),true,current.line_num});
+					str << "Expected <FLAG IDENTIFIER> " << " got: " << current << temp[0];
+					state->push_error(errors::error{errors::badtoken,str.str(),true,line});
 				}
-				std::cout << temp.size() << std::endl;
-				std::cout << temp[0] << std::endl;
 			}
-			// To implement function we need to match stuff
 
 			//Todo Finish the chunk data stuff
 			if (match(stream,tokens::newline,tokens::bracketo,tokens::name,tokens::bracketc)) {
 				stream.next();
-				if (current_chunk != nullptr)
-					chunks.insert_or_assign(current_chunk->name, *current_chunk);
-
+				if (current_chunk != nullptr) {
+					if (!chunks.count(current_chunk->name))
+						chunks.insert_or_assign(current_chunk->name, current_chunk);
+					else
+					{
+						std::stringstream str;
+						str << "Block <" << current_chunk->name << "> already defined!";
+						state->push_error(errors::error{ errors::block_already_defined,str.str(),true,line });
+					}
+				}
 				current_chunk = new chunk;
-				stream.next(); // Consume
+				chunk_type = bt_block;
+				line = stream.next().line_num; // Consume
 				current_chunk->name = stream.next().name;
 				stream.next(); // Consume
 			}
+			// This handles a few block types since they all follow a similar format
 			else if (match(stream, tokens::newline, tokens::bracketo, tokens::name,tokens::colon,tokens::name, tokens::bracketc)) {
 				stream.next();
 				stream.next();
-				if (current_chunk != nullptr)
-					chunks.insert_or_assign(current_chunk->name, *current_chunk);
+				if (current_chunk != nullptr) {
+					if (!chunks.count(current_chunk->name))
+						chunks.insert_or_assign(current_chunk->name, current_chunk);
+					else
+					{
+						std::stringstream str;
+						str << "Block <" << current_chunk->name << "> already defined!";
+						state->push_error(errors::error{ errors::block_already_defined,str.str(),true,line });
+					}
+				}
 
 				current_chunk = new chunk;
 				current_chunk->name = stream.next().name;
-				stream.next();
+				line = stream.next().line_num;
 				std::string temp = stream.next().name;
+				// Characters are a feature I want to have intergrated into the language
 				if (temp == "char") {
 					current_chunk->type = bt_character;
+					chunk_type = bt_character;
 				}
+				// Enviroments are sortof like objects, they can be uses as an object. They are a cleaner way to build a hash map like object
 				else if (temp == "env") {
 					current_chunk->type = bt_env;
+					chunk_type = bt_env;
 				}
+				// Menus are what they say on the tin. They provide the framework for having menus within your game
 				else if (temp == "menu") {
 					current_chunk->type = bt_menu;
+					chunk_type = bt_menu;
 				}
 				stream.next();
 			}
-			wait();
+			else if (match(stream, tokens::newline,tokens::bracketo,tokens::name,tokens::colon,tokens::name,tokens::parao)) {
+				std::stringstream str;
+				stream.next();
+				stream.next();
+				if (current_chunk != nullptr) {
+					if (!chunks.count(current_chunk->name))
+						chunks.insert_or_assign(current_chunk->name, current_chunk);
+					else
+					{
+						std::stringstream str;
+						str << "Block <" << current_chunk->name << "> already defined!";
+						state->push_error(errors::error{ errors::block_already_defined,str.str(),true,line });
+					}
+				}
+
+				current_chunk = new chunk;
+				current_chunk->name = stream.next().name;
+				line = stream.next().line_num; // The color, not needed after the inital match, but we still need to consume it
+				std::string b = stream.next().name;
+				if (b == "function") {
+					current_chunk->type = bt_method; // We have a method let's set the block type to that, but we aren't done yet
+					// We need to set the params if any so the method can be supplied with arguments
+					stream.next(); // parao
+					std::vector<token> tokens = stream.next(tokens::parac); // Consume until we see parac
+					dms_args args;
+					for (size_t i = 0; i < tokens.size()-1; i++) {//The lase symbol is parac since that was the consume condition
+						if (tokens[i].type == tokens::name) {
+							// We got a name which is refering to a variable so lets build one
+							value v;
+							v.type = variable; // Special type, it writes data to the string portion, but is interperted as a lookup
+							v.s = buildString(tokens[i].name);
+							args.push(v);
+						}
+						else if (tokens[i].type == tokens::seperator) {
+							// We just ignore this
+						}
+						else {
+							std::stringstream str;
+							str << "Unexpected symbol: " << tokens[i];
+							state->push_error(errors::error{errors::badtoken,str.str(),true,line });
+						}
+					}
+					// If all went well the 'args' now has all of tha params for the method we will be working with
+					current_chunk->params = args;
+					// Thats should be all we need to do
+				}
+				else {
+					str << "'function' keyword expected got " << b;
+					state->push_error(errors::error{errors::badtoken, str.str(),true,line });
+				}
+			}
 			current = stream.next();
 		}
+		chunks.insert_or_assign(current_chunk->name, current_chunk);
 		return chunks;
 	}
 	void LineParser::tolower(std::string &s1) {
@@ -224,7 +295,7 @@ namespace dms {
 		size_t line = 1;
 		while (data != NULL) {			
 			if (data == '/' && stream.peek()=='/') {
-				line++;
+				//line++;
 				stream.next('\n'); // Seek until you find a newline
 			} 
 			else if (data == '\n') {
@@ -398,6 +469,12 @@ namespace dms {
 				else if (str == "choice") {
 					t_vec.push_back(token{ tokens::control,codes::CHOI,"",line });
 				}
+				else if (str == "return") {
+					t_vec.push_back(token{ tokens::ret,codes::RETN,"",line });
+				}
+				else if (str == "nil") {
+					t_vec.push_back(token{ tokens::nil,codes::NOOP,"",line });
+				}
 				else if (utils::isalphanum(str) && str.size()>0) {
 					t_vec.push_back(token{ tokens::name,codes::NOOP,str,line });
 				}
@@ -419,7 +496,8 @@ namespace dms {
 		outputFile.close();
 		print("Running tokenizer");
 		// Tokens build let's parse
-		tokenizer(state, t_vec);
+		std::map<std::string,chunk*> test = tokenizer(state, t_vec);
+		print(test.size());
 		return state;
 	}
 }

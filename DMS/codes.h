@@ -30,7 +30,8 @@ namespace dms::codes {
 		INDX,
 		JMPZ,
 		INST,
-		ERRO
+		ERRO,
+		RETN
 	};
 	extern const std::string list[];
 	static bool isControl(const op code) {

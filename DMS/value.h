@@ -6,7 +6,7 @@
 
 namespace dms {
 	struct dms_env;
-	enum datatypes { nil, number, boolean, env, string, custom };
+	enum datatypes { nil, number, boolean, env, string, custom, variable };
 	struct dms_number {
 		double val;
 		double getValue() { return val; }
@@ -47,13 +47,14 @@ namespace dms {
 		dms_string* s = nullptr;
 		dms_env* e = nullptr;
 		dms_custom* c = nullptr;
+		void nuke();
 		void set(dms_string* str);
 		void set(dms_boolean* bo);
 		void set(dms_number* num);
 		void set(dms_env* en);
 		void set();
 		bool typeMatch(const value o) const;
-		std::string toString();
+		std::string toString() const;
 		friend bool operator<(const value& l, const value& r)
 		{
 			if (l.typeMatch(r)) {
@@ -84,6 +85,9 @@ namespace dms {
 			else if (c.type == custom) {
 				out << "Custom Data: " << c;
 			}
+			else if (c.type == variable) {
+				out << c.s->getValue(); // Do the lookup
+			}
 			return out;
 		};
 	};
@@ -94,6 +98,16 @@ namespace dms {
 
 	struct dms_args {
 		std::vector<value> args;
+		void push(value val);
+		friend std::ostream& operator << (std::ostream& out, const dms_args& c) {
+			for (size_t i=0; i < c.args.size(); i++) {
+				if(i==c.args.size()-1)
+					out << c.args[i];
+				else
+					out << c.args[i] << ", ";
+			}
+			return out;
+		}
 	};
 	struct dms_env
 	{

@@ -7,7 +7,8 @@ namespace dms::errors {
 		invalid_arguments,
 		invalie_type,
 		array_out_of_bounds,
-		badtoken
+		badtoken,
+		block_already_defined
 	};
 	struct error {
 		errortype code=unknown;
