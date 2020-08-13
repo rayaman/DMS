@@ -5,7 +5,7 @@
 #include <map>
 #include <vector>
 namespace dms {
-	void dms_args::push(value val) {
+	void dms_args::push(value* val) {
 		args.push_back(val);
 	}
 	dms_string* buildString(std::string str) {
@@ -62,68 +62,32 @@ namespace dms {
 		e = nullptr;
 		c = nullptr;
 	}
-	bool value::typeMatch(const value o) const {
-		return type == o.type;
+	// Fixed issue with memory not properly being cleaned up
+	bool value::typeMatch(const value* o) const {
+		return type == o->type;
 	}
 	void value::set(dms_string* str) {
+		nuke();
 		s = str;
-		delete[] b;
-		delete[] n;
-		delete[] e;
-		delete[] c;
-		b = nullptr;
-		n = nullptr;
-		e = nullptr;
-		c = nullptr;
 		type = string;
 	}
 	void value::set(dms_boolean* bo) {
+		nuke();
 		b = bo;
-		delete[] s;
-		delete[] n;
-		delete[] e;
-		delete[] c;
-		s = nullptr;
-		n = nullptr;
-		e = nullptr;
-		c = nullptr;
 		type = boolean;
 	}
 	void value::set(dms_number* num) {
+		nuke();
 		n = num;
-		delete[] b;
-		delete[] s;
-		delete[] e;
-		delete[] c;
-		b = nullptr;
-		s = nullptr;
-		e = nullptr;
-		c = nullptr;
 		type = number;
 	}
 	void dms::value::set(dms_env* en) {
+		nuke();
 		e = en;
-		delete[] b;
-		delete[] s;
-		delete[] n;
-		delete[] c;
-		b = nullptr;
-		n = nullptr;
-		s = nullptr;
-		c = nullptr;
 		type = env;
 	}
 	void value::set() {
-		delete[] b;
-		delete[] s;
-		delete[] n;
-		delete[] e;
-		delete[] c;
-		s = nullptr;
-		n = nullptr;
-		e = nullptr;
-		c = nullptr;
-		b = nullptr;
+		nuke();
 		type = nil;
 	}
 	std::string dms_string::getValue() {
@@ -133,42 +97,44 @@ namespace dms {
 		}
 		return temp.str();
 	}
-	void dms_env::pushValue(value val) {
+	void dms_env::pushValue(value* val) {
 		double count = 0;
-		while (ipart[count++].type != nil) {}
+		while (ipart[count++]->type != nil) {}
 		ipart.insert_or_assign(count-1, val);
 	}
-	void dms_env::pushValue(value ind, value val) {
-		if (ind.type == number) {
+	void dms_env::pushValue(value* ind, value* val) {
+		if (ind->type == number) {
 			size_t size = ipart.size();
-			if (val.type == nil) {
-				ipart.erase(ind.n->val);
+			if (val->type == nil) {
+				ipart[ind->n->val]->nuke();
+				ipart.erase(ind->n->val);
 				count--;
 			}
 			else {
-				ipart.insert_or_assign(ind.n->val, val);
+				ipart.insert_or_assign(ind->n->val, val);
 				count++;
 			}
 		} else {
-			if (val.type == nil) {
-				hpart.erase(ind.toString());
+			if (val->type == nil) {
+				hpart[ind->toString()]->nuke();
+				hpart.erase(ind->toString());
 				count--;
 			}
 			else {
-				hpart.insert_or_assign(ind.toString(), val);
+				hpart.insert_or_assign(ind->toString(), val);
 				count++;
 			}
 		}
 	}
-	value dms_env::getValue(value ind) {
-		if (ind.type == number) {
-			return ipart.at(ind.n->getValue());
+	value* dms_env::getValue(value* ind) {
+		if (ind->type == number) {
+			return ipart.at(ind->n->getValue());
 		}
-		else if (ind.type == number) {
-			return *(new value{}); // Return a nil value
+		else if (ind->type == number) {
+			return new value{}; // Return a nil value
 		}
 		else {
-			return hpart.at(ind.toString());
+			return hpart.at(ind->toString());
 		}
 	}
 }

@@ -41,6 +41,9 @@ namespace dms {
 	dms_boolean* buildBool(bool b);
 	dms_number* buildNumber(double num);
 	struct value {
+		/*~value() {
+			nuke();
+		}*/
 		datatypes type = nil;
 		dms_boolean* b = nullptr;
 		dms_number* n = nullptr;
@@ -53,19 +56,8 @@ namespace dms {
 		void set(dms_number* num);
 		void set(dms_env* en);
 		void set();
-		bool typeMatch(const value o) const;
+		bool typeMatch(const value* o) const;
 		std::string toString() const;
-		friend bool operator<(const value& l, const value& r)
-		{
-			if (l.typeMatch(r)) {
-				if (l.type == number) {
-					return l.n->val > r.n->val;
-				}
-			}
-			else {
-				return false; // We might want to throw an error if this were to happen. Mixing incompatable types
-			}
-		}
 		friend std::ostream& operator << (std::ostream& out, const value& c) {
 			if (c.type == string) {
 				out << c.s->getValue();
@@ -85,7 +77,7 @@ namespace dms {
 			else if (c.type == custom) {
 				out << "Custom Data: " << c;
 			}
-			else if (c.type == variable) {
+			else if (c.type == datatypes::variable) {
 				out << c.s->getValue(); // Do the lookup
 			}
 			return out;
@@ -97,8 +89,8 @@ namespace dms {
 	value* buildValue(bool b);
 
 	struct dms_args {
-		std::vector<value> args;
-		void push(value val);
+		std::vector<value*> args;
+		void push(value* val);
 		friend std::ostream& operator << (std::ostream& out, const dms_args& c) {
 			for (size_t i=0; i < c.args.size(); i++) {
 				if(i==c.args.size()-1)
@@ -111,11 +103,11 @@ namespace dms {
 	};
 	struct dms_env
 	{
-		std::map<std::string, value> hpart;
-		std::map<double, value> ipart;
-		void pushValue(value val);
-		void pushValue(value ind, value val);
-		value getValue(value val);
+		std::map<std::string, value*> hpart;
+		std::map<double, value*> ipart;
+		void pushValue(value* val);
+		void pushValue(value* ind, value* val);
+		value* getValue(value* val);
 	private:
 		size_t count = 0;
 	};

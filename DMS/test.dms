@@ -6,12 +6,15 @@ version 1.2
 using extendedDefine
 
 [Ryan:char]
-	name = "Ryan"
 	age = 21
+	money = 1000
 
 [step:function(a,b,c)]
 	"Testing..."
-	d = (100 + b) / c nil
+	d = (100 + b) / c
+	e = nil
+	f = true
+	g = false
 	return d
 
 [main]
@@ -27,7 +30,7 @@ using extendedDefine
 	
 	hi = {1,2,3}
 
-	list,test = {{1,2+food,hi[3]},true,tester,123,"This is a string!",false, {3,2,1}},5
+	list = {{1,2+food,hi[3]},true,tester,123,"This is a string!",false, {3,2,1}}
 	a = list[1]
 
 	hungry = (-2+4-((5*5)/sqrt(144+5)))^2*2+2
@@ -73,7 +76,7 @@ using extendedDefine
 		"That Block"
 	"ah this is why no pop"
 
-[Ryan:char]
+[Bob:char]
 	age = 24
 	money = 100
 	

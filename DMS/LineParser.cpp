@@ -11,10 +11,26 @@ namespace dms {
 			return token{ tokentype::noop,codes::NOOP,"EOF",0 };
 		return this->tokens[pos++];
 	}
+	std::vector<token> tokenstream::next(tokentype to, tokentype tc) {
+		std::vector<token> tok;
+		size_t open = 0;
+		if (peek().type == to) {
+			open++;
+			next(); // Consume
+			while (open != 0) {
+				if (peek().type == to)
+					open++;
+				else if (peek().type == tc)
+					open--;
+				tok.push_back(next());
+			}
+		}
+		return tok;
+	}
 	token tokenstream::peek() {
 		return this->tokens[pos];
 	}
-	std::vector<token> tokenstream::next(tokens::tokentype tk) {
+	std::vector<token> tokenstream::next(tokentype tk) {
 		std::vector<token> temp;
 		while (peek().type!=tk) {
 			temp.push_back(next());
@@ -52,15 +68,30 @@ namespace dms {
 		return std::string(buf.begin(), buf.end());
 	}
 	void doCheck(passer* stream,std::vector<token>* t_vec, size_t line, bool &isNum, bool &hasDec, std::vector<uint8_t>* buffer) {
-		if (isNum) {
+		std::string str = stream->processBuffer(*buffer);
+		if (utils::isNum(str) && isNum) {
 			t_vec->push_back(token{ tokens::number,codes::NOOP,stream->processBuffer(*buffer),line });
 			buffer->clear();
 			isNum = false;
 			hasDec = false;
 		}
 		else if (buffer->size() > 0) {
-			std::string str = stream->processBuffer(*buffer);
-			if (utils::isNum(str) && str.size() > 0) {
+			if (str == "nil") {
+				t_vec->push_back(token{ tokens::nil,codes::NOOP,stream->processBuffer(*buffer),line });
+				buffer->clear();
+				hasDec = false;
+			}
+			else if (str == "true") {
+				t_vec->push_back(token{ tokens::True,codes::NOOP,stream->processBuffer(*buffer),line });
+				buffer->clear();
+				hasDec = false;
+			}
+			else if (str == "false") {
+				t_vec->push_back(token{ tokens::False,codes::NOOP,stream->processBuffer(*buffer),line });
+				buffer->clear();
+				hasDec = false;
+			} 
+			else if (utils::isNum(str) && str.size() > 0) {
 				t_vec->push_back(token{ tokens::number,codes::NOOP,stream->processBuffer(*buffer),line });
 				buffer->clear();
 				isNum = false;
@@ -86,22 +117,58 @@ namespace dms {
 				return true;
 			if (stream.tokens[stream.pos+i].type != types[i])
 				return false;
-			//print(stream.tokens[stream.pos + i].type, " | ", types[i]);
 		}
 		return true;
 	}
+	tokentype* LineParser::expr() {
+		return new tokentype[9]{ tokens::name,tokens::number,tokens::divide,tokens::minus,tokens::mod,tokens::multiply,tokens::plus,tokens::pow ,tokens::none };
+		// tokens::none tells us we are at the end of the array.
+	}
+	tokentype* LineParser::variable() {
+		return new tokentype[7]{tokens::name,tokens::number,tokens::True,tokens::False,tokens::nil,tokens::string,tokens::none};
+		// tokens::none tells us we are at the end of the array.
+	}
+	bool inList(tokens::tokentype t,tokens::tokentype* list) {
+		size_t c = 0;
+		while (list[c] != tokens::none) {
+			if (list[c] == t)
+				return true;
+		}
+		return false;
+	}
+
+
+
+	// Todo create a match method that matches until a certain symbol... We need to finish the choice block stuff as well!
+
+
+
+	bool LineParser::match(tokenstream stream, tokens::tokentype* t1, tokens::tokentype* t2, tokens::tokentype* t3, tokens::tokentype* t4, tokens::tokentype* t5, tokens::tokentype* t6, tokens::tokentype* t7, tokens::tokentype* t8, tokens::tokentype* t9, tokens::tokentype* t10, tokens::tokentype* t11, tokens::tokentype* t12) {
+		tokens::tokentype* types[12] = { t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12 };
+		for (size_t i = 0; i < 12; i++) {
+			if (types[i] == nullptr)
+				return true;
+			if (!inList(stream.tokens[stream.pos + i].type, types[i]))
+				return false;
+		}
+		return true;
+	}
+	// This function is broken
 	std::map<std::string, chunk*> LineParser::tokenizer(dms_state* state,std::vector<token> &toks) {
 		std::map<std::string,chunk*> chunks;
 		chunk* current_chunk = nullptr;
 		std::string chunk_name;
-		blocktype chunk_type;
+		blocktype chunk_type = bt_block;
 		size_t line=1;
 		tokenstream stream;
 		stream.init(&toks);
 		token current = stream.next();
 		std::vector<token> temp;
+		size_t tabs = 0;
 		while (stream.peek().type != tokens::eof) {
 			print(current);
+			if (current.type == tokens::tab)
+				tabs++;
 			if (current.type == tokens::flag) {
 				temp = stream.next(tokens::newline);
 				if (temp.size() != 2) {
@@ -110,12 +177,14 @@ namespace dms {
 				codes::op code = current.raw;
 				tokens::tokentype tok = temp[0].type;
 				if (code == codes::ENAB && tok == tokens::name) {
+					tolower(temp[0].name);
 					state->enables.insert_or_assign(temp[0].name,true);
 				}
 				else if (code == codes::ENTR && tok == tokens::name) {
 					state->entry = temp[0].name;
 				}
 				else if (code == codes::DISA && tok == tokens::name) {
+					tolower(temp[0].name);
 					state->enables.insert_or_assign(temp[0].name, false);
 				}
 				else if (code == codes::VERN && tok == tokens::number) {
@@ -133,8 +202,6 @@ namespace dms {
 					state->push_error(errors::error{errors::badtoken,str.str(),true,line});
 				}
 			}
-
-			//Todo Finish the chunk data stuff
 			if (match(stream,tokens::newline,tokens::bracketo,tokens::name,tokens::bracketc)) {
 				stream.next();
 				if (current_chunk != nullptr) {
@@ -217,9 +284,9 @@ namespace dms {
 					for (size_t i = 0; i < tokens.size()-1; i++) {//The lase symbol is parac since that was the consume condition
 						if (tokens[i].type == tokens::name) {
 							// We got a name which is refering to a variable so lets build one
-							value v;
-							v.type = variable; // Special type, it writes data to the string portion, but is interperted as a lookup
-							v.s = buildString(tokens[i].name);
+							value* v = new value{};
+							v->type = datatypes::variable; // Special type, it writes data to the string portion, but is interperted as a lookup
+							v->s = buildString(tokens[i].name);
 							args.push(v);
 						}
 						else if (tokens[i].type == tokens::seperator) {
@@ -240,6 +307,47 @@ namespace dms {
 					state->push_error(errors::error{errors::badtoken, str.str(),true,line });
 				}
 			}
+			// Control Handle all controls here
+			if (match(stream,tokens::tab,tokens::control)) {
+				stream.next(); // Standard consumption
+				token control = stream.next();
+				if (control.raw == codes::CHOI && stream.peek().type==tokens::string) {
+					// Let's parse choice blocks.
+					print("Choice block found!");
+					bool good = true;
+					while (good) {
+						if (match(stream, new tokentype[2]{ tokens::string,tokens::none })) {
+
+						}
+					}
+				}
+			}
+			// Displays both with a target and without
+			if (match(stream, tokens::tab, tokens::string, tokens::newline)) {
+				// ToDo Implement the command for this
+				stream.next(); // Standard consumption
+				print("DISP := ", stream.next().name);
+			}
+			else if (match(stream, tokens::tab, tokens::name, tokens::string, tokens::newline)) {
+				// Here we mathc Name "This guy said this!"
+				stream.next(); // Standard consumption
+				std::string name = stream.next().name;
+				std::string msg = stream.next().name;
+				print("DISP := ", name , " says '",msg,"'");
+				// You notice that we dont consume the new line, some commands match new line as the front. It's best to not consume to allow those patterns to go through
+			}
+			// function stuff
+			/*if (match(stream, tokens::name, tokens::parao)) {
+				std::string n = stream.next().name;
+				std::vector<token> t = stream.next(tokens::parao, tokens::parac);
+				std::cout << "---Tokens---" << std::endl;
+				for (size_t i = 0; i < t.size()-1; i++) {
+					std::cout << t[i] << std::endl;
+				}
+				wait();
+			}*/
+			if (current.type != tokens::tab)
+				tabs=0;
 			current = stream.next();
 		}
 		chunks.insert_or_assign(current_chunk->name, current_chunk);
@@ -421,7 +529,7 @@ namespace dms {
 			if (data == ' ' && !isStr) { // tokens end with a space
 				std::string str = stream.processBuffer(buffer);
 				tolower(str);
-				buffer.clear();
+				print("> ",str);
 				if (str == "enable") {
 					t_vec.push_back(token{ tokens::flag,codes::ENAB,"",line });
 				} else if (str == "entry") {
@@ -451,7 +559,7 @@ namespace dms {
 				else if (str == "true") {
 					t_vec.push_back(token{ tokens::True,codes::NOOP,"",line });
 				}
-				else if (str == "False") {
+				else if (str == "false") {
 					t_vec.push_back(token{ tokens::False,codes::NOOP,"",line });
 				}
 				else if (str == "else") {
@@ -476,7 +584,7 @@ namespace dms {
 					t_vec.push_back(token{ tokens::nil,codes::NOOP,"",line });
 				}
 				else if (utils::isalphanum(str) && str.size()>0) {
-					t_vec.push_back(token{ tokens::name,codes::NOOP,str,line });
+					t_vec.push_back(token{ tokens::name,codes::NOOP,stream.processBuffer(buffer),line });
 				}
 				else {
 					// Unknown command!
@@ -484,6 +592,7 @@ namespace dms {
 					tok.name = str;
 					tok.line_num = line;*/
 				}
+				buffer.clear();
 			}
 			data = stream.next();
 		} 

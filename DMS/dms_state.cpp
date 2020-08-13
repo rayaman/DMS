@@ -7,6 +7,7 @@ namespace dms {
 	}
 	void dms_state::push_warning(errors::error err) {
 		err.crash = false; // Force code to not crash then push the error
-		push_error(err);
+		if(enables.count("warnings"))
+			push_error(err);
 	}
 }

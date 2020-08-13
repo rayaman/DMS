@@ -41,12 +41,12 @@ namespace dms::utils {
 		datatypes types[12] = { t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12 };
 		if(size >= 4)
 			for (size_t i = 0; i < 4;i++) {
-				if (args.args[i].type != types[i])
+				if (args.args[i]->type != types[i])
 					return false;
 			}
 		else
 			for (size_t i = 0; i < size; i++) {
-				if (args.args[i].type != types[i])
+				if (args.args[i]->type != types[i])
 					return false;
 			}
 		return true;
@@ -56,15 +56,15 @@ namespace dms::utils {
 		datatypes types[12] = { t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12 };
 		if (size >= 4)
 			for (size_t i = 0; i < 4; i++) {
-				if (args.args[i].type != types[i]) {
-					state->push_error(dms::errors::error{ errors::invalid_arguments, "Invalid arguments! Expected (" + resolveTypes(t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12) + ") Got: " + resolveTypes(args.args[i].type)});
+				if (args.args[i]->type != types[i]) {
+					state->push_error(dms::errors::error{ errors::invalid_arguments, "Invalid arguments! Expected (" + resolveTypes(t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12) + ") Got: " + resolveTypes(args.args[i]->type)});
 					return false;
 				}
 			}
 		else
 			for (size_t i = 0; i < size; i++) {
-				if (args.args[i].type != types[i]) {
-					state->push_error(dms::errors::error{ errors::invalid_arguments, "Invalid arguments! Expected (" + resolveTypes(t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12) + ") Got: " + resolveTypes(args.args[i].type)});
+				if (args.args[i]->type != types[i]) {
+					state->push_error(dms::errors::error{ errors::invalid_arguments, "Invalid arguments! Expected (" + resolveTypes(t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12) + ") Got: " + resolveTypes(args.args[i]->type)});
 					return false;
 				}
 			}
