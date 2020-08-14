@@ -136,13 +136,6 @@ namespace dms {
 		}
 		return false;
 	}
-
-
-
-	// Todo create a match method that matches until a certain symbol... We need to finish the choice block stuff as well!
-
-
-
 	bool LineParser::match(tokenstream stream, tokens::tokentype* t1, tokens::tokentype* t2, tokens::tokentype* t3, tokens::tokentype* t4, tokens::tokentype* t5, tokens::tokentype* t6, tokens::tokentype* t7, tokens::tokentype* t8, tokens::tokentype* t9, tokens::tokentype* t10, tokens::tokentype* t11, tokens::tokentype* t12) {
 		tokens::tokentype* types[12] = { t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12 };
 		for (size_t i = 0; i < 12; i++) {
@@ -313,13 +306,34 @@ namespace dms {
 				token control = stream.next();
 				if (control.raw == codes::CHOI && stream.peek().type==tokens::string) {
 					// Let's parse choice blocks.
-					print("Choice block found!");
+					std::string prompt = stream.next().name;
+					print("Prompt: ",prompt);
 					bool good = true;
+					size_t c = 0;
 					while (good) {
-						if (match(stream, new tokentype[2]{ tokens::string,tokens::none })) {
+						if (match(stream, tokens::tab,tokens::string,tokens::name)) {
+							stream.next();
+							std::string choice = stream.next().name;
+							std::string func = stream.next().name;
+							print("Choice: <",c,"> ",choice," Funcname: ",func);
+							std::vector funcstuff = stream.next(tokens::newline);
 
+							//We need to process the function data and finish creating 
+
+							c++;
+						}
+						else if (match(stream, tokens::tab) || match(stream,tokens::newline)) {
+							stream.next(); // Allow tabs and newlines to pass like normal
+						}
+						else {
+							good = false;
+							print("Choice handled!");
+							wait();
 						}
 					}
+				}
+				else if (control.raw == codes::IFFF) {
+					// This will probably be the toughest one of them all
 				}
 			}
 			// Displays both with a target and without
@@ -582,6 +596,9 @@ namespace dms {
 				}
 				else if (str == "nil") {
 					t_vec.push_back(token{ tokens::nil,codes::NOOP,"",line });
+				}
+				else if (str == "goto") {
+					t_vec.push_back(token{ tokens::gotoo,codes::NOOP,"",line });
 				}
 				else if (utils::isalphanum(str) && str.size()>0) {
 					t_vec.push_back(token{ tokens::name,codes::NOOP,stream.processBuffer(buffer),line });
