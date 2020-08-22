@@ -46,6 +46,14 @@ namespace dms {
 		//Matches tokens from the stream, if the tokens match it will return true and YOU should call next on the stream. This method does not change the current position
 		bool match(tokenstream stream, tokens::tokentype t1=tokens::none, tokens::tokentype t2 = tokens::none, tokens::tokentype t3 = tokens::none, tokens::tokentype t4 = tokens::none, tokens::tokentype t5 = tokens::none, tokens::tokentype t6 = tokens::none, tokens::tokentype t7 = tokens::none, tokens::tokentype t8 = tokens::none, tokens::tokentype t9 = tokens::none, tokens::tokentype t10 = tokens::none, tokens::tokentype t11 = tokens::none, tokens::tokentype t12 = tokens::none);
 		bool match(tokenstream stream, tokens::tokentype* t1 = nullptr,tokens::tokentype* t2 = nullptr, tokens::tokentype* t3 = nullptr, tokens::tokentype* t4 = nullptr, tokens::tokentype* t5 = nullptr, tokens::tokentype* t6 = nullptr, tokens::tokentype* t7 = nullptr, tokens::tokentype* t8 = nullptr, tokens::tokentype* t9 = nullptr, tokens::tokentype* t10 = nullptr, tokens::tokentype* t11 = nullptr, tokens::tokentype* t12 = nullptr);
+		
+		bool buildLabel(chunk c, std::string label);
+
+		bool processFunc(tokenstream stream, chunk c);
+		bool processFunc(tokenstream stream, chunk c, std::string gotoo);
+		bool processExpr(tokenstream stream, chunk c);
+		bool processLogic(tokenstream stream, chunk c);
+
 		void tolower(std::string &str);
 		tokens::tokentype* expr();
 		tokens::tokentype* variable();

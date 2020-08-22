@@ -1,87 +1,94 @@
 entry main
 enable warnings
+disable omniscient
 //enable debugging
 //loadfile "loadtest.dms"
 version 1.2
 using extendedDefine
-
+[default:char]
+	// The default stats for all characters.
+	money = 0
 [Ryan:char]
 	age = 21
 	money = 1000
+	// Inside a character block this syntax defines animation/image file for an emotion
+	calm: "./path/to/file"
+	excited: "./path/to/file"
 
 [step:function(a,b,c)]
 	"Testing..."
 	d = (100 + b) / c
+	e = "somestring"
 	e = nil
-	f = true
 	g = false
 	return d
 
+[inventory:env]
+	slot1 = ""
+	slot2 = ""
+	slot3 = ""
+	slot4 = ""
+	slot5 = ""
+	slot6 = ""
+	slot7 = ""
+	slot8 = ""
+	
 [main]
-	"This works!"
-	"What's up"
-
-	Ryan "Hello \"how\" are you doing?" // this is a comment
-	Bob "I'm good you?"
-	
+	Ryan: "This works!"
+	DEBUG "What's up" // Debug lines are removed when debug mode is disabled
+	Ryan:
+		speed 100%
+		calm "Hello Bob, "
+		wait 0.455
+		excited "how are you doing?"
+		// Becomes: Hello Bob, how are you doing?
+		
 	tester = "Hello"
-	
 	food = 3
-	
-	hi = {1,2,3}
-
-	list = {{1,2+food,hi[3]},true,tester,123,"This is a string!",false, {3,2,1}}
 	a = list[1]
 
 	hungry = (-2+4-((5*5)/sqrt(144+5)))^2*2+2
 	list[1] = "Hello"
-	var1,var2 = func(1,"string", 2+5)
+	var1 = func(1,"string", 2+5)
 	a = 100 + func(1,"string", 2+5) + 100
 	func(1,"string", 2+5)
 	::label::
 	//Hello im testing stuff
 	
-	CHOICE "Pick one:"
+	if statment then
+		"test"
+	elseif statement then
+		"test"
+		if statement then
+			"test"
+			"test"
+			if statement then
+				"test"
+			else
+				"test"
+		elseif statement then
+			"test"
+	else
+		"test"
+	
+	goto "somewhere"
+	jump "overhere"
+	
+	CHOICE "Pick one:" {
 		"first" func()
 		"second" func()
 		"third" func()
 		"forth" func()
+		"fifth" goto "here"
+		"sixth" goto name
+		"sevinth" jump "there"
+		"eight" jump name
+	}
 
-	for x = 1,10
-		for y = 1,10,1
-			for z = 1,10
-				"test"
-				"$x$ $y$ $z$"
-	test = true
-	test2 = false
-	
-	count = 0
-	
-	while count != 100
-		count++;
-		"Count = $count$"
-	
-	if (func(123)!=name[1] or true == "Bob") and foodCount >= 10.34
-		"test=true or test2=false!"
-		"help me"
-		if cool == true
-			"We are here"
-			"Nested if"
-		elseif food >= 21
-			"This is getting weird"
-		"Hi"
-	elseif (func2(321)!=name2[1] or true == "Bob2") and foodCount2 >= 1.78
-		"This Block"
-	else
-		"That Block"
-	"ah this is why no pop"
 
 [Bob:char]
 	age = 24
 	money = 100
-	
-[test:env]
-	"test"
 
 [newblock:function()]
 	"Test #2"

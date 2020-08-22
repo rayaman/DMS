@@ -297,31 +297,17 @@ Line <48>NOOP name 		 func
 Line <48>NOOP parao 		 
 Line <48>NOOP parac 		 
 Line <48>NOOP newline 		 
+Line <49>NOOP tab 		 
+Line <49>NOOP tab 		 
 Line <49>NOOP newline 		 
 Line <50>NOOP tab 		 
-Line <50>NOOP for 		 
-Line <50>NOOP name 		 x
-Line <50>NOOP equal 		 
-Line <50>NOOP number 		 1
-Line <50>NOOP seperator 		 
-Line <50>NOOP number 		 10
+Line <50>NOOP tab 		 
+Line <50>NOOP gotoo 		 
 Line <50>NOOP newline 		 
-Line <51>NOOP tab 		 
-Line <51>NOOP tab 		 
-Line <51>NOOP for 		 
-Line <51>NOOP name 		 y
-Line <51>NOOP equal 		 
-Line <51>NOOP number 		 1
-Line <51>NOOP seperator 		 
-Line <51>NOOP number 		 10
-Line <51>NOOP seperator 		 
-Line <51>NOOP number 		 1
 Line <51>NOOP newline 		 
 Line <52>NOOP tab 		 
-Line <52>NOOP tab 		 
-Line <52>NOOP tab 		 
 Line <52>NOOP for 		 
-Line <52>NOOP name 		 z
+Line <52>NOOP name 		 x
 Line <52>NOOP equal 		 
 Line <52>NOOP number 		 1
 Line <52>NOOP seperator 		 
@@ -329,204 +315,225 @@ Line <52>NOOP number 		 10
 Line <52>NOOP newline 		 
 Line <53>NOOP tab 		 
 Line <53>NOOP tab 		 
-Line <53>NOOP tab 		 
-Line <53>NOOP tab 		 
-Line <53>NOOP string 		 test
+Line <53>NOOP for 		 
+Line <53>NOOP name 		 y
+Line <53>NOOP equal 		 
+Line <53>NOOP number 		 1
+Line <53>NOOP seperator 		 
+Line <53>NOOP number 		 10
+Line <53>NOOP seperator 		 
+Line <53>NOOP number 		 1
 Line <53>NOOP newline 		 
 Line <54>NOOP tab 		 
 Line <54>NOOP tab 		 
 Line <54>NOOP tab 		 
-Line <54>NOOP tab 		 
-Line <54>NOOP string 		 $x$ $y$ $z$
+Line <54>NOOP for 		 
+Line <54>NOOP name 		 z
+Line <54>NOOP equal 		 
+Line <54>NOOP number 		 1
+Line <54>NOOP seperator 		 
+Line <54>NOOP number 		 10
 Line <54>NOOP newline 		 
 Line <55>NOOP tab 		 
-Line <55>NOOP name 		 test
-Line <55>NOOP equal 		 
-Line <55>NOOP true 		 true
+Line <55>NOOP tab 		 
+Line <55>NOOP tab 		 
+Line <55>NOOP tab 		 
+Line <55>NOOP string 		 test
 Line <55>NOOP newline 		 
 Line <56>NOOP tab 		 
-Line <56>NOOP name 		 test2
-Line <56>NOOP number 		 
-Line <56>NOOP equal 		 
-Line <56>NOOP false 		 false
+Line <56>NOOP tab 		 
+Line <56>NOOP tab 		 
+Line <56>NOOP tab 		 
+Line <56>NOOP string 		 $x$ $y$ $z$
 Line <56>NOOP newline 		 
 Line <57>NOOP tab 		 
+Line <57>NOOP name 		 test
+Line <57>NOOP equal 		 
+Line <57>NOOP true 		 true
 Line <57>NOOP newline 		 
 Line <58>NOOP tab 		 
-Line <58>NOOP name 		 count
+Line <58>NOOP name 		 test2
+Line <58>NOOP number 		 
 Line <58>NOOP equal 		 
-Line <58>NOOP number 		 0
+Line <58>NOOP false 		 false
 Line <58>NOOP newline 		 
 Line <59>NOOP tab 		 
 Line <59>NOOP newline 		 
 Line <60>NOOP tab 		 
-Line <60>WHLE control 		 
 Line <60>NOOP name 		 count
-Line <60>NOOP not 		 
 Line <60>NOOP equal 		 
-Line <60>NOOP number 		 100
+Line <60>NOOP number 		 0
 Line <60>NOOP newline 		 
 Line <61>NOOP tab 		 
-Line <61>NOOP tab 		 
-Line <61>NOOP name 		 count
-Line <61>NOOP plus 		 
-Line <61>NOOP plus 		 
 Line <61>NOOP newline 		 
 Line <62>NOOP tab 		 
-Line <62>NOOP tab 		 
-Line <62>NOOP string 		 Count = $count$
+Line <62>WHLE control 		 
+Line <62>NOOP name 		 count
+Line <62>NOOP not 		 
+Line <62>NOOP equal 		 
+Line <62>NOOP number 		 100
 Line <62>NOOP newline 		 
 Line <63>NOOP tab 		 
+Line <63>NOOP tab 		 
+Line <63>NOOP name 		 count
+Line <63>NOOP plus 		 
+Line <63>NOOP plus 		 
 Line <63>NOOP newline 		 
 Line <64>NOOP tab 		 
-Line <64>IFFF control 		 
-Line <64>NOOP parao 		 
-Line <64>NOOP name 		 func
-Line <64>NOOP parao 		 
-Line <64>NOOP number 		 123
-Line <64>NOOP parac 		 
-Line <64>NOOP not 		 
-Line <64>NOOP equal 		 
-Line <64>NOOP name 		 name
-Line <64>NOOP bracketo 		 
-Line <64>NOOP number 		 1
-Line <64>NOOP bracketc 		 
-Line <64>NOOP or 		 
-Line <64>NOOP true 		 
-Line <64>NOOP equal 		 
-Line <64>NOOP equal 		 
-Line <64>NOOP string 		 Bob
-Line <64>NOOP parac 		 
-Line <64>NOOP and 		 
-Line <64>NOOP name 		 foodCount
-Line <64>NOOP equal 		 
-Line <64>NOOP number 		 10.34
+Line <64>NOOP tab 		 
+Line <64>NOOP string 		 Count = $count$
 Line <64>NOOP newline 		 
 Line <65>NOOP tab 		 
-Line <65>NOOP tab 		 
-Line <65>NOOP string 		 test=true or test2=false!
-Line <65>NOOP number 		 
 Line <65>NOOP newline 		 
 Line <66>NOOP tab 		 
-Line <66>NOOP tab 		 
-Line <66>NOOP string 		 help me
+Line <66>IFFF control 		 
+Line <66>NOOP parao 		 
+Line <66>NOOP name 		 func
+Line <66>NOOP parao 		 
+Line <66>NOOP number 		 123
+Line <66>NOOP parac 		 
+Line <66>NOOP not 		 
+Line <66>NOOP equal 		 
+Line <66>NOOP name 		 name
+Line <66>NOOP bracketo 		 
+Line <66>NOOP number 		 1
+Line <66>NOOP bracketc 		 
+Line <66>NOOP or 		 
+Line <66>NOOP true 		 
+Line <66>NOOP equal 		 
+Line <66>NOOP equal 		 
+Line <66>NOOP string 		 Bob
+Line <66>NOOP parac 		 
+Line <66>NOOP and 		 
+Line <66>NOOP name 		 foodCount
+Line <66>NOOP equal 		 
+Line <66>NOOP number 		 10.34
 Line <66>NOOP newline 		 
 Line <67>NOOP tab 		 
 Line <67>NOOP tab 		 
-Line <67>IFFF control 		 
-Line <67>NOOP name 		 cool
-Line <67>NOOP equal 		 
-Line <67>NOOP equal 		 
-Line <67>NOOP true 		 true
+Line <67>NOOP string 		 test=true or test2=false!
+Line <67>NOOP number 		 
 Line <67>NOOP newline 		 
 Line <68>NOOP tab 		 
 Line <68>NOOP tab 		 
-Line <68>NOOP tab 		 
-Line <68>NOOP string 		 We are here
+Line <68>NOOP string 		 help me
 Line <68>NOOP newline 		 
 Line <69>NOOP tab 		 
 Line <69>NOOP tab 		 
-Line <69>NOOP tab 		 
-Line <69>NOOP string 		 Nested if
+Line <69>IFFF control 		 
+Line <69>NOOP name 		 cool
+Line <69>NOOP equal 		 
+Line <69>NOOP equal 		 
+Line <69>NOOP true 		 true
 Line <69>NOOP newline 		 
 Line <70>NOOP tab 		 
 Line <70>NOOP tab 		 
-Line <70>ELIF control 		 
-Line <70>NOOP name 		 food
-Line <70>NOOP equal 		 
-Line <70>NOOP number 		 21
+Line <70>NOOP tab 		 
+Line <70>NOOP string 		 We are here
 Line <70>NOOP newline 		 
 Line <71>NOOP tab 		 
 Line <71>NOOP tab 		 
 Line <71>NOOP tab 		 
-Line <71>NOOP string 		 This is getting weird
+Line <71>NOOP string 		 Nested if
 Line <71>NOOP newline 		 
 Line <72>NOOP tab 		 
 Line <72>NOOP tab 		 
-Line <72>NOOP string 		 Hi
+Line <72>ELIF control 		 
+Line <72>NOOP name 		 food
+Line <72>NOOP equal 		 
+Line <72>NOOP number 		 21
 Line <72>NOOP newline 		 
 Line <73>NOOP tab 		 
-Line <73>ELIF control 		 
-Line <73>NOOP parao 		 
-Line <73>NOOP name 		 func2
-Line <73>NOOP parao 		 
-Line <73>NOOP number 		 321
-Line <73>NOOP parac 		 
-Line <73>NOOP not 		 
-Line <73>NOOP equal 		 
-Line <73>NOOP name 		 name2
-Line <73>NOOP bracketo 		 
-Line <73>NOOP number 		 1
-Line <73>NOOP bracketc 		 
-Line <73>NOOP or 		 
-Line <73>NOOP true 		 
-Line <73>NOOP equal 		 
-Line <73>NOOP equal 		 
-Line <73>NOOP string 		 Bob2
-Line <73>NOOP number 		 
-Line <73>NOOP parac 		 
-Line <73>NOOP and 		 
-Line <73>NOOP name 		 foodCount2
-Line <73>NOOP number 		 
-Line <73>NOOP equal 		 
-Line <73>NOOP number 		 1.78
+Line <73>NOOP tab 		 
+Line <73>NOOP tab 		 
+Line <73>NOOP string 		 This is getting weird
 Line <73>NOOP newline 		 
 Line <74>NOOP tab 		 
 Line <74>NOOP tab 		 
-Line <74>NOOP string 		 This Block
+Line <74>NOOP string 		 Hi
 Line <74>NOOP newline 		 
 Line <75>NOOP tab 		 
-Line <75>NOOP name 		 else
+Line <75>ELIF control 		 
+Line <75>NOOP parao 		 
+Line <75>NOOP name 		 func2
+Line <75>NOOP parao 		 
+Line <75>NOOP number 		 321
+Line <75>NOOP parac 		 
+Line <75>NOOP not 		 
+Line <75>NOOP equal 		 
+Line <75>NOOP name 		 name2
+Line <75>NOOP bracketo 		 
+Line <75>NOOP number 		 1
+Line <75>NOOP bracketc 		 
+Line <75>NOOP or 		 
+Line <75>NOOP true 		 
+Line <75>NOOP equal 		 
+Line <75>NOOP equal 		 
+Line <75>NOOP string 		 Bob2
+Line <75>NOOP number 		 
+Line <75>NOOP parac 		 
+Line <75>NOOP and 		 
+Line <75>NOOP name 		 foodCount2
+Line <75>NOOP number 		 
+Line <75>NOOP equal 		 
+Line <75>NOOP number 		 1.78
 Line <75>NOOP newline 		 
 Line <76>NOOP tab 		 
 Line <76>NOOP tab 		 
-Line <76>NOOP string 		 That Block
+Line <76>NOOP string 		 This Block
 Line <76>NOOP newline 		 
 Line <77>NOOP tab 		 
-Line <77>NOOP string 		 ah this is why no pop
+Line <77>NOOP name 		 else
 Line <77>NOOP newline 		 
+Line <78>NOOP tab 		 
+Line <78>NOOP tab 		 
+Line <78>NOOP string 		 That Block
 Line <78>NOOP newline 		 
-Line <79>NOOP bracketo 		 
-Line <79>NOOP name 		 Bob
-Line <79>NOOP colon 		 
-Line <79>NOOP name 		 char
-Line <79>NOOP bracketc 		 
+Line <79>NOOP tab 		 
+Line <79>NOOP string 		 ah this is why no pop
 Line <79>NOOP newline 		 
-Line <80>NOOP tab 		 
-Line <80>NOOP name 		 age
-Line <80>NOOP equal 		 
-Line <80>NOOP number 		 24
 Line <80>NOOP newline 		 
-Line <81>NOOP tab 		 
-Line <81>NOOP name 		 money
-Line <81>NOOP equal 		 
-Line <81>NOOP number 		 100
+Line <81>NOOP bracketo 		 
+Line <81>NOOP name 		 Bob
+Line <81>NOOP colon 		 
+Line <81>NOOP name 		 char
+Line <81>NOOP bracketc 		 
 Line <81>NOOP newline 		 
 Line <82>NOOP tab 		 
+Line <82>NOOP name 		 age
+Line <82>NOOP equal 		 
+Line <82>NOOP number 		 24
 Line <82>NOOP newline 		 
-Line <83>NOOP bracketo 		 
-Line <83>NOOP name 		 test
-Line <83>NOOP colon 		 
-Line <83>NOOP name 		 env
-Line <83>NOOP bracketc 		 
+Line <83>NOOP tab 		 
+Line <83>NOOP name 		 money
+Line <83>NOOP equal 		 
+Line <83>NOOP number 		 100
 Line <83>NOOP newline 		 
 Line <84>NOOP tab 		 
-Line <84>NOOP string 		 test
 Line <84>NOOP newline 		 
+Line <85>NOOP bracketo 		 
+Line <85>NOOP name 		 test
+Line <85>NOOP colon 		 
+Line <85>NOOP name 		 env
+Line <85>NOOP bracketc 		 
 Line <85>NOOP newline 		 
-Line <86>NOOP bracketo 		 
-Line <86>NOOP name 		 newblock
-Line <86>NOOP colon 		 
-Line <86>NOOP name 		 function
-Line <86>NOOP parao 		 
-Line <86>NOOP parac 		 
-Line <86>NOOP bracketc 		 
+Line <86>NOOP tab 		 
+Line <86>NOOP string 		 test
 Line <86>NOOP newline 		 
-Line <87>NOOP tab 		 
-Line <87>NOOP string 		 Test #2
-Line <87>NOOP number 		 
 Line <87>NOOP newline 		 
-Line <88>NOOP tab 		 
-Line <88>NOOP string 		 Does it parse this part properly?
+Line <88>NOOP bracketo 		 
+Line <88>NOOP name 		 newblock
+Line <88>NOOP colon 		 
+Line <88>NOOP name 		 function
+Line <88>NOOP parao 		 
+Line <88>NOOP parac 		 
+Line <88>NOOP bracketc 		 
 Line <88>NOOP newline 		 
-Line <90>NOOP eof 		 
+Line <89>NOOP tab 		 
+Line <89>NOOP string 		 Test #2
+Line <89>NOOP number 		 
+Line <89>NOOP newline 		 
+Line <90>NOOP tab 		 
+Line <90>NOOP string 		 Does it parse this part properly?
+Line <90>NOOP newline 		 
+Line <92>NOOP eof 		 

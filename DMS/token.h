@@ -38,6 +38,7 @@ namespace dms::tokens {
 		eof,
 		ret,
 		gotoo,
+		jump,
 		nil
 	};//stream, t_vec, line, isNum, buffer
 	struct token {
@@ -95,6 +96,7 @@ namespace dms::tokens {
 				"eof",
 				"ret",
 				"gotoo",
+				"jump",
 				"nil"
 			};
 			out << "Line <" << c.line_num << ">" << codes::list[c.raw] << " " << temp1[c.type]  << " \t\t " << c.name;

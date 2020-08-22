@@ -146,7 +146,23 @@ namespace dms {
 		}
 		return true;
 	}
-	// This function is broken
+	
+	// Handling functions are important. This method is a helper function that allows you to
+	bool LineParser::processFunc(tokenstream stream, chunk c) {
+		//
+		return false;
+	}
+	bool processFunc(tokenstream stream, chunk c, std::string gotoo) {
+		return true;
+	}
+	bool LineParser::processExpr(tokenstream stream, chunk c) {
+		//
+		return false;
+	}
+	bool LineParser::processLogic(tokenstream stream, chunk c) {
+		//
+		return false;
+	}
 	std::map<std::string, chunk*> LineParser::tokenizer(dms_state* state,std::vector<token> &toks) {
 		std::map<std::string,chunk*> chunks;
 		chunk* current_chunk = nullptr;
@@ -311,11 +327,17 @@ namespace dms {
 					bool good = true;
 					size_t c = 0;
 					while (good) {
-						if (match(stream, tokens::tab,tokens::string,tokens::name)) {
+						// We need to template the matches
+						if (match(stream, tokens::tab,tokens::string,tokens::name,tokens::parao)) {
 							stream.next();
-							std::string choice = stream.next().name;
+							std::string prompt = stream.next().name;
+
+							// To handle the function stuff we need to consume and process that data
+							// We have a method to process function data since this will be used a lot in many different places
+							// We just grabbed the prompt, we don't yet know how many choices we have. So we have to figure out how we can
+							// Process and write the bytecode for this.
 							std::string func = stream.next().name;
-							print("Choice: <",c,"> ",choice," Funcname: ",func);
+							print("Choice: <",c,"> ",prompt," Funcname: ",func);
 							std::vector funcstuff = stream.next(tokens::newline);
 
 							//We need to process the function data and finish creating 
@@ -599,6 +621,9 @@ namespace dms {
 				}
 				else if (str == "goto") {
 					t_vec.push_back(token{ tokens::gotoo,codes::NOOP,"",line });
+				}
+				else if (str == "jump") {
+					t_vec.push_back(token{ tokens::jump,codes::NOOP,"",line });
 				}
 				else if (utils::isalphanum(str) && str.size()>0) {
 					t_vec.push_back(token{ tokens::name,codes::NOOP,stream.processBuffer(buffer),line });
