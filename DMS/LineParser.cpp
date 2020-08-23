@@ -30,6 +30,9 @@ namespace dms {
 	token tokenstream::peek() {
 		return this->tokens[pos];
 	}
+	bool tokenstream::hasScope(size_t tabs) {
+		return false;
+	}
 	std::vector<token> tokenstream::next(tokentype tk) {
 		std::vector<token> temp;
 		while (peek().type!=tk) {
@@ -110,12 +113,12 @@ namespace dms {
 	void wait() {
 		std::cin.ignore();
 	}
-	bool LineParser::match(tokenstream stream, tokens::tokentype t1, tokens::tokentype t2, tokens::tokentype t3, tokens::tokentype t4, tokens::tokentype t5, tokens::tokentype t6, tokens::tokentype t7, tokens::tokentype t8, tokens::tokentype t9, tokens::tokentype t10, tokens::tokentype t11, tokens::tokentype t12) {
+	bool tokenstream::match(tokens::tokentype t1, tokens::tokentype t2, tokens::tokentype t3, tokens::tokentype t4, tokens::tokentype t5, tokens::tokentype t6, tokens::tokentype t7, tokens::tokentype t8, tokens::tokentype t9, tokens::tokentype t10, tokens::tokentype t11, tokens::tokentype t12) {
 		tokens::tokentype types[12] = { t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12 };
 		for (size_t i = 0; i < 12; i++) {
 			if (types[i] == tokens::none)
 				return true;
-			if (stream.tokens[stream.pos+i].type != types[i])
+			if (this->tokens[pos+i].type != types[i])
 				return false;
 		}
 		return true;
@@ -136,12 +139,12 @@ namespace dms {
 		}
 		return false;
 	}
-	bool LineParser::match(tokenstream stream, tokens::tokentype* t1, tokens::tokentype* t2, tokens::tokentype* t3, tokens::tokentype* t4, tokens::tokentype* t5, tokens::tokentype* t6, tokens::tokentype* t7, tokens::tokentype* t8, tokens::tokentype* t9, tokens::tokentype* t10, tokens::tokentype* t11, tokens::tokentype* t12) {
+	bool tokenstream::match(tokens::tokentype* t1, tokens::tokentype* t2, tokens::tokentype* t3, tokens::tokentype* t4, tokens::tokentype* t5, tokens::tokentype* t6, tokens::tokentype* t7, tokens::tokentype* t8, tokens::tokentype* t9, tokens::tokentype* t10, tokens::tokentype* t11, tokens::tokentype* t12) {
 		tokens::tokentype* types[12] = { t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12 };
 		for (size_t i = 0; i < 12; i++) {
 			if (types[i] == nullptr)
 				return true;
-			if (!inList(stream.tokens[stream.pos + i].type, types[i]))
+			if (!inList(this->tokens[pos + i].type, types[i]))
 				return false;
 		}
 		return true;
@@ -168,6 +171,7 @@ namespace dms {
 		chunk* current_chunk = nullptr;
 		std::string chunk_name;
 		blocktype chunk_type = bt_block;
+		std::stack<scope> scopes;
 		size_t line=1;
 		tokenstream stream;
 		stream.init(&toks);
@@ -211,7 +215,7 @@ namespace dms {
 					state->push_error(errors::error{errors::badtoken,str.str(),true,line});
 				}
 			}
-			if (match(stream,tokens::newline,tokens::bracketo,tokens::name,tokens::bracketc)) {
+			if (stream.match(tokens::newline,tokens::bracketo,tokens::name,tokens::bracketc)) {
 				stream.next();
 				if (current_chunk != nullptr) {
 					if (!chunks.count(current_chunk->name))
@@ -230,7 +234,7 @@ namespace dms {
 				stream.next(); // Consume
 			}
 			// This handles a few block types since they all follow a similar format
-			else if (match(stream, tokens::newline, tokens::bracketo, tokens::name,tokens::colon,tokens::name, tokens::bracketc)) {
+			else if (stream.match(tokens::newline, tokens::bracketo, tokens::name,tokens::colon,tokens::name, tokens::bracketc)) {
 				stream.next();
 				stream.next();
 				if (current_chunk != nullptr) {
@@ -265,7 +269,7 @@ namespace dms {
 				}
 				stream.next();
 			}
-			else if (match(stream, tokens::newline,tokens::bracketo,tokens::name,tokens::colon,tokens::name,tokens::parao)) {
+			else if (stream.match(tokens::newline,tokens::bracketo,tokens::name,tokens::colon,tokens::name,tokens::parao)) {
 				std::stringstream str;
 				stream.next();
 				stream.next();
@@ -317,7 +321,7 @@ namespace dms {
 				}
 			}
 			// Control Handle all controls here
-			if (match(stream,tokens::tab,tokens::control)) {
+			if (stream.match(tokens::tab,tokens::control)) {
 				stream.next(); // Standard consumption
 				token control = stream.next();
 				if (control.raw == codes::CHOI && stream.peek().type==tokens::string) {
@@ -328,7 +332,7 @@ namespace dms {
 					size_t c = 0;
 					while (good) {
 						// We need to template the matches
-						if (match(stream, tokens::tab,tokens::string,tokens::name,tokens::parao)) {
+						if (stream.match(tokens::tab,tokens::string,tokens::name,tokens::parao)) {
 							stream.next();
 							std::string prompt = stream.next().name;
 
@@ -344,7 +348,7 @@ namespace dms {
 
 							c++;
 						}
-						else if (match(stream, tokens::tab) || match(stream,tokens::newline)) {
+						else if (stream.match(tokens::tab) || stream.match(tokens::newline)) {
 							stream.next(); // Allow tabs and newlines to pass like normal
 						}
 						else {
@@ -359,18 +363,25 @@ namespace dms {
 				}
 			}
 			// Displays both with a target and without
-			if (match(stream, tokens::tab, tokens::string, tokens::newline)) {
+			if (stream.match(tokens::tab, tokens::string, tokens::newline)) {
 				// ToDo Implement the command for this
 				stream.next(); // Standard consumption
 				print("DISP := ", stream.next().name);
 			}
-			else if (match(stream, tokens::tab, tokens::name, tokens::string, tokens::newline)) {
+			else if (stream.match(tokens::tab, tokens::name, tokens::colon, tokens::string, tokens::newline)) {
+				// We might have to handle scope here
 				// Here we mathc Name "This guy said this!"
 				stream.next(); // Standard consumption
 				std::string name = stream.next().name;
+				stream.next(); // That colon
 				std::string msg = stream.next().name;
 				print("DISP := ", name , " says '",msg,"'");
-				// You notice that we dont consume the new line, some commands match new line as the front. It's best to not consume to allow those patterns to go through
+				// We might have to consume a newline... Depends on what's next
+				if (stream.hasScope(tabs)) {
+					// If true we might have a group of displaying stuff.
+					// A proper scope will have the next line contain one more tab than the last
+
+				}
 			}
 			// function stuff
 			/*if (match(stream, tokens::name, tokens::parao)) {

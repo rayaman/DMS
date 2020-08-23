@@ -33,19 +33,41 @@ using extendedDefine
 	slot7 = ""
 	slot8 = ""
 	
-[main]
+[main] {
 	Ryan: "This works!"
 	DEBUG "What's up" // Debug lines are removed when debug mode is disabled
-	Ryan:
+	Ryan: {
 		speed 100%
 		calm "Hello Bob, "
 		wait 0.455
 		excited "how are you doing?"
 		// Becomes: Hello Bob, how are you doing?
-		
+	}
+	
 	tester = "Hello"
 	food = 3
 	a = list[1]
+	
+	if statment {
+		"test"
+	} elseif statement {
+		"test"
+		} if statement {
+			"test"
+			"test"
+			if statement {
+				"test"
+			} else {
+				"test"
+			}
+		} elseif statement {
+			"test"
+		} else {
+			"test"
+		}
+	
+	goto "somewhere"
+	jump "overhere"
 
 	hungry = (-2+4-((5*5)/sqrt(144+5)))^2*2+2
 	list[1] = "Hello"
@@ -54,25 +76,6 @@ using extendedDefine
 	func(1,"string", 2+5)
 	::label::
 	//Hello im testing stuff
-	
-	if statment then
-		"test"
-	elseif statement then
-		"test"
-		if statement then
-			"test"
-			"test"
-			if statement then
-				"test"
-			else
-				"test"
-		elseif statement then
-			"test"
-	else
-		"test"
-	
-	goto "somewhere"
-	jump "overhere"
 	
 	CHOICE "Pick one:" {
 		"first" func()
@@ -84,6 +87,7 @@ using extendedDefine
 		"sevinth" jump "there"
 		"eight" jump name
 	}
+}
 
 
 [Bob:char]
