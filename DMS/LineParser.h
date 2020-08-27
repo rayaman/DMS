@@ -22,6 +22,7 @@ namespace dms {
 		size_t pos = 0;
 		void init(std::vector<tokens::token>* ptr);
 		tokens::token next();
+		void prev();
 		std::vector<tokens::token> next(tokens::tokentype to,tokens::tokentype tc);
 		tokens::token peek();
 		std::vector<tokens::token> next(tokens::tokentype tk);
@@ -42,6 +43,18 @@ namespace dms {
 	class LineParser
 	{
 		std::string fn;
+		std::map<std::string, chunk*> chunks;
+		chunk* current_chunk = nullptr;
+		std::string chunk_name;
+		blocktype chunk_type = bt_block;
+		std::stack<scope> scopes;
+		size_t line = 1;
+		tokenstream stream;
+		std::vector<tokens::token> temp;
+		size_t tabs = 0;
+		dms_state* state;
+
+		void _Parse(tokenstream stream);
 	public:
 		dms_state* Parse();
 		dms_state* Parse(std::string l);
@@ -50,6 +63,7 @@ namespace dms {
 		LineParser();
 		//Matches tokens from the stream, if the tokens match it will return true and YOU should call next on the stream. This method does not change the current position
 		
+		bool createBlock(std::string bk_name, blocktype bk_type);
 		bool buildLabel(chunk c, std::string label);
 
 		bool processFunc(tokenstream stream, chunk c);
@@ -57,9 +71,13 @@ namespace dms {
 		bool processExpr(tokenstream stream, chunk c);
 		bool processLogic(tokenstream stream, chunk c);
 
+		//Utils
+		bool isBlock();
+		bool isBlock(blocktype bk_type);
+
 		void tolower(std::string &str);
 		tokens::tokentype* expr();
 		tokens::tokentype* variable();
-		std::map<std::string, chunk*> tokenizer(dms_state* state, std::vector<tokens::token> &tok);
+		void tokenizer(dms_state* state, std::vector<tokens::token> &tok);
 	};
 }

@@ -11,6 +11,9 @@ namespace dms {
 			return token{ tokentype::noop,codes::NOOP,"EOF",0 };
 		return this->tokens[pos++];
 	}
+	void tokenstream::prev() {
+		pos--;
+	}
 	std::vector<token> tokenstream::next(tokentype to, tokentype tc) {
 		std::vector<token> tok;
 		size_t open = 0;
@@ -69,6 +72,12 @@ namespace dms {
 	}
 	std::string passer::processBuffer(std::vector<uint8_t> buf) {
 		return std::string(buf.begin(), buf.end());
+	}
+	bool LineParser::isBlock() {
+		return isBlock(bt_block); // Default block type
+	}
+	bool LineParser::isBlock(blocktype bk_type) {
+		return current_chunk->type == bk_type;
 	}
 	void doCheck(passer* stream,std::vector<token>* t_vec, size_t line, bool &isNum, bool &hasDec, std::vector<uint8_t>* buffer) {
 		std::string str = stream->processBuffer(*buffer);
@@ -166,24 +175,33 @@ namespace dms {
 		//
 		return false;
 	}
-	std::map<std::string, chunk*> LineParser::tokenizer(dms_state* state,std::vector<token> &toks) {
-		std::map<std::string,chunk*> chunks;
-		chunk* current_chunk = nullptr;
-		std::string chunk_name;
-		blocktype chunk_type = bt_block;
-		std::stack<scope> scopes;
-		size_t line=1;
-		tokenstream stream;
-		stream.init(&toks);
+	bool LineParser::createBlock(std::string bk_name, blocktype bk_type) {
+		if (current_chunk != nullptr) {
+			if (!chunks.count(current_chunk->name))
+				chunks.insert_or_assign(current_chunk->name, current_chunk);
+			else
+			{
+				std::stringstream str;
+				str << "Block <" << current_chunk->name << "> already defined!";
+				state->push_error(errors::error{ errors::block_already_defined,str.str(),true,line });
+				return false;
+			}
+		}
+		current_chunk = new chunk;
+		current_chunk->name = bk_name;
+		chunk_type = bk_type;
+		current_chunk->type = bk_type;
+		print("Created Block: ",bk_name," <",bk_type,">");
+	}
+	void LineParser::_Parse(tokenstream stream) {
 		token current = stream.next();
-		std::vector<token> temp;
-		size_t tabs = 0;
 		while (stream.peek().type != tokens::eof) {
 			print(current);
 			if (current.type == tokens::tab)
 				tabs++;
 			if (current.type == tokens::flag) {
 				temp = stream.next(tokens::newline);
+				stream.prev(); // Unconsume the newline piece
 				if (temp.size() != 2) {
 					std::cout << "Error";
 				}
@@ -191,7 +209,7 @@ namespace dms {
 				tokens::tokentype tok = temp[0].type;
 				if (code == codes::ENAB && tok == tokens::name) {
 					tolower(temp[0].name);
-					state->enables.insert_or_assign(temp[0].name,true);
+					state->enables.insert_or_assign(temp[0].name, true);
 				}
 				else if (code == codes::ENTR && tok == tokens::name) {
 					state->entry = temp[0].name;
@@ -204,7 +222,7 @@ namespace dms {
 					state->version = std::stod(temp[0].name);
 				}
 				else if (code == codes::USIN && tok == tokens::name) {
-					// TODO add usings, kinda useless since everything will be packed in. Perhaps extensions might work
+					// TODO add usings, kinda useless atm since everything will be packed in. Perhaps extensions?
 				}
 				else if (code == codes::LOAD && tok == tokens::string) {
 					Parse(state, temp[0].name); // Load another file
@@ -212,89 +230,53 @@ namespace dms {
 				else {
 					std::stringstream str;
 					str << "Expected <FLAG IDENTIFIER> " << " got: " << current << temp[0];
-					state->push_error(errors::error{errors::badtoken,str.str(),true,line});
+					state->push_error(errors::error{ errors::badtoken,str.str(),true,line });
 				}
 			}
-			if (stream.match(tokens::newline,tokens::bracketo,tokens::name,tokens::bracketc)) {
+			// Default block
+			if (stream.match(tokens::newline, tokens::bracketo, tokens::name, tokens::bracketc)) {
 				stream.next();
-				if (current_chunk != nullptr) {
-					if (!chunks.count(current_chunk->name))
-						chunks.insert_or_assign(current_chunk->name, current_chunk);
-					else
-					{
-						std::stringstream str;
-						str << "Block <" << current_chunk->name << "> already defined!";
-						state->push_error(errors::error{ errors::block_already_defined,str.str(),true,line });
-					}
-				}
-				current_chunk = new chunk;
-				chunk_type = bt_block;
+				std::string name = stream.next().name;
+				createBlock(name,bt_block);
 				line = stream.next().line_num; // Consume
-				current_chunk->name = stream.next().name;
 				stream.next(); // Consume
 			}
 			// This handles a few block types since they all follow a similar format
-			else if (stream.match(tokens::newline, tokens::bracketo, tokens::name,tokens::colon,tokens::name, tokens::bracketc)) {
+			else if (stream.match(tokens::newline, tokens::bracketo, tokens::name, tokens::colon, tokens::name, tokens::bracketc)) {
 				stream.next();
 				stream.next();
-				if (current_chunk != nullptr) {
-					if (!chunks.count(current_chunk->name))
-						chunks.insert_or_assign(current_chunk->name, current_chunk);
-					else
-					{
-						std::stringstream str;
-						str << "Block <" << current_chunk->name << "> already defined!";
-						state->push_error(errors::error{ errors::block_already_defined,str.str(),true,line });
-					}
-				}
-
-				current_chunk = new chunk;
-				current_chunk->name = stream.next().name;
+				std::string name = stream.next().name;
 				line = stream.next().line_num;
 				std::string temp = stream.next().name;
 				// Characters are a feature I want to have intergrated into the language
 				if (temp == "char") {
-					current_chunk->type = bt_character;
-					chunk_type = bt_character;
+					createBlock(name, bt_character);
 				}
 				// Enviroments are sortof like objects, they can be uses as an object. They are a cleaner way to build a hash map like object
 				else if (temp == "env") {
-					current_chunk->type = bt_env;
-					chunk_type = bt_env;
+					createBlock(name, bt_env);
 				}
 				// Menus are what they say on the tin. They provide the framework for having menus within your game
 				else if (temp == "menu") {
-					current_chunk->type = bt_menu;
-					chunk_type = bt_menu;
+					createBlock(name, bt_menu);
 				}
 				stream.next();
 			}
-			else if (stream.match(tokens::newline,tokens::bracketo,tokens::name,tokens::colon,tokens::name,tokens::parao)) {
+			// Function block type
+			else if (stream.match(tokens::newline, tokens::bracketo, tokens::name, tokens::colon, tokens::name, tokens::parao)) {
 				std::stringstream str;
 				stream.next();
 				stream.next();
-				if (current_chunk != nullptr) {
-					if (!chunks.count(current_chunk->name))
-						chunks.insert_or_assign(current_chunk->name, current_chunk);
-					else
-					{
-						std::stringstream str;
-						str << "Block <" << current_chunk->name << "> already defined!";
-						state->push_error(errors::error{ errors::block_already_defined,str.str(),true,line });
-					}
-				}
-
-				current_chunk = new chunk;
-				current_chunk->name = stream.next().name;
+				std::string name = stream.next().name;
 				line = stream.next().line_num; // The color, not needed after the inital match, but we still need to consume it
 				std::string b = stream.next().name;
 				if (b == "function") {
-					current_chunk->type = bt_method; // We have a method let's set the block type to that, but we aren't done yet
+					createBlock(name, bt_method); // We have a method let's set the block type to that, but we aren't done yet
 					// We need to set the params if any so the method can be supplied with arguments
 					stream.next(); // parao
 					std::vector<token> tokens = stream.next(tokens::parac); // Consume until we see parac
 					dms_args args;
-					for (size_t i = 0; i < tokens.size()-1; i++) {//The lase symbol is parac since that was the consume condition
+					for (size_t i = 0; i < tokens.size() - 1; i++) {//The lase symbol is parac since that was the consume condition
 						if (tokens[i].type == tokens::name) {
 							// We got a name which is refering to a variable so lets build one
 							value* v = new value{};
@@ -308,7 +290,7 @@ namespace dms {
 						else {
 							std::stringstream str;
 							str << "Unexpected symbol: " << tokens[i];
-							state->push_error(errors::error{errors::badtoken,str.str(),true,line });
+							state->push_error(errors::error{ errors::badtoken,str.str(),true,line });
 						}
 					}
 					// If all went well the 'args' now has all of tha params for the method we will be working with
@@ -317,22 +299,22 @@ namespace dms {
 				}
 				else {
 					str << "'function' keyword expected got " << b;
-					state->push_error(errors::error{errors::badtoken, str.str(),true,line });
+					state->push_error(errors::error{ errors::badtoken, str.str(),true,line });
 				}
 			}
 			// Control Handle all controls here
-			if (stream.match(tokens::tab,tokens::control)) {
+			if (stream.match(tokens::tab, tokens::control)) {
 				stream.next(); // Standard consumption
 				token control = stream.next();
-				if (control.raw == codes::CHOI && stream.peek().type==tokens::string) {
+				if (control.raw == codes::CHOI && stream.peek().type == tokens::string) {
 					// Let's parse choice blocks.
 					std::string prompt = stream.next().name;
-					print("Prompt: ",prompt);
+					print("Prompt: ", prompt);
 					bool good = true;
 					size_t c = 0;
 					while (good) {
 						// We need to template the matches
-						if (stream.match(tokens::tab,tokens::string,tokens::name,tokens::parao)) {
+						if (stream.match(tokens::tab, tokens::string, tokens::name, tokens::parao)) {
 							stream.next();
 							std::string prompt = stream.next().name;
 
@@ -341,7 +323,7 @@ namespace dms {
 							// We just grabbed the prompt, we don't yet know how many choices we have. So we have to figure out how we can
 							// Process and write the bytecode for this.
 							std::string func = stream.next().name;
-							print("Choice: <",c,"> ",prompt," Funcname: ",func);
+							print("Choice: <", c, "> ", prompt, " Funcname: ", func);
 							std::vector funcstuff = stream.next(tokens::newline);
 
 							//We need to process the function data and finish creating 
@@ -375,7 +357,7 @@ namespace dms {
 				std::string name = stream.next().name;
 				stream.next(); // That colon
 				std::string msg = stream.next().name;
-				print("DISP := ", name , " says '",msg,"'");
+				print("DISP := ", name, " says '", msg, "'");
 				// We might have to consume a newline... Depends on what's next
 				if (stream.hasScope(tabs)) {
 					// If true we might have a group of displaying stuff.
@@ -394,11 +376,15 @@ namespace dms {
 				wait();
 			}*/
 			if (current.type != tokens::tab)
-				tabs=0;
+				tabs = 0;
 			current = stream.next();
 		}
 		chunks.insert_or_assign(current_chunk->name, current_chunk);
-		return chunks;
+	}
+	void LineParser::tokenizer(dms_state* state,std::vector<token> &toks) {
+		stream.init(&toks);
+		this->state = state; // Grab the pointer to the state and store it within the parser object
+		_Parse(stream);
 	}
 	void LineParser::tolower(std::string &s1) {
 		std::transform(s1.begin(), s1.end(), s1.begin(), std::tolower);
@@ -576,7 +562,6 @@ namespace dms {
 			if (data == ' ' && !isStr) { // tokens end with a space
 				std::string str = stream.processBuffer(buffer);
 				tolower(str);
-				print("> ",str);
 				if (str == "enable") {
 					t_vec.push_back(token{ tokens::flag,codes::ENAB,"",line });
 				} else if (str == "entry") {
@@ -658,8 +643,7 @@ namespace dms {
 		outputFile.close();
 		print("Running tokenizer");
 		// Tokens build let's parse
-		std::map<std::string,chunk*> test = tokenizer(state, t_vec);
-		print(test.size());
+		tokenizer(state, t_vec);
 		return state;
 	}
 }
