@@ -43,19 +43,26 @@ namespace dms {
 	class LineParser
 	{
 		std::string fn;
-		std::map<std::string, chunk*> chunks;
 		chunk* current_chunk = nullptr;
 		std::string chunk_name;
 		blocktype chunk_type = bt_block;
 		std::stack<scope> scopes;
 		size_t line = 1;
-		tokenstream stream;
 		std::vector<tokens::token> temp;
 		size_t tabs = 0;
 		dms_state* state;
 
 		void _Parse(tokenstream stream);
+		// Match Process Code
+		bool match_process_debug(tokenstream* stream);
+		bool match_process_disp(tokenstream* stream);
+		bool match_process_choice(tokenstream* stream);
+		bool match_process_function(tokenstream* stream);
+		bool match_process_goto(tokenstream* stream);
+		bool match_process_jump(tokenstream* stream);
+		bool match_process_exit(tokenstream* stream);
 	public:
+		//Refer to streams.cpp for the match_process_CMD code.
 		dms_state* Parse();
 		dms_state* Parse(std::string l);
 		dms_state* Parse(dms_state* state, std::string l);

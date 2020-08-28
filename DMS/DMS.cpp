@@ -22,5 +22,4 @@ int main()
 {
     LineParser parser = LineParser("test.dms");
     parser.Parse();
-    print("Goodbye!");
 }

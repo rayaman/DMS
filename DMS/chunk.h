@@ -14,10 +14,11 @@ namespace dms {
 		blocktype type = bt_block;
 		dms_args params;
 		std::string name = "";
-		std::vector<cmd> cmds = std::vector<cmd>();
+		std::vector<cmd*> cmds;
 		size_t pos = 0;
 		size_t line = 0;
-		void addCmd(cmd c);
+		void addCmd(cmd* c);
+		chunk(){}
 	};
 }
 

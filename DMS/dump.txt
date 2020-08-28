@@ -1,526 +1,128 @@
 Token Dump:
-Line <1>ENTR flag 		 
-Line <1>NOOP name 		 main
 Line <1>NOOP newline 		 
-Line <2>ENAB flag 		 
-Line <2>NOOP name 		 warnings
 Line <2>NOOP newline 		 
-Line <3>DISA flag 		 
-Line <3>NOOP name 		 omniscient
+Line <3>NOOP bracketo 		 
+Line <3>NOOP name 		 default
+Line <3>NOOP colon 		 
+Line <3>NOOP name 		 char
+Line <3>NOOP bracketc 		 
 Line <3>NOOP newline 		 
 Line <4>NOOP newline 		 
+Line <5>NOOP name 		 money
+Line <5>NOOP equal 		 
+Line <5>NOOP number 		 0
 Line <5>NOOP newline 		 
-Line <6>VERN flag 		 
-Line <6>NOOP number 		 1.2
 Line <6>NOOP newline 		 
-Line <7>USIN flag 		 
-Line <7>NOOP name 		 extendedDefine
+Line <7>NOOP bracketo 		 
+Line <7>NOOP name 		 Ryan
+Line <7>NOOP colon 		 
+Line <7>NOOP name 		 char
+Line <7>NOOP bracketc 		 
 Line <7>NOOP newline 		 
-Line <8>NOOP bracketo 		 
-Line <8>NOOP name 		 default
-Line <8>NOOP colon 		 
-Line <8>NOOP name 		 char
-Line <8>NOOP bracketc 		 
+Line <8>NOOP name 		 age
+Line <8>NOOP equal 		 
+Line <8>NOOP number 		 21
 Line <8>NOOP newline 		 
-Line <9>NOOP tab 		 
+Line <9>NOOP name 		 money
+Line <9>NOOP equal 		 
+Line <9>NOOP number 		 1000
 Line <9>NOOP newline 		 
-Line <10>NOOP tab 		 
-Line <10>NOOP name 		 money
-Line <10>NOOP equal 		 
-Line <10>NOOP number 		 0
 Line <10>NOOP newline 		 
-Line <11>NOOP bracketo 		 
-Line <11>NOOP name 		 Ryan
+Line <11>NOOP name 		 calm
 Line <11>NOOP colon 		 
-Line <11>NOOP name 		 char
-Line <11>NOOP bracketc 		 
+Line <11>NOOP string 		 ./path/to/file
 Line <11>NOOP newline 		 
-Line <12>NOOP tab 		 
-Line <12>NOOP name 		 age
-Line <12>NOOP equal 		 
-Line <12>NOOP number 		 21
+Line <12>NOOP name 		 excited
+Line <12>NOOP colon 		 
+Line <12>NOOP string 		 ./path/to/file
 Line <12>NOOP newline 		 
-Line <13>NOOP tab 		 
-Line <13>NOOP name 		 money
-Line <13>NOOP equal 		 
-Line <13>NOOP number 		 1000
 Line <13>NOOP newline 		 
-Line <14>NOOP tab 		 
+Line <14>NOOP bracketo 		 
+Line <14>NOOP name 		 step
+Line <14>NOOP colon 		 
+Line <14>NOOP name 		 function
+Line <14>NOOP parao 		 
+Line <14>NOOP name 		 a
+Line <14>NOOP seperator 		 
+Line <14>NOOP name 		 b
+Line <14>NOOP seperator 		 
+Line <14>NOOP name 		 c
+Line <14>NOOP parac 		 
+Line <14>NOOP bracketc 		 
 Line <14>NOOP newline 		 
-Line <15>NOOP tab 		 
-Line <15>NOOP name 		 calm
-Line <15>NOOP colon 		 
-Line <15>NOOP string 		 ./path/to/file
+Line <15>NOOP string 		 Testing...
 Line <15>NOOP newline 		 
-Line <16>NOOP tab 		 
-Line <16>NOOP name 		 excited
-Line <16>NOOP colon 		 
-Line <16>NOOP string 		 ./path/to/file
+Line <16>NOOP name 		 d
+Line <16>NOOP equal 		 
+Line <16>NOOP parao 		 
+Line <16>NOOP name 		 100
+Line <16>NOOP number 		 
+Line <16>NOOP plus 		 
+Line <16>NOOP name 		 b
+Line <16>NOOP parac 		 
+Line <16>NOOP divide 		 
+Line <16>NOOP name 		 c
 Line <16>NOOP newline 		 
+Line <17>NOOP name 		 e
+Line <17>NOOP equal 		 
+Line <17>NOOP string 		 somestring
 Line <17>NOOP newline 		 
-Line <18>NOOP bracketo 		 
-Line <18>NOOP name 		 step
-Line <18>NOOP colon 		 
-Line <18>NOOP name 		 function
-Line <18>NOOP parao 		 
-Line <18>NOOP name 		 a
-Line <18>NOOP seperator 		 
-Line <18>NOOP name 		 b
-Line <18>NOOP seperator 		 
-Line <18>NOOP name 		 c
-Line <18>NOOP parac 		 
-Line <18>NOOP bracketc 		 
+Line <18>NOOP name 		 e
+Line <18>NOOP equal 		 
+Line <18>NOOP nil 		 nil
 Line <18>NOOP newline 		 
-Line <19>NOOP tab 		 
-Line <19>NOOP string 		 Testing...
+Line <19>NOOP name 		 g
+Line <19>NOOP equal 		 
+Line <19>NOOP false 		 false
 Line <19>NOOP newline 		 
-Line <20>NOOP tab 		 
+Line <20>RETN ret 		 
 Line <20>NOOP name 		 d
-Line <20>NOOP equal 		 
-Line <20>NOOP parao 		 
-Line <20>NOOP name 		 100
-Line <20>NOOP number 		 
-Line <20>NOOP plus 		 
-Line <20>NOOP name 		 b
-Line <20>NOOP parac 		 
-Line <20>NOOP divide 		 
-Line <20>NOOP name 		 c
 Line <20>NOOP newline 		 
-Line <21>NOOP tab 		 
-Line <21>NOOP name 		 e
-Line <21>NOOP equal 		 
-Line <21>NOOP string 		 somestring
 Line <21>NOOP newline 		 
-Line <22>NOOP tab 		 
-Line <22>NOOP name 		 e
-Line <22>NOOP equal 		 
-Line <22>NOOP nil 		 nil
+Line <22>NOOP bracketo 		 
+Line <22>NOOP name 		 inventory
+Line <22>NOOP colon 		 
+Line <22>NOOP name 		 env
+Line <22>NOOP bracketc 		 
 Line <22>NOOP newline 		 
-Line <23>NOOP tab 		 
-Line <23>NOOP name 		 g
+Line <23>NOOP name 		 slot1
+Line <23>NOOP number 		 
 Line <23>NOOP equal 		 
-Line <23>NOOP false 		 false
+Line <23>NOOP string 		 
 Line <23>NOOP newline 		 
-Line <24>NOOP tab 		 
-Line <24>RETN ret 		 
-Line <24>NOOP name 		 d
+Line <24>NOOP name 		 slot2
+Line <24>NOOP number 		 
+Line <24>NOOP equal 		 
+Line <24>NOOP string 		 
 Line <24>NOOP newline 		 
+Line <25>NOOP name 		 slot3
+Line <25>NOOP number 		 
+Line <25>NOOP equal 		 
+Line <25>NOOP string 		 
 Line <25>NOOP newline 		 
-Line <26>NOOP bracketo 		 
-Line <26>NOOP name 		 inventory
-Line <26>NOOP colon 		 
-Line <26>NOOP name 		 env
-Line <26>NOOP bracketc 		 
+Line <26>NOOP name 		 slot4
+Line <26>NOOP number 		 
+Line <26>NOOP equal 		 
+Line <26>NOOP string 		 
 Line <26>NOOP newline 		 
-Line <27>NOOP tab 		 
-Line <27>NOOP name 		 slot1
+Line <27>NOOP name 		 slot5
 Line <27>NOOP number 		 
 Line <27>NOOP equal 		 
 Line <27>NOOP string 		 
 Line <27>NOOP newline 		 
-Line <28>NOOP tab 		 
-Line <28>NOOP name 		 slot2
+Line <28>NOOP name 		 slot6
 Line <28>NOOP number 		 
 Line <28>NOOP equal 		 
 Line <28>NOOP string 		 
 Line <28>NOOP newline 		 
-Line <29>NOOP tab 		 
-Line <29>NOOP name 		 slot3
+Line <29>NOOP name 		 slot7
 Line <29>NOOP number 		 
 Line <29>NOOP equal 		 
 Line <29>NOOP string 		 
 Line <29>NOOP newline 		 
-Line <30>NOOP tab 		 
-Line <30>NOOP name 		 slot4
+Line <30>NOOP name 		 slot8
 Line <30>NOOP number 		 
 Line <30>NOOP equal 		 
 Line <30>NOOP string 		 
 Line <30>NOOP newline 		 
-Line <31>NOOP tab 		 
-Line <31>NOOP name 		 slot5
-Line <31>NOOP number 		 
-Line <31>NOOP equal 		 
-Line <31>NOOP string 		 
-Line <31>NOOP newline 		 
-Line <32>NOOP tab 		 
-Line <32>NOOP name 		 slot6
-Line <32>NOOP number 		 
-Line <32>NOOP equal 		 
-Line <32>NOOP string 		 
-Line <32>NOOP newline 		 
-Line <33>NOOP tab 		 
-Line <33>NOOP name 		 slot7
-Line <33>NOOP number 		 
-Line <33>NOOP equal 		 
-Line <33>NOOP string 		 
-Line <33>NOOP newline 		 
-Line <34>NOOP tab 		 
-Line <34>NOOP name 		 slot8
-Line <34>NOOP number 		 
-Line <34>NOOP equal 		 
-Line <34>NOOP string 		 
-Line <34>NOOP newline 		 
-Line <35>NOOP tab 		 
-Line <35>NOOP newline 		 
-Line <36>NOOP bracketo 		 
-Line <36>NOOP name 		 main
-Line <36>NOOP bracketc 		 
-Line <36>NOOP cbracketo 		 
-Line <36>NOOP newline 		 
-Line <37>NOOP tab 		 
-Line <37>NOOP name 		 Ryan
-Line <37>NOOP colon 		 
-Line <37>NOOP string 		 This works!
-Line <37>NOOP newline 		 
-Line <38>NOOP tab 		 
-Line <38>NOOP name 		 DEBUG
-Line <38>NOOP string 		 What's up
-Line <38>NOOP newline 		 
-Line <39>NOOP tab 		 
-Line <39>NOOP name 		 Ryan
-Line <39>NOOP colon 		 
-Line <39>NOOP cbracketo 		 
-Line <39>NOOP newline 		 
-Line <40>NOOP tab 		 
-Line <40>NOOP tab 		 
-Line <40>NOOP name 		 speed
-Line <40>NOOP number 		 100
-Line <40>NOOP mod 		 
-Line <40>NOOP newline 		 
-Line <41>NOOP tab 		 
-Line <41>NOOP tab 		 
-Line <41>NOOP name 		 calm
-Line <41>NOOP string 		 Hello Bob, 
-Line <41>NOOP newline 		 
-Line <42>NOOP tab 		 
-Line <42>NOOP tab 		 
-Line <42>NOOP name 		 wait
-Line <42>NOOP number 		 0.455
-Line <42>NOOP newline 		 
-Line <43>NOOP tab 		 
-Line <43>NOOP tab 		 
-Line <43>NOOP name 		 excited
-Line <43>NOOP string 		 how are you doing?
-Line <43>NOOP newline 		 
-Line <44>NOOP tab 		 
-Line <44>NOOP tab 		 
-Line <44>NOOP newline 		 
-Line <45>NOOP tab 		 
-Line <45>NOOP cbracketc 		 
-Line <45>NOOP newline 		 
-Line <46>NOOP tab 		 
-Line <46>NOOP newline 		 
-Line <47>NOOP tab 		 
-Line <47>NOOP name 		 tester
-Line <47>NOOP equal 		 
-Line <47>NOOP string 		 Hello
-Line <47>NOOP newline 		 
-Line <48>NOOP tab 		 
-Line <48>NOOP name 		 food
-Line <48>NOOP equal 		 
-Line <48>NOOP number 		 3
-Line <48>NOOP newline 		 
-Line <49>NOOP tab 		 
-Line <49>NOOP name 		 a
-Line <49>NOOP equal 		 
-Line <49>NOOP name 		 list
-Line <49>NOOP bracketo 		 
-Line <49>NOOP number 		 1
-Line <49>NOOP bracketc 		 
-Line <49>NOOP newline 		 
-Line <50>NOOP tab 		 
-Line <50>NOOP newline 		 
-Line <51>NOOP tab 		 
-Line <51>IFFF control 		 
-Line <51>NOOP name 		 statment
-Line <51>NOOP cbracketo 		 
-Line <51>NOOP newline 		 
-Line <52>NOOP tab 		 
-Line <52>NOOP tab 		 
-Line <52>NOOP string 		 test
-Line <52>NOOP newline 		 
-Line <53>NOOP tab 		 
-Line <53>NOOP cbracketc 		 
-Line <53>ELIF control 		 
-Line <53>NOOP name 		 statement
-Line <53>NOOP cbracketo 		 
-Line <53>NOOP newline 		 
-Line <54>NOOP tab 		 
-Line <54>NOOP tab 		 
-Line <54>NOOP string 		 test
-Line <54>NOOP newline 		 
-Line <55>NOOP tab 		 
-Line <55>NOOP tab 		 
-Line <55>NOOP cbracketc 		 
-Line <55>IFFF control 		 
-Line <55>NOOP name 		 statement
-Line <55>NOOP cbracketo 		 
-Line <55>NOOP newline 		 
-Line <56>NOOP tab 		 
-Line <56>NOOP tab 		 
-Line <56>NOOP tab 		 
-Line <56>NOOP string 		 test
-Line <56>NOOP newline 		 
-Line <57>NOOP tab 		 
-Line <57>NOOP tab 		 
-Line <57>NOOP tab 		 
-Line <57>NOOP string 		 test
-Line <57>NOOP newline 		 
-Line <58>NOOP tab 		 
-Line <58>NOOP tab 		 
-Line <58>NOOP tab 		 
-Line <58>IFFF control 		 
-Line <58>NOOP name 		 statement
-Line <58>NOOP cbracketo 		 
-Line <58>NOOP newline 		 
-Line <59>NOOP tab 		 
-Line <59>NOOP tab 		 
-Line <59>NOOP tab 		 
-Line <59>NOOP tab 		 
-Line <59>NOOP string 		 test
-Line <59>NOOP newline 		 
-Line <60>NOOP tab 		 
-Line <60>NOOP tab 		 
-Line <60>NOOP tab 		 
-Line <60>NOOP cbracketc 		 
-Line <60>ELSE control 		 
-Line <60>NOOP cbracketo 		 
-Line <60>NOOP newline 		 
-Line <61>NOOP tab 		 
-Line <61>NOOP tab 		 
-Line <61>NOOP tab 		 
-Line <61>NOOP tab 		 
-Line <61>NOOP string 		 test
-Line <61>NOOP newline 		 
-Line <62>NOOP tab 		 
-Line <62>NOOP tab 		 
-Line <62>NOOP tab 		 
-Line <62>NOOP cbracketc 		 
-Line <62>NOOP newline 		 
-Line <63>NOOP tab 		 
-Line <63>NOOP tab 		 
-Line <63>NOOP cbracketc 		 
-Line <63>ELIF control 		 
-Line <63>NOOP name 		 statement
-Line <63>NOOP cbracketo 		 
-Line <63>NOOP newline 		 
-Line <64>NOOP tab 		 
-Line <64>NOOP tab 		 
-Line <64>NOOP tab 		 
-Line <64>NOOP string 		 test
-Line <64>NOOP newline 		 
-Line <65>NOOP tab 		 
-Line <65>NOOP tab 		 
-Line <65>NOOP cbracketc 		 
-Line <65>ELSE control 		 
-Line <65>NOOP cbracketo 		 
-Line <65>NOOP newline 		 
-Line <66>NOOP tab 		 
-Line <66>NOOP tab 		 
-Line <66>NOOP tab 		 
-Line <66>NOOP string 		 test
-Line <66>NOOP newline 		 
-Line <67>NOOP tab 		 
-Line <67>NOOP tab 		 
-Line <67>NOOP cbracketc 		 
-Line <67>NOOP newline 		 
-Line <68>NOOP tab 		 
-Line <68>NOOP newline 		 
-Line <69>NOOP tab 		 
-Line <69>NOOP gotoo 		 
-Line <69>NOOP string 		 somewhere
-Line <69>NOOP newline 		 
-Line <70>NOOP tab 		 
-Line <70>NOOP jump 		 
-Line <70>NOOP string 		 overhere
-Line <70>NOOP newline 		 
-Line <71>NOOP newline 		 
-Line <72>NOOP tab 		 
-Line <72>NOOP name 		 hungry
-Line <72>NOOP equal 		 
-Line <72>NOOP parao 		 
-Line <72>NOOP minus 		 
-Line <72>NOOP number 		 2
-Line <72>NOOP plus 		 
-Line <72>NOOP number 		 4
-Line <72>NOOP minus 		 
-Line <72>NOOP parao 		 
-Line <72>NOOP parao 		 
-Line <72>NOOP number 		 5
-Line <72>NOOP multiply 		 
-Line <72>NOOP number 		 5
-Line <72>NOOP parac 		 
-Line <72>NOOP divide 		 
-Line <72>NOOP name 		 sqrt
-Line <72>NOOP parao 		 
-Line <72>NOOP number 		 144
-Line <72>NOOP plus 		 
-Line <72>NOOP number 		 5
-Line <72>NOOP parac 		 
-Line <72>NOOP parac 		 
-Line <72>NOOP parac 		 
-Line <72>NOOP pow 		 
-Line <72>NOOP number 		 2
-Line <72>NOOP multiply 		 
-Line <72>NOOP number 		 2
-Line <72>NOOP plus 		 
-Line <72>NOOP number 		 2
-Line <72>NOOP newline 		 
-Line <73>NOOP tab 		 
-Line <73>NOOP name 		 list
-Line <73>NOOP bracketo 		 
-Line <73>NOOP number 		 1
-Line <73>NOOP bracketc 		 
-Line <73>NOOP equal 		 
-Line <73>NOOP string 		 Hello
-Line <73>NOOP newline 		 
-Line <74>NOOP tab 		 
-Line <74>NOOP name 		 var1
-Line <74>NOOP number 		 
-Line <74>NOOP equal 		 
-Line <74>NOOP name 		 func
-Line <74>NOOP parao 		 
-Line <74>NOOP number 		 1
-Line <74>NOOP seperator 		 
-Line <74>NOOP string 		 string
-Line <74>NOOP seperator 		 
-Line <74>NOOP number 		 2
-Line <74>NOOP plus 		 
-Line <74>NOOP number 		 5
-Line <74>NOOP parac 		 
-Line <74>NOOP newline 		 
-Line <75>NOOP tab 		 
-Line <75>NOOP name 		 a
-Line <75>NOOP equal 		 
-Line <75>NOOP name 		 100
-Line <75>NOOP number 		 
-Line <75>NOOP plus 		 
-Line <75>NOOP name 		 func
-Line <75>NOOP parao 		 
-Line <75>NOOP number 		 1
-Line <75>NOOP seperator 		 
-Line <75>NOOP string 		 string
-Line <75>NOOP seperator 		 
-Line <75>NOOP number 		 2
-Line <75>NOOP plus 		 
-Line <75>NOOP number 		 5
-Line <75>NOOP parac 		 
-Line <75>NOOP plus 		 
-Line <75>NOOP number 		 100
-Line <75>NOOP newline 		 
-Line <76>NOOP tab 		 
-Line <76>NOOP name 		 func
-Line <76>NOOP parao 		 
-Line <76>NOOP number 		 1
-Line <76>NOOP seperator 		 
-Line <76>NOOP string 		 string
-Line <76>NOOP seperator 		 
-Line <76>NOOP number 		 2
-Line <76>NOOP plus 		 
-Line <76>NOOP number 		 5
-Line <76>NOOP parac 		 
-Line <76>NOOP newline 		 
-Line <77>NOOP tab 		 
-Line <77>NOOP label 		 label
-Line <77>NOOP newline 		 
-Line <78>NOOP tab 		 
-Line <78>NOOP newline 		 
-Line <79>NOOP tab 		 
-Line <79>NOOP newline 		 
-Line <80>NOOP tab 		 
-Line <80>CHOI control 		 
-Line <80>NOOP string 		 Pick one:
-Line <80>NOOP cbracketo 		 
-Line <80>NOOP newline 		 
-Line <81>NOOP tab 		 
-Line <81>NOOP tab 		 
-Line <81>NOOP string 		 first
-Line <81>NOOP name 		 func
-Line <81>NOOP parao 		 
-Line <81>NOOP parac 		 
-Line <81>NOOP newline 		 
-Line <82>NOOP tab 		 
-Line <82>NOOP tab 		 
-Line <82>NOOP string 		 second
-Line <82>NOOP name 		 func
-Line <82>NOOP parao 		 
-Line <82>NOOP parac 		 
-Line <82>NOOP newline 		 
-Line <83>NOOP tab 		 
-Line <83>NOOP tab 		 
-Line <83>NOOP string 		 third
-Line <83>NOOP name 		 func
-Line <83>NOOP parao 		 
-Line <83>NOOP parac 		 
-Line <83>NOOP newline 		 
-Line <84>NOOP tab 		 
-Line <84>NOOP tab 		 
-Line <84>NOOP string 		 forth
-Line <84>NOOP name 		 func
-Line <84>NOOP parao 		 
-Line <84>NOOP parac 		 
-Line <84>NOOP newline 		 
-Line <85>NOOP tab 		 
-Line <85>NOOP tab 		 
-Line <85>NOOP string 		 fifth
-Line <85>NOOP gotoo 		 
-Line <85>NOOP string 		 here
-Line <85>NOOP newline 		 
-Line <86>NOOP tab 		 
-Line <86>NOOP tab 		 
-Line <86>NOOP string 		 sixth
-Line <86>NOOP gotoo 		 
-Line <86>NOOP name 		 name
-Line <86>NOOP newline 		 
-Line <87>NOOP tab 		 
-Line <87>NOOP tab 		 
-Line <87>NOOP string 		 sevinth
-Line <87>NOOP jump 		 
-Line <87>NOOP string 		 there
-Line <87>NOOP newline 		 
-Line <88>NOOP tab 		 
-Line <88>NOOP tab 		 
-Line <88>NOOP string 		 eight
-Line <88>NOOP jump 		 
-Line <88>NOOP name 		 name
-Line <88>NOOP newline 		 
-Line <89>NOOP tab 		 
-Line <89>NOOP cbracketc 		 
-Line <89>NOOP newline 		 
-Line <90>NOOP cbracketc 		 
-Line <90>NOOP newline 		 
-Line <91>NOOP newline 		 
-Line <92>NOOP newline 		 
-Line <93>NOOP bracketo 		 
-Line <93>NOOP name 		 Bob
-Line <93>NOOP colon 		 
-Line <93>NOOP name 		 char
-Line <93>NOOP bracketc 		 
-Line <93>NOOP newline 		 
-Line <94>NOOP tab 		 
-Line <94>NOOP name 		 age
-Line <94>NOOP equal 		 
-Line <94>NOOP number 		 24
-Line <94>NOOP newline 		 
-Line <95>NOOP tab 		 
-Line <95>NOOP name 		 money
-Line <95>NOOP equal 		 
-Line <95>NOOP number 		 100
-Line <95>NOOP newline 		 
-Line <96>NOOP newline 		 
-Line <97>NOOP bracketo 		 
-Line <97>NOOP name 		 newblock
-Line <97>NOOP colon 		 
-Line <97>NOOP name 		 function
-Line <97>NOOP parao 		 
-Line <97>NOOP parac 		 
-Line <97>NOOP bracketc 		 
-Line <97>NOOP newline 		 
-Line <98>NOOP tab 		 
-Line <98>NOOP string 		 Test #2
-Line <98>NOOP number 		 
-Line <98>NOOP newline 		 
-Line <99>NOOP tab 		 
-Line <99>NOOP string 		 Does it parse this part properly?
-Line <99>NOOP newline 		 
-Line <101>NOOP eof 		 
+Line <32>NOOP eof 		 

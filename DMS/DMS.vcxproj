@@ -147,6 +147,7 @@
     <ClCompile Include="codes.cpp" />
     <ClCompile Include="DMS.cpp" />
     <ClCompile Include="dms_state.cpp" />
+    <ClCompile Include="LineParserExtended.cpp" />
     <ClCompile Include="string_utils.cpp" />
     <ClCompile Include="dms_exceptions.cpp" />
     <ClCompile Include="LineParser.cpp" />

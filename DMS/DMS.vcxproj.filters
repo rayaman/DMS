@@ -54,6 +54,9 @@
     <ClCompile Include="chunk.cpp">
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
+    <ClCompile Include="LineParserExtended.cpp">
+      <Filter>Source Files\DMS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="value.h">

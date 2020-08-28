@@ -8,7 +8,8 @@ namespace dms::errors {
 		invalie_type,
 		array_out_of_bounds,
 		badtoken,
-		block_already_defined
+		block_already_defined,
+		choice_unknown
 	};
 	struct error {
 		errortype code=unknown;
