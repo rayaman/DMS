@@ -29,6 +29,10 @@ namespace dms {
 		bool match(tokens::tokentype t1 = tokens::none, tokens::tokentype t2 = tokens::none, tokens::tokentype t3 = tokens::none, tokens::tokentype t4 = tokens::none, tokens::tokentype t5 = tokens::none, tokens::tokentype t6 = tokens::none, tokens::tokentype t7 = tokens::none, tokens::tokentype t8 = tokens::none, tokens::tokentype t9 = tokens::none, tokens::tokentype t10 = tokens::none, tokens::tokentype t11 = tokens::none, tokens::tokentype t12 = tokens::none);
 		bool match(tokens::tokentype* t1 = nullptr, tokens::tokentype* t2 = nullptr, tokens::tokentype* t3 = nullptr, tokens::tokentype* t4 = nullptr, tokens::tokentype* t5 = nullptr, tokens::tokentype* t6 = nullptr, tokens::tokentype* t7 = nullptr, tokens::tokentype* t8 = nullptr, tokens::tokentype* t9 = nullptr, tokens::tokentype* t10 = nullptr, tokens::tokentype* t11 = nullptr, tokens::tokentype* t12 = nullptr);
 		bool hasScope(size_t tabs);
+		bool restore(size_t p) {
+			pos = p;
+			return false; // This is a convience for something I will be doing so much
+		}
 	};
 	struct passer {
 		std::string stream;
@@ -51,16 +55,28 @@ namespace dms {
 		std::vector<tokens::token> temp;
 		size_t tabs = 0;
 		dms_state* state;
-
+		void doCheck(passer* stream, std::vector<tokens::token>* t_vec, size_t line, bool& isNum, bool& hasDec, std::vector<uint8_t>* buffer);
 		void _Parse(tokenstream stream);
 		// Match Process Code
 		bool match_process_debug(tokenstream* stream);
 		bool match_process_disp(tokenstream* stream);
 		bool match_process_choice(tokenstream* stream);
-		bool match_process_function(tokenstream* stream);
+		bool match_process_function(tokenstream* stream, value* v=nullptr);
 		bool match_process_goto(tokenstream* stream);
 		bool match_process_jump(tokenstream* stream);
 		bool match_process_exit(tokenstream* stream);
+		bool match_process_label(tokenstream* stream);
+		bool match_process_expression(tokenstream* stream);
+		// Utils
+		bool createBlock(std::string bk_name, blocktype bk_type);
+
+		bool isExpression(tokenstream* stream);
+		bool isBlock();
+		bool isBlock(blocktype bk_type);
+		void tolower(std::string &str);
+		tokens::tokentype* expr();
+		tokens::tokentype* variable();
+		void tokenizer(dms_state* state, std::vector<tokens::token> &tok);
 	public:
 		//Refer to streams.cpp for the match_process_CMD code.
 		dms_state* Parse();
@@ -68,23 +84,5 @@ namespace dms {
 		dms_state* Parse(dms_state* state, std::string l);
 		LineParser(std::string fn);
 		LineParser();
-		//Matches tokens from the stream, if the tokens match it will return true and YOU should call next on the stream. This method does not change the current position
-		
-		bool createBlock(std::string bk_name, blocktype bk_type);
-		bool buildLabel(chunk c, std::string label);
-
-		bool processFunc(tokenstream stream, chunk c);
-		bool processFunc(tokenstream stream, chunk c, std::string gotoo);
-		bool processExpr(tokenstream stream, chunk c);
-		bool processLogic(tokenstream stream, chunk c);
-
-		//Utils
-		bool isBlock();
-		bool isBlock(blocktype bk_type);
-
-		void tolower(std::string &str);
-		tokens::tokentype* expr();
-		tokens::tokentype* variable();
-		void tokenizer(dms_state* state, std::vector<tokens::token> &tok);
 	};
 }

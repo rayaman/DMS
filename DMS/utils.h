@@ -25,4 +25,5 @@ namespace dms::utils {
 	bool isalpha(std::string str);
 	bool isNum(std::string str);
 	void trim(std::string& s);
+	void wait();
 }

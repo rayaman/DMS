@@ -147,10 +147,11 @@
     <ClCompile Include="codes.cpp" />
     <ClCompile Include="DMS.cpp" />
     <ClCompile Include="dms_state.cpp" />
-    <ClCompile Include="LineParserExtended.cpp" />
+    <ClCompile Include="LineParserMatchProcess.cpp" />
+    <ClCompile Include="LineParserParse.cpp" />
     <ClCompile Include="string_utils.cpp" />
     <ClCompile Include="dms_exceptions.cpp" />
-    <ClCompile Include="LineParser.cpp" />
+    <ClCompile Include="LineParserUtils.cpp" />
     <ClCompile Include="number_utils.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="value.cpp" />

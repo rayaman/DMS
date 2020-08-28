@@ -105,4 +105,7 @@ namespace dms::utils {
 		if (std::string::npos != p)
 			s.erase(p + 1);
 	}
+	void wait() {
+		std::cin.ignore();
+	}
 }

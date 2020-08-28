@@ -30,6 +30,15 @@ namespace dms {
 		temp << this;
 		return temp.str();
 	}
+	value* buildValue() {
+		return new value;
+	}
+	value* buildVariable(std::string str) {
+		value* val = new value{};
+		val->set(buildString(str));
+		val->type = variable;
+		return val;
+	}
 	value* buildValue(std::string str) {
 		value* val = new value{};
 		val->set(buildString(str));

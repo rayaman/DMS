@@ -30,9 +30,6 @@
     <ClCompile Include="dms_exceptions.cpp">
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
-    <ClCompile Include="LineParser.cpp">
-      <Filter>Source Files\DMS</Filter>
-    </ClCompile>
     <ClCompile Include="number_utils.cpp">
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
@@ -54,7 +51,13 @@
     <ClCompile Include="chunk.cpp">
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
-    <ClCompile Include="LineParserExtended.cpp">
+    <ClCompile Include="LineParserMatchProcess.cpp">
+      <Filter>Source Files\DMS</Filter>
+    </ClCompile>
+    <ClCompile Include="LineParserParse.cpp">
+      <Filter>Source Files\DMS</Filter>
+    </ClCompile>
+    <ClCompile Include="LineParserUtils.cpp">
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
   </ItemGroup>

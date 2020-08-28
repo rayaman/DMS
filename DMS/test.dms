@@ -50,10 +50,10 @@ using extendedDefine
 	//Hello im testing stuff
 	
 	CHOICE "Pick one:" {
-		"first" func()
-		"second" func()
-		"third" func()
-		"forth" func()
+		"first" func(1,2,3)
+		"second" func(true,false)
+		"third" func("hehe")
+		"forth" func("1",2,false)
 		"fifth" goto "here"
 		"sixth" goto name
 		"sevinth" jump "there"
