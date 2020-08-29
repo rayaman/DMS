@@ -5,11 +5,12 @@ namespace dms::errors {
 		unknown,
 		string_out_of_bounds,
 		invalid_arguments,
-		invalie_type,
+		invalid_type,
 		array_out_of_bounds,
 		badtoken,
 		block_already_defined,
-		choice_unknown
+		choice_unknown,
+		nested_function
 	};
 	struct error {
 		errortype code=unknown;

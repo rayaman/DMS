@@ -53,10 +53,10 @@ namespace dms {
 				stream.next('\n'); // Seek until you find a newline
 			}
 			else if (data == '\n') {
-				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::newline,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line-2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::newline,codes::NOOP,"",line - 2 });
 				if (isNum) {
-					t_vec.push_back(token{ tokens::number,codes::NOOP,stream.processBuffer(buffer),line });
+					t_vec.push_back(token{ tokens::number,codes::NOOP,stream.processBuffer(buffer),line - 2 });
 					buffer.clear();
 					isNum = false;
 				}
@@ -71,7 +71,7 @@ namespace dms {
 				stream.next();
 			}
 			else if (data == ':' && stream.peek() == ':' && labelStart) {
-				t_vec.push_back(token{ tokens::label,codes::NOOP,stream.processBuffer(buffer),line });
+				t_vec.push_back(token{ tokens::label,codes::NOOP,stream.processBuffer(buffer),line - 2 });
 				buffer.clear();
 				stream.next();
 				labelStart = false;
@@ -82,8 +82,11 @@ namespace dms {
 			}
 			else if (data == '"' && isStr) {
 				isStr = false;
-				t_vec.push_back(token{ tokens::string,codes::NOOP,stream.processBuffer(buffer),line });
+				t_vec.push_back(token{ tokens::string,codes::NOOP,stream.processBuffer(buffer),line - 2 });
 				buffer.clear();
+			}
+			else if (isStr) {
+				buffer.push_back(data);
 			}
 			else if (isdigit(data)) {
 				isNum = true;
@@ -97,153 +100,157 @@ namespace dms {
 				buffer.push_back(data);
 			}
 			else if (data == '.' && isNum && hasDec) {
-				t_vec.push_back(token{ tokens::number,codes::ERRO,"Malformed number!",line });
+				t_vec.push_back(token{ tokens::number,codes::ERRO,"Malformed number!",line - 2 });
 			}
 			else if (data == '[') {
-				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::bracketo,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::bracketo,codes::NOOP,"",line - 2 });
 			}
 			else if (data == ']') {
-				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::bracketc,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::bracketc,codes::NOOP,"",line - 2 });
 			}
 			else if (data == '(') {
-				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::parao,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::parao,codes::NOOP,"",line - 2 });
 			}
 			else if (data == ')') {
-				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::parac,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::parac,codes::NOOP,"",line - 2 });
 			}
 			else if (data == ',') {
-				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::seperator,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::seperator,codes::NOOP,"",line - 2 });
 			}
 			else if (data == '.') {
 				//doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::dot,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::dot,codes::NOOP,"",line - 2 });
 			}
 			else if (data == '{') {
-				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::cbracketo,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::cbracketo,codes::NOOP,"",line - 2 });
 			}
 			else if (data == '}') {
-				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::cbracketc,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::cbracketc,codes::NOOP,"",line - 2 });
 			}
 			else if (data == '+') {
-				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::plus,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::plus,codes::NOOP,"",line - 2 });
 			}
 			else if (data == '-') {
-				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::minus,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::minus,codes::NOOP,"",line - 2 });
 			}
 			else if (data == '*') {
-				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::multiply,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::multiply,codes::NOOP,"",line - 2 });
 			}
 			else if (data == '/') {
-				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::divide,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::divide,codes::NOOP,"",line - 2 });
 			}
 			else if (data == '^') {
-				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::pow,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::pow,codes::NOOP,"",line - 2 });
 			}
 			else if (data == '%') {
-				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::mod,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::mod,codes::NOOP,"",line - 2 });
 			}
 			else if (data == '=') {
-				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::equal,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::equal,codes::NOOP,"",line - 2 });
 			}
 			else if (data == ':') {
-				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::colon,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::colon,codes::NOOP,"",line - 2 });
 			}
 			else if (data == ';') {
-				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::newline,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::newline,codes::NOOP,"",line - 2 });
 			}
 			else if (data == '!') {
-				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::Not,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::Not,codes::NOOP,"",line - 2 });
 			}
 			else if (data == '\t') {
-				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::tab,codes::NOOP,"",line });
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::tab,codes::NOOP,"",line - 2 });
 			}
 
 			if (data == ' ' && !isStr) { // tokens end with a space
 				std::string str = stream.processBuffer(buffer);
 				tolower(str);
 				if (str == "enable") {
-					t_vec.push_back(token{ tokens::flag,codes::ENAB,"",line });
+					t_vec.push_back(token{ tokens::flag,codes::ENAB,"",line - 2 });
 				}
 				else if (str == "entry") {
-					t_vec.push_back(token{ tokens::flag,codes::ENTR,"",line });
+					t_vec.push_back(token{ tokens::flag,codes::ENTR,"",line - 2 });
 				}
 				else if (str == "loadfile") {
-					t_vec.push_back(token{ tokens::flag,codes::LOAD,"",line });
+					t_vec.push_back(token{ tokens::flag,codes::LOAD,"",line - 2 });
 				}
 				else if (str == "version") {
-					t_vec.push_back(token{ tokens::flag,codes::VERN,"",line });
+					t_vec.push_back(token{ tokens::flag,codes::VERN,"",line - 2 });
 				}
 				else if (str == "using") {
-					t_vec.push_back(token{ tokens::flag,codes::USIN,"",line });
+					t_vec.push_back(token{ tokens::flag,codes::USIN,"",line - 2 });
 				}
 				else if (str == "disable") {
-					t_vec.push_back(token{ tokens::flag,codes::DISA,"",line });
+					t_vec.push_back(token{ tokens::flag,codes::DISA,"",line - 2 });
 				}
 				else if (str == "if") {
-					t_vec.push_back(token{ tokens::control,codes::IFFF,"",line });
+					t_vec.push_back(token{ tokens::control,codes::IFFF,"",line - 2 });
 				}
 				else if (str == "elseif") {
-					t_vec.push_back(token{ tokens::control,codes::ELIF,"",line });
+					t_vec.push_back(token{ tokens::control,codes::ELIF,"",line - 2 });
 				}
 				else if (str == "while") {
-					t_vec.push_back(token{ tokens::control,codes::WHLE,"",line });
+					t_vec.push_back(token{ tokens::control,codes::WHLE,"",line - 2 });
 				}
 				else if (str == "true") {
-					t_vec.push_back(token{ tokens::True,codes::NOOP,"",line });
+					t_vec.push_back(token{ tokens::True,codes::NOOP,"",line - 2 });
 				}
 				else if (str == "false") {
-					t_vec.push_back(token{ tokens::False,codes::NOOP,"",line });
+					t_vec.push_back(token{ tokens::False,codes::NOOP,"",line - 2 });
 				}
 				else if (str == "else") {
-					t_vec.push_back(token{ tokens::control,codes::ELSE,"",line });
+					t_vec.push_back(token{ tokens::control,codes::ELSE,"",line - 2 });
 				}
 				else if (str == "and") {
-					t_vec.push_back(token{ tokens::And,codes::NOOP,"",line });
+					t_vec.push_back(token{ tokens::And,codes::NOOP,"",line - 2 });
 				}
 				else if (str == "or") {
-					t_vec.push_back(token{ tokens::Or,codes::NOOP,"",line });
+					t_vec.push_back(token{ tokens::Or,codes::NOOP,"",line - 2 });
 				}
 				else if (str == "for") {
-					t_vec.push_back(token{ tokens::For,codes::NOOP,"",line });
+					t_vec.push_back(token{ tokens::For,codes::NOOP,"",line - 2 });
 				}
 				else if (str == "choice") {
-					t_vec.push_back(token{ tokens::control,codes::CHOI,"",line });
+					t_vec.push_back(token{ tokens::control,codes::CHOI,"",line - 2 });
 				}
 				else if (str == "return") {
-					t_vec.push_back(token{ tokens::ret,codes::RETN,"",line });
+					t_vec.push_back(token{ tokens::ret,codes::RETN,"",line - 2 });
 				}
 				else if (str == "nil") {
-					t_vec.push_back(token{ tokens::nil,codes::NOOP,"",line });
+					t_vec.push_back(token{ tokens::nil,codes::NOOP,"",line - 2 });
 				}
 				else if (str == "goto") {
-					t_vec.push_back(token{ tokens::gotoo,codes::NOOP,"",line });
+					t_vec.push_back(token{ tokens::gotoo,codes::NOOP,"",line - 2 });
 				}
 				else if (str == "jump") {
-					t_vec.push_back(token{ tokens::jump,codes::NOOP,"",line });
+					t_vec.push_back(token{ tokens::jump,codes::NOOP,"",line - 2 });
 				}
 				else if (str == "exit") {
-					t_vec.push_back(token{ tokens::exit,codes::NOOP,"",line });
+					t_vec.push_back(token{ tokens::exit,codes::NOOP,"",line - 2 });
+				}
+				else if (utils::isNum(str) && str.size()!=0) {
+					t_vec.push_back(token{ tokens::number,codes::NOOP,stream.processBuffer(buffer),line - 2 });
+					isNum = false;
 				}
 				else if (utils::isalphanum(str) && str.size() > 0) {
-					t_vec.push_back(token{ tokens::name,codes::NOOP,stream.processBuffer(buffer),line });
+					t_vec.push_back(token{ tokens::name,codes::NOOP,stream.processBuffer(buffer),line - 2 });
 				}
 				else {
 					// Unknown command!
@@ -255,7 +262,7 @@ namespace dms {
 			}
 			data = stream.next();
 		}
-		t_vec.push_back(token{ tokens::eof,codes::NOOP,"",line + 1 });
+		t_vec.push_back(token{ tokens::eof,codes::NOOP,"",line - 1 });
 		std::ofstream outputFile("dump.txt");
 		outputFile << "Token Dump:" << std::endl;
 		for (size_t i = 0; i < t_vec.size(); i++) {
@@ -376,100 +383,11 @@ namespace dms {
 			}
 			// Control Handle all controls here
 			if (stream.match(tokens::control)) {
-				token control = stream.next();
-				if (control.raw == codes::CHOI && stream.peek().type == tokens::string) {
-					// Let's parse choice blocks.
-					std::string prompt = stream.next().name;
-					print("Prompt: ", prompt);
-					bool good = true;
-					std::string option;
-					cmd* c = new cmd;
-					// Create a unique label name by using the line number
-					std::string choicelabel = concat("$CHOI_END_", stream.peek().line_num);
-					wait();
-					c->opcode = codes::CHOI;
-					c->args.push(buildValue(prompt));
-					current_chunk->addCmd(c); // We will keep a reference to this and add to it as we go through the list
-					bool start = false;
-					/*
-						What's going on here might be tough to understand just by looking at the code
-						The bytecode generated by this code might look something like this:
-
-						off	op		opcodes
-						0	CHOI	"Pick one!" "Choice 1" "Choice 2" "Choice 3" "Choice 4"
-						1	FUNC	print "You picked 1!"
-						2	GOTO	$CHOI_END_1
-						3	FUNC	print "You picked 2!"
-						4	GOTO	$CHOI_END_1
-						5	JUMP	park
-						6	NOOP
-						7	GOTO	mylabel
-						8	LABL	$CHOI_END_1
-
-						The CHOI code tells the vm that we need to process user input. The input we get in a number 0-3
-						I know we have 4 choices
-						If the user provides us with a 0 then we need to move to off 1
-						If the user provides us with a 1 then we need to move to off 3
-						If the user provides us with a 2 then we need to move to off 5
-						If the user provides us with a 3 then we need to move to off 7
-						I'm sure you see the pattern here. 1 (+2) 3 (+2) 5... We only need to jump once then let the vm continue like normal.
-						The math for this is: [current_pos] + (n*2+1)
-						n*2+1 (n = 0) = 1
-						n*2+1 (n = 1) = 3
-						n*2+1 (n = 2) = 5
-						n*2+1 (n = 3) = 7
-						Which is why you see NOOP for the JUMP code. If GOTO wasn't the last choice possible to make there would be a NOOP after that as well.
-						The NOOP ensures the pattern stays.
-						If we are provided with a number greater than 3 then we can push an execption.
-					*/
-					while (!stream.match(tokens::cbracketc)) {
-						// We need to match the possible options for a choice block
-						/*
-							"option" function()
-							"option" goto ""
-							"option" goto var
-							"option" jump ""
-							"option" jump var
-							"option" exit [0]
-
-							Exit takes an optional int
-						*/
-						if (stream.match(tokens::cbracketo) && !start) {
-							start = true;
-							stream.next();
-						}
-						else if (stream.match(tokens::cbracketo) && start) {
-							state->push_error(errors::error{ errors::choice_unknown,concat("Unexpected symbol ",stream.next()),true,stream.peek().line_num });
-						}
-						else if (stream.match(tokens::string)) {
-							std::string name = stream.next().name;
-							print("Option: ", name);
-							c->args.push(buildValue(name)); // We append the choice to the first part of the CHOI cmd
-
-							// We consumed the option now lets do some matching, note that all of these are one liners in the bytecode!
-							if (match_process_function(&stream)) {
-
-							}
-							else if (match_process_goto(&stream)) {
-
-							}
-							else if (match_process_jump(&stream)) {
-
-							}
-							else if (match_process_exit(&stream)) {
-
-							}
-						}
-						// Last Match
-						else if (stream.match(tokens::newline)) {
-							stream.next(); // Consume
-						}
-						else if (!stream.match(tokens::cbracketc)) {
-							state->push_error(errors::error{ errors::choice_unknown,concat("Unexpected symbol ",stream.next()),true,stream.peek().line_num });
-						}
-					}
+				//token control = stream.next();
+				if (match_process_choice(&stream)) {
+					// Handle choice stuff
 				}
-				else if (control.raw == codes::IFFF) {
+				else if (match_process_IFFF(&stream)) {
 					// This will probably be the toughest one of them all
 				}
 			}

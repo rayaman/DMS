@@ -2,7 +2,7 @@ entry main
 enable warnings
 disable omniscient
 //enable debugging
-loadfile "loadtest.dms"
+//loadfile "loadtest.dms"
 version 1.2
 using extendedDefine
 	
@@ -51,7 +51,7 @@ using extendedDefine
 	
 	CHOICE "Pick one:" {
 		"first" func(1,2,3)
-		"second" func(true,false)
+		"second" func(true,false,func("heehee"))
 		"third" func("hehe")
 		"forth" func("1",2,false)
 		"fifth" goto "here"
@@ -61,6 +61,7 @@ using extendedDefine
 		"nine" exit
 	}
 }
+
 
 
 [Bob:char]

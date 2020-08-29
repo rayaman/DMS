@@ -33,6 +33,12 @@ namespace dms {
 	value* buildValue() {
 		return new value;
 	}
+	size_t count = 0;
+	value* buildVariable() {
+		count++;
+		std::string val = utils::concat("$",count);
+		return buildVariable(val);
+	}
 	value* buildVariable(std::string str) {
 		value* val = new value{};
 		val->set(buildString(str));

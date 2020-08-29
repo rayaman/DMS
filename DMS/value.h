@@ -85,6 +85,7 @@ namespace dms {
 	};
 	value* buildValue();
 	value* buildVariable(std::string str);
+	value* buildVariable();
 	value* buildValue(std::string str);
 	value* buildValue(double dbl);
 	value* buildValue(int i);

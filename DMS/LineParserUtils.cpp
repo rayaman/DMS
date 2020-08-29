@@ -6,6 +6,9 @@ namespace dms {
 	void tokenstream::init(std::vector<token>* ptr) {
 		this->tokens = *ptr;
 	}
+	token tokenstream::last() {
+		return this->tokens[pos-1];
+	}
 	token tokenstream::next() {
 		if (pos > this->tokens.size())
 			return token{ tokentype::none,codes::NOOP,"EOS",0 };

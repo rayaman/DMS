@@ -25,6 +25,7 @@ namespace dms {
 		void prev();
 		std::vector<tokens::token> next(tokens::tokentype to,tokens::tokentype tc);
 		tokens::token peek();
+		tokens::token last();
 		std::vector<tokens::token> next(tokens::tokentype tk);
 		bool match(tokens::tokentype t1 = tokens::none, tokens::tokentype t2 = tokens::none, tokens::tokentype t3 = tokens::none, tokens::tokentype t4 = tokens::none, tokens::tokentype t5 = tokens::none, tokens::tokentype t6 = tokens::none, tokens::tokentype t7 = tokens::none, tokens::tokentype t8 = tokens::none, tokens::tokentype t9 = tokens::none, tokens::tokentype t10 = tokens::none, tokens::tokentype t11 = tokens::none, tokens::tokentype t12 = tokens::none);
 		bool match(tokens::tokentype* t1 = nullptr, tokens::tokentype* t2 = nullptr, tokens::tokentype* t3 = nullptr, tokens::tokentype* t4 = nullptr, tokens::tokentype* t5 = nullptr, tokens::tokentype* t6 = nullptr, tokens::tokentype* t7 = nullptr, tokens::tokentype* t8 = nullptr, tokens::tokentype* t9 = nullptr, tokens::tokentype* t10 = nullptr, tokens::tokentype* t11 = nullptr, tokens::tokentype* t12 = nullptr);
@@ -61,16 +62,16 @@ namespace dms {
 		bool match_process_debug(tokenstream* stream);
 		bool match_process_disp(tokenstream* stream);
 		bool match_process_choice(tokenstream* stream);
-		bool match_process_function(tokenstream* stream, value* v=nullptr);
+		bool match_process_function(tokenstream* stream, value* v=nullptr, bool nested = true);
 		bool match_process_goto(tokenstream* stream);
 		bool match_process_jump(tokenstream* stream);
 		bool match_process_exit(tokenstream* stream);
 		bool match_process_label(tokenstream* stream);
-		bool match_process_expression(tokenstream* stream);
+		bool match_process_expression(tokenstream* stream, value* v);
+		bool match_process_IFFF(tokenstream* stream);
 		// Utils
 		bool createBlock(std::string bk_name, blocktype bk_type);
 
-		bool isExpression(tokenstream* stream);
 		bool isBlock();
 		bool isBlock(blocktype bk_type);
 		void tolower(std::string &str);
