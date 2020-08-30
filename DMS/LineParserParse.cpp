@@ -152,11 +152,11 @@ namespace dms {
 			}
 			else if (data == '^') {
 				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::pow,codes::NOOP,"",line - 2 });
+				t_vec.push_back(token{ tokens::caret,codes::NOOP,"",line - 2 });
 			}
 			else if (data == '%') {
 				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::mod,codes::NOOP,"",line - 2 });
+				t_vec.push_back(token{ tokens::percent,codes::NOOP,"",line - 2 });
 			}
 			else if (data == '=') {
 				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
@@ -172,7 +172,31 @@ namespace dms {
 			}
 			else if (data == '!') {
 				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::Not,codes::NOOP,"",line - 2 });
+				t_vec.push_back(token{ tokens::exclamation,codes::NOOP,"",line - 2 });
+			}
+			else if (data == '~') {
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::tilde,codes::NOOP,"",line - 2 });
+			}
+			else if (data == '`') {
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::backtick,codes::NOOP,"",line - 2 });
+			}
+			else if (data == '@') {
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::at,codes::NOOP,"",line - 2 });
+			}
+			else if (data == '#') {
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::pound,codes::NOOP,"",line - 2 });
+			}
+			else if (data == '$') {
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::dollar,codes::NOOP,"",line - 2 });
+			}
+			else if (data == '&') {
+				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::ampersand,codes::NOOP,"",line - 2 });
 			}
 			else if (data == '\t') {
 				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
@@ -311,7 +335,7 @@ namespace dms {
 				else {
 					std::stringstream str;
 					str << "Expected <FLAG IDENTIFIER> " << " got: " << current << temp[0];
-					state->push_error(errors::error{ errors::badtoken,str.str(),true,line });
+					state->push_error(errors::error{ errors::badtoken,str.str(),true,line,current_chunk });
 				}
 			}
 			// Default block
@@ -369,7 +393,7 @@ namespace dms {
 						else {
 							std::stringstream str;
 							str << "Unexpected symbol: " << tokens[i];
-							state->push_error(errors::error{ errors::badtoken,str.str(),true,line });
+							state->push_error(errors::error{ errors::badtoken,str.str(),true,line,current_chunk });
 						}
 					}
 					// If all went well the 'args' now has all of tha params for the method we will be working with
@@ -378,7 +402,7 @@ namespace dms {
 				}
 				else {
 					str << "'function' keyword expected got " << b;
-					state->push_error(errors::error{ errors::badtoken, str.str(),true,line });
+					state->push_error(errors::error{ errors::badtoken, str.str(),true,line,current_chunk });
 				}
 			}
 			// Control Handle all controls here
@@ -391,13 +415,15 @@ namespace dms {
 					// This will probably be the toughest one of them all
 				}
 			}
-			// Displays both with a target and without
-			match_process_disp(&stream);
 
-			if (current.type != tokens::tab)
-				tabs = 0;
-			current = stream.next();
+			// Displays both with a target and without
+			match_process_disp(&stream); // Match and process displays
+			match_process_label(&stream); // Match and process labels
+
+			//if (current.type != tokens::tab) // Old code for an old system...
+			//	tabs = 0;
+			//current = stream.next();
 		}
-		state->chunks.insert_or_assign(current_chunk->name, current_chunk);
+		state->push_chunk(current_chunk->name, current_chunk);
 	}
 }

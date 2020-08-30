@@ -172,7 +172,34 @@
     <ClInclude Include="utils.h" />
     <ClInclude Include="value.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\rayam\Desktop\sfml\openal32.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-audio-2.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-audio-d-2.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-graphics-2.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-graphics-d-2.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-network-2.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-network-d-2.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-system-2.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-system-d-2.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-window-2.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-window-d-2.dll" />
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\sfml-audio.redist.2.4.2.0\build\native\sfml-audio.redist.targets" Condition="Exists('..\packages\sfml-audio.redist.2.4.2.0\build\native\sfml-audio.redist.targets')" />
+    <Import Project="..\packages\sfml-system.redist.2.4.2.0\build\native\sfml-system.redist.targets" Condition="Exists('..\packages\sfml-system.redist.2.4.2.0\build\native\sfml-system.redist.targets')" />
+    <Import Project="..\packages\sfml-system.2.4.2.0\build\native\sfml-system.targets" Condition="Exists('..\packages\sfml-system.2.4.2.0\build\native\sfml-system.targets')" />
+    <Import Project="..\packages\sfml-audio.2.4.2.0\build\native\sfml-audio.targets" Condition="Exists('..\packages\sfml-audio.2.4.2.0\build\native\sfml-audio.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\sfml-audio.redist.2.4.2.0\build\native\sfml-audio.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\sfml-audio.redist.2.4.2.0\build\native\sfml-audio.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\sfml-system.redist.2.4.2.0\build\native\sfml-system.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\sfml-system.redist.2.4.2.0\build\native\sfml-system.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\sfml-system.2.4.2.0\build\native\sfml-system.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\sfml-system.2.4.2.0\build\native\sfml-system.targets'))" />
+    <Error Condition="!Exists('..\packages\sfml-audio.2.4.2.0\build\native\sfml-audio.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\sfml-audio.2.4.2.0\build\native\sfml-audio.targets'))" />
+  </Target>
 </Project>

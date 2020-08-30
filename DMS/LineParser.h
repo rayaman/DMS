@@ -75,8 +75,6 @@ namespace dms {
 		bool isBlock();
 		bool isBlock(blocktype bk_type);
 		void tolower(std::string &str);
-		tokens::tokentype* expr();
-		tokens::tokentype* variable();
 		void tokenizer(dms_state* state, std::vector<tokens::token> &tok);
 	public:
 		//Refer to streams.cpp for the match_process_CMD code.

@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "chunk.h"
 namespace dms::errors {
 	enum errortype {
 		unknown,
@@ -17,5 +18,6 @@ namespace dms::errors {
 		std::string err_msg;
 		bool crash = true; // Set if you would like the state to exit
 		size_t linenum = 0;
+		chunk* current_chunk = nullptr;
 	};
 }

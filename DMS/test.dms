@@ -5,7 +5,8 @@ disable omniscient
 //loadfile "loadtest.dms"
 version 1.2
 using extendedDefine
-	
+
+
 [main] {
 	Ryan: "This works!"
 	DEBUG "What's up" // Debug lines are removed when debug mode is disabled
@@ -59,6 +60,7 @@ using extendedDefine
 		"sevinth" jump "there"
 		"eight" jump name
 		"nine" exit
+		"ten" exit 0
 	}
 }
 

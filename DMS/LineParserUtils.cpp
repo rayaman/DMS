@@ -97,14 +97,6 @@ namespace dms {
 		}
 		return true;
 	}
-	tokentype* LineParser::expr() {
-		return new tokentype[9]{ tokens::name,tokens::number,tokens::divide,tokens::minus,tokens::mod,tokens::multiply,tokens::plus,tokens::pow ,tokens::none };
-		// tokens::none tells us we are at the end of the array.
-	}
-	tokentype* LineParser::variable() {
-		return new tokentype[7]{tokens::name,tokens::number,tokens::True,tokens::False,tokens::nil,tokens::string,tokens::none};
-		// tokens::none tells us we are at the end of the array.
-	}
 	bool inList(tokens::tokentype t,tokens::tokentype* list) {
 		size_t c = 0;
 		while (list[c] != tokens::none) {
@@ -166,12 +158,12 @@ namespace dms {
 	bool LineParser::createBlock(std::string bk_name, blocktype bk_type) {
 		if (current_chunk != nullptr) {
 			if (!state->chunks.count(current_chunk->name))
-				state->chunks.insert_or_assign(current_chunk->name, current_chunk);
+				state->push_chunk(current_chunk->name, current_chunk);
 			else
 			{
 				std::stringstream str;
 				str << "Block <" << current_chunk->name << "> already defined!";
-				state->push_error(errors::error{ errors::block_already_defined,str.str(),true,line });
+				state->push_error(errors::error{ errors::block_already_defined,str.str(),true,line,current_chunk });
 				return false;
 			}
 		}

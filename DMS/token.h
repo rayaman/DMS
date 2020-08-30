@@ -21,8 +21,8 @@ namespace dms::tokens {
 		minus,
 		multiply,
 		divide,
-		pow,
-		mod,
+		caret,
+		percent,
 		equal,
 		colon,
 		control,
@@ -30,7 +30,7 @@ namespace dms::tokens {
 		False,
 		Or,
 		And,
-		Not,
+		exclamation,
 		For,
 		label,
 		newline,
@@ -40,6 +40,14 @@ namespace dms::tokens {
 		gotoo,
 		jump,
 		exit,
+		// Other token types
+		tilde,
+		backtick,
+		at,
+		pound,
+		dollar,
+		ampersand,
+
 		nil
 	};//stream, t_vec, line, isNum, buffer
 	struct token {

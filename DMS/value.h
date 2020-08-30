@@ -60,25 +60,26 @@ namespace dms {
 		std::string toString() const;
 		friend std::ostream& operator << (std::ostream& out, const value& c) {
 			if (c.type == string) {
-				out << c.s->getValue();
+				out << (char)c.type << c.s->getValue() << (char)0;
 			}
 			else if (c.type == number) {
-				out << c.n->getValue();
+				out << (char)c.type << c.n->getValue();
 			}
 			else if (c.type == nil) {
-				out << "nil";
+				out << (char)c.type << "nil";
 			}
 			else if (c.type == boolean) {
-				out << c.b->getValue();
+				out << (char)c.type << c.b->getValue();
 			}
 			else if (c.type == env) {
-				out << "Env: " << c;
+				out << (char)c.type << "Env: " << c;
 			}
 			else if (c.type == custom) {
-				out << "Custom Data: " << c;
+				out << (char)c.type << "Custom Data: " << c;
 			}
+			// Internal kinda
 			else if (c.type == datatypes::variable) {
-				out << c.s->getValue(); // Do the lookup
+				out << (char)c.type << c.s->getValue(); // Do the lookup
 			}
 			return out;
 		};
@@ -102,6 +103,13 @@ namespace dms {
 					out << c.args[i] << ", ";
 			}
 			return out;
+		}
+		std::string toString() {
+			std::stringstream str;
+			for (size_t i = 0; i < args.size(); i++) {
+				str << *args[i];
+			}
+			return str.str();
 		}
 	};
 	struct dms_env

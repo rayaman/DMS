@@ -113,7 +113,7 @@ namespace dms {
 					stream->next();
 				}
 				else if (stream->match(tokens::cbracketo) && start) {
-					state->push_error(errors::error{ errors::choice_unknown,concat("Unexpected symbol ",stream->next()),true,stream->peek().line_num });
+					state->push_error(errors::error{ errors::choice_unknown,concat("Unexpected symbol ",stream->next()),true,stream->peek().line_num,current_chunk });
 				}
 				else if (stream->match(tokens::string)) {
 					std::string name = stream->next().name;
@@ -139,7 +139,7 @@ namespace dms {
 					stream->next(); // Consume
 				}
 				else if (!stream->match(tokens::cbracketc)) {
-					state->push_error(errors::error{ errors::choice_unknown,concat("Unexpected symbol ",stream->next()),true,stream->peek().line_num });
+					state->push_error(errors::error{ errors::choice_unknown,concat("Unexpected symbol ",stream->next()),true,stream->peek().line_num,current_chunk });
 				}
 			}
 			return true;
@@ -151,12 +151,6 @@ namespace dms {
 		v->nuke(); // Make sure we clean up the data
 		delete[] v; // We didn't need it, lets clean it up!
 	}
-	/// <summary>
-	/// Recursively parse through function related tokens
-	/// </summary>
-	/// <param name="stream"></param>
-	/// <param name="v"></param>
-	/// <returns></returns>
 	bool LineParser::match_process_function(tokenstream* stream, value* v, bool nested) {
 		/*
 			Functions should be able to handle function calls as arguments, 
@@ -204,7 +198,7 @@ namespace dms {
 			c->opcode = codes::FUNC;
 			std::string n = stream->next().name;
 			print("FUNC ",n);
-			c->args.push(buildValue(n)); // Set the func identifier as the first variable
+			c->args.push(buildVariable(n)); // Set the func identifier as the first variable
 			// Let's set the target
 			if (v != nullptr) {
 				c->args.push(v); // Push the supplied variable
@@ -257,10 +251,10 @@ namespace dms {
 				}
 				// Final match this could be a function it might also be an expression
 				else if (match_process_function(&tempstream, tempval)) {
-					if (!nested) {
+					/*if (!nested) {
 						print("No nested!");
 						state->push_error(errors::error{ errors::nested_function,"Nested functions are not allowed in this context!",true, tempstream.peek().line_num });
-					}
+					}*/
 					print("Nested ok!");
 					c->args.push(tempval);
 				}
@@ -280,26 +274,78 @@ namespace dms {
 				}
 				else {
 					cleanup(tempval); // Cleanup
-					state->push_error(errors::error{ errors::badtoken,concat("Invalid symbol: ",tempstream.peek()),true, tempstream.peek().line_num});
+					state->push_error(errors::error{ errors::badtoken,concat("Invalid symbol: ",tempstream.peek()),true, tempstream.peek().line_num,current_chunk });
 				}
 			}
 		}
 		return false;
 	}
 	bool LineParser::match_process_goto(tokenstream* stream) {
+		if (stream->match(tokens::gotoo,tokens::name) || tokens::gotoo,tokens::string) {
+			cmd* c = new cmd;
+			c->opcode = codes::GOTO;
+			stream->next(); // consume gotoo
+			if (stream->match(tokens::name)) {
+				c->args.push(buildVariable(stream->next().name));
+			}
+			else {
+				c->args.push(buildValue(stream->next().name));
+			}
+			current_chunk->addCmd(c);
+			return true;
+		}
 		return false;
 	}
 	bool LineParser::match_process_jump(tokenstream* stream) {
+		if (stream->match(tokens::jump, tokens::name) || tokens::jump, tokens::string) {
+			cmd* c = new cmd;
+			c->opcode = codes::JUMP;
+			stream->next(); // consume jump
+			if (stream->match(tokens::name)) {
+				c->args.push(buildVariable(stream->next().name));
+			}
+			else {
+				c->args.push(buildValue(stream->next().name));
+			}
+			current_chunk->addCmd(c);
+			return true;
+		}
 		return false;
 	}
 	bool LineParser::match_process_exit(tokenstream* stream) {
+		if (stream->match(tokens::exit)) {
+			cmd* c = new cmd;
+			c->opcode = codes::EXIT;
+			if (stream->match(tokens::number) || stream->match(tokens::name)) {
+				if(stream->match(tokens::number)){
+					c->args.push(buildValue(std::stod(stream->next().name)));
+				}
+				else {
+					c->args.push(buildVariable(stream->next().name));
+				}
+			}
+			current_chunk->addCmd(c);
+			return true;
+		}
 		return false;
 	}
 	bool LineParser::match_process_label(tokenstream* stream) {
+		if (stream->match(tokens::colon, tokens::colon, tokens::name, tokens::colon, tokens::colon)) {
+			cmd* c = new cmd;
+			c->opcode = codes::LABL;
+			stream->next();
+			stream->next();
+			std::string str = stream->next().name;
+			c->args.push(buildValue(str));
+			current_chunk->addCmd(c);
+			current_chunk->addLabel(str);
+			stream->next();
+			stream->next();
+		}
 		return false;
 	}
 	bool LineParser::match_process_IFFF(tokenstream* stream) {
-		return false;
+		return false; // TODO finish this
 	}
 	bool LineParser::match_process_expression(tokenstream* stream, value* v) {
 		return false; // Method isn't done yet, we will get an error without this!

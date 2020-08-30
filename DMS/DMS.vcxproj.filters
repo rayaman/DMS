@@ -105,4 +105,18 @@
       <Filter>Header Files\DMS</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="C:\Users\rayam\Desktop\sfml\openal32.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-audio-2.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-audio-d-2.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-graphics-2.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-graphics-d-2.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-network-2.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-network-d-2.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-system-2.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-system-d-2.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-window-2.dll" />
+    <None Include="C:\Users\rayam\Desktop\sfml\sfml-window-d-2.dll" />
+  </ItemGroup>
 </Project>
