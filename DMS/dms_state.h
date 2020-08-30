@@ -9,6 +9,7 @@ namespace dms {
 	class dms_state
 	{
 	public:
+		dms_state();
 		void dump(errors::error err);
 		void dump();
 		void push_error(errors::error err);
@@ -18,5 +19,6 @@ namespace dms {
 		std::map<std::string, chunk*> chunks;
 		std::string entry = "start";
 		std::map<std::string, bool> enables;
+		bool isEnabled(std::string flag);
 	};
 }

@@ -46,6 +46,26 @@ namespace dms {
 		return false;
 	}
 	bool LineParser::match_process_debug(tokenstream* stream) {
+		if (stream->match(tokens::newline, tokens::debug, tokens::string) || stream->match(tokens::newline, tokens::debug, tokens::name)){
+			stream->next();
+			stream->next();
+			if (state->isEnabled("debugging")) {
+				cmd* c = new cmd;
+				c->opcode = codes::DEBG;
+				if (stream->match(tokens::string)) {
+					c->args.push(buildValue(stream->next().name));
+				}
+				else {
+					c->args.push(buildVariable(stream->next().name));
+				}
+				current_chunk->addCmd(c);
+				return true;
+			}
+			else {
+				stream->next(); // Consume the third element anyway
+				return true; // This is a debugging match, but debugging is disabled. It's good!
+			}
+		}
 		return false;
 	}
 	bool LineParser::match_process_choice(tokenstream* stream) {
@@ -122,7 +142,7 @@ namespace dms {
 
 					// We consumed the option now lets do some matching, note that all of these are one liners in the bytecode!
 					if (match_process_function(stream,nullptr,false)) { // No returns and also no nesting of functions!
-
+						// We collect 
 					}
 					else if (match_process_goto(stream)) {
 						current_chunk->addCmd(new cmd{codes::NOOP }); // Add noop to post-goto command

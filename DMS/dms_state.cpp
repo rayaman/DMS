@@ -1,5 +1,19 @@
 #include "dms_state.h"
 namespace dms {
+	dms_state::dms_state() {
+		// We should define the defaults for the enables
+		//chunks.insert_or_assign("leaking",false);
+		//chunks.insert_or_assign("debugging",false);
+		//chunks.insert_or_assign("warnings",false); //
+		//chunks.insert_or_assign("statesave",true); // Allows you to save state
+		//chunks.insert_or_assign("omniscient",true); // Allows you to know who's who when you first meet them
+	}
+	bool dms_state::isEnabled(std::string flag) {
+		if (enables.count(flag)) {
+			return enables[flag];
+		}
+		return false;
+	}
 	void dms_state::dump(errors::error err) {
 		std::cout << "Number of chunks: " << chunks.size();
 		std::ofstream outputFile("dump.bin");

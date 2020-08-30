@@ -269,6 +269,9 @@ namespace dms {
 				else if (str == "exit") {
 					t_vec.push_back(token{ tokens::exit,codes::NOOP,"",line - 2 });
 				}
+				else if (str == "debug") {
+					t_vec.push_back(token{ tokens::debug,codes::NOOP,"",line - 2 });
+				}
 				else if (utils::isNum(str) && str.size()!=0) {
 					t_vec.push_back(token{ tokens::number,codes::NOOP,stream.processBuffer(buffer),line - 2 });
 					isNum = false;
@@ -419,10 +422,11 @@ namespace dms {
 			// Displays both with a target and without
 			match_process_disp(&stream); // Match and process displays
 			match_process_label(&stream); // Match and process labels
+			match_process_debug(&stream);
 
 			//if (current.type != tokens::tab) // Old code for an old system...
 			//	tabs = 0;
-			//current = stream.next();
+			current = stream.next();
 		}
 		state->push_chunk(current_chunk->name, current_chunk);
 	}

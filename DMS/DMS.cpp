@@ -20,7 +20,7 @@ using namespace dms;
 using namespace dms::utils;
 int main()
 {
-    /*LineParser parser = LineParser("test.dms");
+    LineParser parser = LineParser("test.dms");
     dms_state* state = parser.Parse();
-    state->dump();*/
+    state->dump();
 }

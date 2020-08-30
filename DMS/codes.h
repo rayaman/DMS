@@ -33,7 +33,8 @@ namespace dms::codes {
 		GOTO,
 		JUMP,
 		RETN,
-		EXIT
+		EXIT,
+		DEBG
 	};
 	extern const std::string list[];
 	static bool isControl(const op code) {

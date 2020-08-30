@@ -1,5 +1,5 @@
 Token Dump:
-Line <18446744073709551615>NOOP newline 		 
+Line <4294967295>NOOP newline 		 
 Line <0>NOOP newline 		 
 Line <1>ENTR flag 		 
 Line <1>NOOP name 		 main
@@ -29,7 +29,7 @@ Line <11>NOOP name 		 Ryan
 Line <11>NOOP colon 		 
 Line <11>NOOP string 		 This works!
 Line <11>NOOP newline 		 
-Line <12>NOOP name 		 DEBUG
+Line <12>NOOP nil 		 
 Line <12>NOOP string 		 What's up
 Line <12>NOOP newline 		 
 Line <13>NOOP name 		 Ryan

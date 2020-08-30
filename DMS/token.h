@@ -40,14 +40,13 @@ namespace dms::tokens {
 		gotoo,
 		jump,
 		exit,
-		// Other token types
+		debug,
 		tilde,
 		backtick,
 		at,
 		pound,
 		dollar,
 		ampersand,
-
 		nil
 	};//stream, t_vec, line, isNum, buffer
 	struct token {
