@@ -1,6 +1,7 @@
 [default:char]
 	// The default stats for all characters.
 	money = 0
+	test = nil
 
 [Ryan:char]
 	age = 21

@@ -171,7 +171,6 @@ namespace dms {
 		current_chunk->name = bk_name;
 		chunk_type = bk_type;
 		current_chunk->type = bk_type;
-		print("Created Block: ",bk_name," <",bk_type,">");
 		return true;
 	}
 	void LineParser::tokenizer(dms_state* state,std::vector<token> &toks) {

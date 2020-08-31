@@ -289,16 +289,19 @@ namespace dms {
 			data = stream.next();
 		}
 		t_vec.push_back(token{ tokens::eof,codes::NOOP,"",line - 1 });
-		std::ofstream outputFile("dump.txt");
-		outputFile << "Token Dump:" << std::endl;
-		for (size_t i = 0; i < t_vec.size(); i++) {
-			outputFile << t_vec[i] << std::endl;
-		}
-		outputFile.close();
+		tokenDump(&t_vec);
 		print("Running tokenizer");
 		// Tokens build let's parse
 		tokenizer(state, t_vec);
 		return state;
+	}
+	void LineParser::tokenDump(std::vector<token>* v) {
+		std::ofstream outputFile("dump.txt");
+		outputFile << "Token Dump:" << std::endl;
+		for (size_t i = 0; i < v->size(); i++) {
+			outputFile << (*v)[i] << std::endl;
+		}
+		outputFile.close();
 	}
 	void LineParser::_Parse(tokenstream stream) {
 		token current = stream.next();
@@ -330,7 +333,6 @@ namespace dms {
 					// TODO add usings, kinda useless atm since everything will be packed in. Perhaps extensions?
 				}
 				else if (code == codes::LOAD && tok == tokens::string) {
-					print("Loading File: ", temp[0].name);
 					LineParser parser = LineParser();
 					parser.Parse(state, temp[0].name);// Load another file
 				}

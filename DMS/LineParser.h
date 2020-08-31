@@ -54,6 +54,7 @@ namespace dms {
 		std::stack<scope> scopes;
 		size_t line = 1;
 		std::vector<tokens::token> temp;
+		std::vector<tokens::token> tdump;
 		size_t tabs = 0;
 		dms_state* state;
 		void doCheck(passer* stream, std::vector<tokens::token>* t_vec, size_t line, bool& isNum, bool& hasDec, std::vector<uint8_t>* buffer);
@@ -74,6 +75,7 @@ namespace dms {
 		void buildLabel(std::string l);
 
 		// Utils
+		void tokenDump(std::vector<tokens::token>* v);
 		bool createBlock(std::string bk_name, blocktype bk_type);
 
 		bool isBlock();

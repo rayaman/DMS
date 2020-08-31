@@ -35,7 +35,6 @@ namespace dms {
 		outputFile.close();
 	}
 	void dms_state::push_chunk(std::string s, chunk* c) {
-		std::cout << "Pushing Chunk: " << s << std::endl;
 		chunks.insert_or_assign(s, c);
 	}
 	void dms_state::push_error(errors::error err) {

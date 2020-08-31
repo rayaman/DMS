@@ -9,7 +9,7 @@ namespace dms {
 
 			Compound DISP
 		*/
-		if (isBlock(bt_block) && stream->match(tokens::newline, tokens::string, tokens::newline)) {
+		if ((isBlock(bt_block) || isBlock(bt_method)) && stream->match(tokens::newline, tokens::string, tokens::newline)) {
 			stream->next(); // Standard consumption
 			std::string msg = stream->next().name;
 			print("DISP := ", msg);

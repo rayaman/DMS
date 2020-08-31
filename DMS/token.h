@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "codes.h"
+#include "utils.h"
 namespace dms::tokens {
 	enum tokentype {
 		none,
@@ -106,6 +107,13 @@ namespace dms::tokens {
 				"gotoo",
 				"jump",
 				"exit",
+				"debug",
+				"tilde",
+				"backtick",
+				"at",
+				"pound",
+				"dollar",
+				"ampersand",
 				"nil"
 			};
 			out << "Line <" << c.line_num << ">" << codes::list[c.raw] << " " << temp1[c.type]  << " \t\t " << c.name;
