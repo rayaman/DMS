@@ -60,6 +60,9 @@
     <ClCompile Include="LineParserUtils.cpp">
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
+    <ClCompile Include="LineParserBuilds.cpp">
+      <Filter>Source Files\DMS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="value.h">

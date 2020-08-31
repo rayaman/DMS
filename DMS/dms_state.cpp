@@ -15,7 +15,7 @@ namespace dms {
 		return false;
 	}
 	void dms_state::dump(errors::error err) {
-		std::cout << "Number of chunks: " << chunks.size();
+		std::cout << std::endl << "STATE DUMP" << std::endl << "Number of chunks: " << chunks.size();
 		std::ofstream outputFile("dump.bin");
 		for (const auto& [key, val] : chunks) {
 			std::cout << "Key: " << key << " Value: " << *val << '\n';

@@ -15,7 +15,6 @@ namespace dms {
 		return Parse(state, fn);
 	}
 	dms_state* dms::LineParser::Parse(dms_state* state, std::string file) {
-		std::unordered_map<std::string, chunk> chunks;
 		std::vector<token> t_vec;
 		std::string li;
 		std::ifstream myfile(file);
@@ -304,7 +303,7 @@ namespace dms {
 	void LineParser::_Parse(tokenstream stream) {
 		token current = stream.next();
 		while (stream.peek().type != tokens::eof) {
-			print(current);
+			//print(current);
 			if (current.type == tokens::flag) {
 				temp = stream.next(tokens::newline);
 				stream.prev(); // Unconsume the newline piece
@@ -421,7 +420,10 @@ namespace dms {
 
 			// Displays both with a target and without
 			match_process_disp(&stream); // Match and process displays
-			match_process_label(&stream); // Match and process labels
+			if (stream.match(tokens::newline,tokens::label)) { // Match and process labels
+				stream.next();
+				buildLabel(stream.next().name);
+			}
 			match_process_debug(&stream);
 
 			//if (current.type != tokens::tab) // Old code for an old system...

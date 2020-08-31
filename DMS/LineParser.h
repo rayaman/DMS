@@ -66,9 +66,13 @@ namespace dms {
 		bool match_process_goto(tokenstream* stream);
 		bool match_process_jump(tokenstream* stream);
 		bool match_process_exit(tokenstream* stream);
-		bool match_process_label(tokenstream* stream);
 		bool match_process_expression(tokenstream* stream, value* v);
 		bool match_process_IFFF(tokenstream* stream);
+		// Build
+		void buildGoto(std::string g, bool v = false);
+		void buildNoop();
+		void buildLabel(std::string l);
+
 		// Utils
 		bool createBlock(std::string bk_name, blocktype bk_type);
 

@@ -1,2 +1,9 @@
-﻿  LineParserParse.cpp
+﻿  DMS.cpp
+  LineParserBuilds.cpp
+  LineParserMatchProcess.cpp
+  LineParserParse.cpp
+  LineParserUtils.cpp
+  chunk.cpp
+  dms_state.cpp
+  Generating Code...
   DMS.vcxproj -> F:\VSCWorkspace\DMS\Debug\DMS.exe

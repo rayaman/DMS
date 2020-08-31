@@ -75,7 +75,6 @@ namespace dms {
 			print(stream->peek());
 			stream->next();
 			std::string prompt = stream->next().name;
-			print("Prompt: ", prompt);
 			bool good = true;
 			std::string option;
 			cmd* c = new cmd;
@@ -116,18 +115,8 @@ namespace dms {
 				The NOOP ensures the pattern stays.
 				If we are provided with a number greater than 3 then we can push an execption.
 			*/
+			std::string str = concat("$",stream->peek().line_num);
 			while (!stream->match(tokens::cbracketc)) {
-				// We need to match the possible options for a choice block
-				/*
-					"option" function()
-					"option" goto ""
-					"option" goto var
-					"option" jump ""
-					"option" jump var
-					"option" exit [0]
-
-					Exit takes an optional int
-				*/
 				if (stream->match(tokens::cbracketo) && !start) {
 					start = true;
 					stream->next();
@@ -137,31 +126,32 @@ namespace dms {
 				}
 				else if (stream->match(tokens::string)) {
 					std::string name = stream->next().name;
-					print("Option: ", name);
 					c->args.push(buildValue(name)); // We append the choice to the first part of the CHOI cmd
 
 					// We consumed the option now lets do some matching, note that all of these are one liners in the bytecode!
 					if (match_process_function(stream,nullptr,false)) { // No returns and also no nesting of functions!
-						// We collect 
+						// We cannot have a nested function here, but if we dont have that then we add our goto
+						buildGoto(str);
 					}
 					else if (match_process_goto(stream)) {
-						current_chunk->addCmd(new cmd{codes::NOOP }); // Add noop to post-goto command
+						buildNoop(); // Add noop to post-goto command
 					}
 					else if (match_process_jump(stream)) {
-						current_chunk->addCmd(new cmd{ codes::NOOP }); // Add noop to post-jump command
+						buildNoop(); // Add noop to post-jump command
 					}
 					else if (match_process_exit(stream)) {
-						current_chunk->addCmd(new cmd{ codes::NOOP }); // Add noop to post-exit command
+						buildNoop(); // Add noop to post-exit command
 					}
 				}
 				// Last Match
 				else if (stream->match(tokens::newline)) {
 					stream->next(); // Consume
 				}
-				else if (!stream->match(tokens::cbracketc)) {
+				else {
 					state->push_error(errors::error{ errors::choice_unknown,concat("Unexpected symbol ",stream->next()),true,stream->peek().line_num,current_chunk });
 				}
 			}
+			buildLabel(str);
 			return true;
 		}
 		return false;
@@ -217,7 +207,6 @@ namespace dms {
 			cmd* c = new cmd;
 			c->opcode = codes::FUNC;
 			std::string n = stream->next().name;
-			print("FUNC ",n);
 			c->args.push(buildVariable(n)); // Set the func identifier as the first variable
 			// Let's set the target
 			if (v != nullptr) {
@@ -271,11 +260,10 @@ namespace dms {
 				}
 				// Final match this could be a function it might also be an expression
 				else if (match_process_function(&tempstream, tempval)) {
-					/*if (!nested) {
+					if (!nested) {
 						print("No nested!");
 						state->push_error(errors::error{ errors::nested_function,"Nested functions are not allowed in this context!",true, tempstream.peek().line_num });
-					}*/
-					print("Nested ok!");
+					}
 					c->args.push(tempval);
 				}
 				else if (tempstream.match(tokens::name)) {
@@ -302,16 +290,13 @@ namespace dms {
 	}
 	bool LineParser::match_process_goto(tokenstream* stream) {
 		if (stream->match(tokens::gotoo,tokens::name) || tokens::gotoo,tokens::string) {
-			cmd* c = new cmd;
-			c->opcode = codes::GOTO;
 			stream->next(); // consume gotoo
 			if (stream->match(tokens::name)) {
-				c->args.push(buildVariable(stream->next().name));
+				buildGoto(stream->next().name,true);
 			}
 			else {
-				c->args.push(buildValue(stream->next().name));
+				buildGoto(stream->next().name);
 			}
-			current_chunk->addCmd(c);
 			return true;
 		}
 		return false;
@@ -346,21 +331,6 @@ namespace dms {
 			}
 			current_chunk->addCmd(c);
 			return true;
-		}
-		return false;
-	}
-	bool LineParser::match_process_label(tokenstream* stream) {
-		if (stream->match(tokens::colon, tokens::colon, tokens::name, tokens::colon, tokens::colon)) {
-			cmd* c = new cmd;
-			c->opcode = codes::LABL;
-			stream->next();
-			stream->next();
-			std::string str = stream->next().name;
-			c->args.push(buildValue(str));
-			current_chunk->addCmd(c);
-			current_chunk->addLabel(str);
-			stream->next();
-			stream->next();
 		}
 		return false;
 	}
