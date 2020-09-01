@@ -1,5 +1,6 @@
 #pragma once
 #include "cmd.h"
+#include <string>
 #include <vector>
 #include <map>
 namespace dms {
@@ -10,6 +11,7 @@ namespace dms {
 		bt_character,
 		bt_menu
 	};
+	std::string getBlockType(const blocktype b);
 	struct chunk
 	{
 		blocktype type = bt_block;

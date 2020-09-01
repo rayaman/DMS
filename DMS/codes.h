@@ -17,7 +17,6 @@ namespace dms::codes {
 		CHOI,
 		OPTN,
 		FORE,
-		UNWN,
 		WHLE,
 		FUNC,
 		IFFF,
@@ -34,7 +33,12 @@ namespace dms::codes {
 		JUMP,
 		RETN,
 		EXIT,
-		DEBG
+		DEBG,
+		DSPD,
+		DACT,
+		WAIT,
+		APND,
+		SSPK
 	};
 	extern const std::string list[];
 	static bool isControl(const op code) {

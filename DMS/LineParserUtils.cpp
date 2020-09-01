@@ -82,6 +82,7 @@ namespace dms {
 		return isBlock(bt_block); // Default block type
 	}
 	bool LineParser::isBlock(blocktype bk_type) {
+		//print();
 		if (current_chunk == nullptr) {
 			return false; // If a chunk wasn't defined then code was probably defined outside of a block
 		}
@@ -155,6 +156,27 @@ namespace dms {
 			}
 		}
 	}
+	void LineParser::badSymbol(errors::errortype err,tokenstream* stream) {
+		state->push_error(errors::error{ err,concat("Unexpected symbol '",stream->next().toString(),"'"),true,stream->peek().line_num,current_chunk });
+	}
+	void LineParser::badSymbol(tokenstream* stream) {
+		state->push_error(errors::error{ errors::unknown,concat("Unexpected symbol '",stream->next().toString(),"'"),true,stream->peek().line_num,current_chunk });
+	}
+	void LineParser::badSymbol() {
+		state->push_error(errors::error{ errors::unknown,concat("Unexpected symbol '",_stream->next().toString(),"'"),true,_stream->peek().line_num,current_chunk });
+	}
+	void LineParser::buildSpeed(double s) {
+		cmd* c = new cmd;
+		c->opcode = codes::DSPD;
+		c->args.push(buildValue(s));
+		current_chunk->addCmd(c);
+	}
+	void LineParser::buildWait(double w) {
+		cmd* c = new cmd;
+		c->opcode = codes::WAIT;
+		c->args.push(buildValue(w));
+		current_chunk->addCmd(c);
+	}
 	bool LineParser::createBlock(std::string bk_name, blocktype bk_type) {
 		if (current_chunk != nullptr) {
 			if (!state->chunks.count(current_chunk->name))
@@ -176,6 +198,7 @@ namespace dms {
 	void LineParser::tokenizer(dms_state* state,std::vector<token> &toks) {
 		tokenstream stream;
 		stream.init(&toks);
+		_stream = &stream;
 		this->state = state; // Grab the pointer to the state and store it within the parser object
 		_Parse(stream);
 	}

@@ -11,7 +11,7 @@
 	excited: "./path/to/file"
 
 [step:function(a,b,c)]
-	"Testing..."
+	"Testing..." // testing
 	d = (100 + b) / c
 	e = "somestring"
 	e = nil

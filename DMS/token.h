@@ -68,8 +68,13 @@ namespace dms::tokens {
 			raw = o;
 			name = s;
 		}
+		std::string toString() {
+			std::stringstream str;
+			str << name;
+			return str.str();
+		}
 		friend std::ostream& operator << (std::ostream& out, const token& c) {
-			const std::string temp1[] = { 
+			const std::string tokenlist[] = {
 				"none",
 				"noop",
 				"flag",
@@ -116,7 +121,7 @@ namespace dms::tokens {
 				"ampersand",
 				"nil"
 			};
-			out << "Line <" << c.line_num << ">" << codes::list[c.raw] << " " << temp1[c.type]  << " \t\t " << c.name;
+			out << "Line <" << c.line_num << ">" << codes::list[c.raw] << " " << tokenlist[c.type] << " \t\t " << c.name;
 			return out;
 		}
 	};

@@ -15,11 +15,12 @@ namespace dms {
 			print("DISP := ", msg);
 			cmd* c = new cmd;
 			c->opcode = codes::DISP;
+			c->args.push(buildValue());
 			c->args.push(buildValue(msg));
 			current_chunk->addCmd(c); // Add the cmd to the current chunk
 			return true;
 		}
-		else if (isBlock(bt_block) && stream->match(tokens::newline, tokens::name, tokens::colon, tokens::string, tokens::newline)) {
+		else if ((isBlock(bt_block) || isBlock(bt_method)) && stream->match(tokens::newline, tokens::name, tokens::colon, tokens::string, tokens::newline)) {
 			// We might have to handle scope here
 			// Here we match 'Ryan: "This guy said this!"' Note the colon is needed!
 			stream->next(); // Standard consumption
@@ -29,11 +30,65 @@ namespace dms {
 			print("DISP := ", name, " says '", msg, "'");
 			cmd* c = new cmd;
 			c->opcode = codes::DISP;
-			c->args.push(buildValue(msg));
 			c->args.push(buildValue(name));
+			c->args.push(buildValue(msg));
 			current_chunk->addCmd(c); // Add the cmd to the current chunk
 			// We might have to consume a newline... Depends on what's next
 			return true;
+		}
+		else if ((isBlock(bt_block) || isBlock(bt_method)) && stream->match(tokens::name,tokens::colon,tokens::cbracketo)) {
+			std::string name = stream->next().name;
+			cmd* c = new cmd;
+			c->opcode = codes::SSPK;
+			c->args.push(buildVariable(name));
+			current_chunk->addCmd(c);
+			// Command to set the speaker
+			stream->next();
+			stream->next();
+			print("Doing disp!!!");
+			while (stream->peek().type != tokens::cbracketc) {
+				print(stream->peek());
+				if (stream->match(tokens::name)) {
+					std::string mode = stream->next().name;
+					if (mode == "speed") {
+						if (stream->match(tokens::number)) {
+							buildSpeed(std::stod(stream->next().name));
+						}
+						else {
+							badSymbol(stream);
+						}
+					}
+					else if (mode == "wait") {
+						if (stream->match(tokens::number)) {
+							buildWait(std::stod(stream->next().name));
+						}
+						else {
+							badSymbol(errors::disp_unknown, stream);
+						}
+					}
+					else {
+						// Assume we have a dact
+						if (stream->match(tokens::string)) {
+							cmd* c = new cmd;
+							c->opcode = codes::DACT;
+							c->args.push(buildVariable(mode));
+							current_chunk->addCmd(c);
+						}
+						else {
+							badSymbol(stream);
+						}
+					}
+				}
+				else if (stream->match(tokens::string)) {
+
+				}
+				else if (stream->match(tokens::newline)) {
+					stream->next();
+				}
+				else {
+					badSymbol(stream);
+				}
+			}
 		}
 		// emotion: "path"
 		// looks like a simple disp command
@@ -122,7 +177,7 @@ namespace dms {
 					stream->next();
 				}
 				else if (stream->match(tokens::cbracketo) && start) {
-					state->push_error(errors::error{ errors::choice_unknown,concat("Unexpected symbol ",stream->next()),true,stream->peek().line_num,current_chunk });
+					badSymbol(stream);
 				}
 				else if (stream->match(tokens::string)) {
 					std::string name = stream->next().name;
@@ -148,7 +203,7 @@ namespace dms {
 					stream->next(); // Consume
 				}
 				else {
-					state->push_error(errors::error{ errors::choice_unknown,concat("Unexpected symbol ",stream->next()),true,stream->peek().line_num,current_chunk });
+					badSymbol(stream);
 				}
 			}
 			buildLabel(str);
@@ -282,7 +337,7 @@ namespace dms {
 				}
 				else {
 					cleanup(tempval); // Cleanup
-					state->push_error(errors::error{ errors::badtoken,concat("Invalid symbol: ",tempstream.peek()),true, tempstream.peek().line_num,current_chunk });
+					badSymbol(stream);
 				}
 			}
 		}

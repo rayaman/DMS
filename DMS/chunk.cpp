@@ -1,5 +1,17 @@
 #include "chunk.h"
 namespace dms {
+	std::string getBlockType(const blocktype b) {
+		if (b == bt_block)
+			return "block";
+		if (b == bt_method)
+			return "method";
+		if (b == bt_env)
+			return "env";
+		if (b == bt_character)
+			return "character";
+		if (b == bt_menu)
+			return "menu";
+	}
 	void chunk::addCmd(cmd* c) {
 		cmds.push_back(c);
 	}

@@ -56,6 +56,7 @@ namespace dms {
 		std::vector<tokens::token> temp;
 		std::vector<tokens::token> tdump;
 		size_t tabs = 0;
+		tokenstream* _stream;
 		dms_state* state;
 		void doCheck(passer* stream, std::vector<tokens::token>* t_vec, size_t line, bool& isNum, bool& hasDec, std::vector<uint8_t>* buffer);
 		void _Parse(tokenstream stream);
@@ -73,8 +74,14 @@ namespace dms {
 		void buildGoto(std::string g, bool v = false);
 		void buildNoop();
 		void buildLabel(std::string l);
+		void buildSpeed(double s);
+		void buildWait(double w);
 
 		// Utils
+		void badSymbol(errors::errortype err, tokenstream* stream);
+		void badSymbol(tokenstream* stream);
+		void badSymbol();
+
 		void tokenDump(std::vector<tokens::token>* v);
 		bool createBlock(std::string bk_name, blocktype bk_type);
 

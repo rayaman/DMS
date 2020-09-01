@@ -1,17 +1,20 @@
 entry main
 enable warnings
 disable omniscient
-//enable debugging
+enable debugging
 loadfile "loadtest.dms"
 version 1.2
 using extendedDefine
 
+[testblockpro]
+	"hehe"
 
-[main] {
+[main]
 	Ryan: "This works!"
 	DEBUG "What's up" // Debug lines are removed when debug mode is disabled
 	Ryan: {
-		speed 100%;calm "Hello Bob, "
+		true
+		speed 100;calm "Hello Bob, "
 		wait 0.455
 		excited "how are you doing?"
 		// Becomes: Hello Bob, how are you doing?
@@ -62,7 +65,6 @@ using extendedDefine
 		"nine" exit
 		"ten" exit 0
 	}
-}
 
 
 
@@ -73,3 +75,4 @@ using extendedDefine
 [newblock:function()]
 	"Test #2"
 	"Does it parse this part properly?"
+	"huh"

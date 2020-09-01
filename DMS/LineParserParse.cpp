@@ -23,11 +23,11 @@ namespace dms {
 		if (myfile.is_open())
 		{
 			std::string line;
-			rawdata << "\n\n"; // For things to work I added 2 newlines. The issue is with how I decided to parse things.
+			rawdata << ";;"; // For things to work I added 2 newlines. The issue is with how I decided to parse things.
 			// This way you are allowed to start a block at the top of the screen!
 			while (std::getline(myfile, line)) {
 				trim(line);
-				rawdata << line << "\n";
+				rawdata << line << ";\n";
 			}
 			myfile.close();
 			//std::cout << rawdata.str() << std::endl;
@@ -53,9 +53,9 @@ namespace dms {
 			}
 			else if (data == '\n') {
 				doCheck(&stream, &t_vec, line-2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::newline,codes::NOOP,"",line - 2 });
+				t_vec.push_back(token{ tokens::newline,codes::NOOP,"",line });
 				if (isNum) {
-					t_vec.push_back(token{ tokens::number,codes::NOOP,stream.processBuffer(buffer),line - 2 });
+					t_vec.push_back(token{ tokens::number,codes::NOOP,stream.processBuffer(buffer),line });
 					buffer.clear();
 					isNum = false;
 				}
@@ -70,7 +70,7 @@ namespace dms {
 				stream.next();
 			}
 			else if (data == ':' && stream.peek() == ':' && labelStart) {
-				t_vec.push_back(token{ tokens::label,codes::NOOP,stream.processBuffer(buffer),line - 2 });
+				t_vec.push_back(token{ tokens::label,codes::NOOP,stream.processBuffer(buffer),line });
 				buffer.clear();
 				stream.next();
 				labelStart = false;
@@ -81,7 +81,7 @@ namespace dms {
 			}
 			else if (data == '"' && isStr) {
 				isStr = false;
-				t_vec.push_back(token{ tokens::string,codes::NOOP,stream.processBuffer(buffer),line - 2 });
+				t_vec.push_back(token{ tokens::string,codes::NOOP,stream.processBuffer(buffer),line });
 				buffer.clear();
 			}
 			else if (isStr) {
@@ -99,190 +99,184 @@ namespace dms {
 				buffer.push_back(data);
 			}
 			else if (data == '.' && isNum && hasDec) {
-				t_vec.push_back(token{ tokens::number,codes::ERRO,"Malformed number!",line - 2 });
+				t_vec.push_back(token{ tokens::number,codes::ERRO,"Malformed number!",line });
 			}
 			else if (data == '[') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::bracketo,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::bracketo,codes::NOOP,"",line });
 			}
 			else if (data == ']') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::bracketc,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::bracketc,codes::NOOP,"",line });
 			}
 			else if (data == '(') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::parao,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::parao,codes::NOOP,"",line });
 			}
 			else if (data == ')') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::parac,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::parac,codes::NOOP,"",line });
 			}
 			else if (data == ',') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::seperator,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::seperator,codes::NOOP,"",line });
 			}
 			else if (data == '.') {
 				//doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::dot,codes::NOOP,"",line - 2 });
+				t_vec.push_back(token{ tokens::dot,codes::NOOP,"",line });
 			}
 			else if (data == '{') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::cbracketo,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::cbracketo,codes::NOOP,"",line });
 			}
 			else if (data == '}') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::cbracketc,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::cbracketc,codes::NOOP,"",line });
 			}
 			else if (data == '+') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::plus,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::plus,codes::NOOP,"",line });
 			}
 			else if (data == '-') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::minus,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::minus,codes::NOOP,"",line });
 			}
 			else if (data == '*') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::multiply,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::multiply,codes::NOOP,"",line });
 			}
 			else if (data == '/') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::divide,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::divide,codes::NOOP,"",line });
 			}
 			else if (data == '^') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::caret,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::caret,codes::NOOP,"",line });
 			}
 			else if (data == '%') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::percent,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::percent,codes::NOOP,"",line });
 			}
 			else if (data == '=') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::equal,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::equal,codes::NOOP,"",line });
 			}
 			else if (data == ':') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::colon,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::colon,codes::NOOP,"",line });
 			}
 			else if (data == ';') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::newline,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::newline,codes::NOOP,"",line });
 			}
 			else if (data == '!') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::exclamation,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::exclamation,codes::NOOP,"",line });
 			}
 			else if (data == '~') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::tilde,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::tilde,codes::NOOP,"",line });
 			}
 			else if (data == '`') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::backtick,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::backtick,codes::NOOP,"",line });
 			}
 			else if (data == '@') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::at,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::at,codes::NOOP,"",line });
 			}
 			else if (data == '#') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::pound,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::pound,codes::NOOP,"",line });
 			}
 			else if (data == '$') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::dollar,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::dollar,codes::NOOP,"",line });
 			}
 			else if (data == '&') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::ampersand,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::ampersand,codes::NOOP,"",line });
 			}
 			else if (data == '\t') {
-				doCheck(&stream, &t_vec, line - 2, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::tab,codes::NOOP,"",line - 2 });
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::tab,codes::NOOP,"",line });
 			}
 
 			if (data == ' ' && !isStr) { // tokens end with a space
 				std::string str = stream.processBuffer(buffer);
 				tolower(str);
 				if (str == "enable") {
-					t_vec.push_back(token{ tokens::flag,codes::ENAB,"",line - 2 });
+					t_vec.push_back(token{ tokens::flag,codes::ENAB,"",line });
 				}
 				else if (str == "entry") {
-					t_vec.push_back(token{ tokens::flag,codes::ENTR,"",line - 2 });
+					t_vec.push_back(token{ tokens::flag,codes::ENTR,"",line });
 				}
 				else if (str == "loadfile") {
-					t_vec.push_back(token{ tokens::flag,codes::LOAD,"",line - 2 });
+					t_vec.push_back(token{ tokens::flag,codes::LOAD,"",line });
 				}
 				else if (str == "version") {
-					t_vec.push_back(token{ tokens::flag,codes::VERN,"",line - 2 });
+					t_vec.push_back(token{ tokens::flag,codes::VERN,"",line });
 				}
 				else if (str == "using") {
-					t_vec.push_back(token{ tokens::flag,codes::USIN,"",line - 2 });
+					t_vec.push_back(token{ tokens::flag,codes::USIN,"",line });
 				}
 				else if (str == "disable") {
-					t_vec.push_back(token{ tokens::flag,codes::DISA,"",line - 2 });
+					t_vec.push_back(token{ tokens::flag,codes::DISA,"",line });
 				}
 				else if (str == "if") {
-					t_vec.push_back(token{ tokens::control,codes::IFFF,"",line - 2 });
+					t_vec.push_back(token{ tokens::control,codes::IFFF,"",line });
 				}
 				else if (str == "elseif") {
-					t_vec.push_back(token{ tokens::control,codes::ELIF,"",line - 2 });
+					t_vec.push_back(token{ tokens::control,codes::ELIF,"",line });
 				}
 				else if (str == "while") {
-					t_vec.push_back(token{ tokens::control,codes::WHLE,"",line - 2 });
+					t_vec.push_back(token{ tokens::control,codes::WHLE,"",line });
 				}
 				else if (str == "true") {
-					t_vec.push_back(token{ tokens::True,codes::NOOP,"",line - 2 });
+					t_vec.push_back(token{ tokens::True,codes::NOOP,"",line });
 				}
 				else if (str == "false") {
-					t_vec.push_back(token{ tokens::False,codes::NOOP,"",line - 2 });
+					t_vec.push_back(token{ tokens::False,codes::NOOP,"",line });
 				}
 				else if (str == "else") {
-					t_vec.push_back(token{ tokens::control,codes::ELSE,"",line - 2 });
+					t_vec.push_back(token{ tokens::control,codes::ELSE,"",line });
 				}
 				else if (str == "and") {
-					t_vec.push_back(token{ tokens::And,codes::NOOP,"",line - 2 });
+					t_vec.push_back(token{ tokens::And,codes::NOOP,"",line });
 				}
 				else if (str == "or") {
-					t_vec.push_back(token{ tokens::Or,codes::NOOP,"",line - 2 });
+					t_vec.push_back(token{ tokens::Or,codes::NOOP,"",line });
 				}
 				else if (str == "for") {
-					t_vec.push_back(token{ tokens::For,codes::NOOP,"",line - 2 });
+					t_vec.push_back(token{ tokens::For,codes::NOOP,"",line });
 				}
 				else if (str == "choice") {
-					t_vec.push_back(token{ tokens::control,codes::CHOI,"",line - 2 });
+					t_vec.push_back(token{ tokens::control,codes::CHOI,"",line });
 				}
 				else if (str == "return") {
-					t_vec.push_back(token{ tokens::ret,codes::RETN,"",line - 2 });
+					t_vec.push_back(token{ tokens::ret,codes::RETN,"",line });
 				}
 				else if (str == "nil") {
-					t_vec.push_back(token{ tokens::nil,codes::NOOP,"",line - 2 });
+					t_vec.push_back(token{ tokens::nil,codes::NOOP,"",line });
 				}
 				else if (str == "goto") {
-					t_vec.push_back(token{ tokens::gotoo,codes::NOOP,"",line - 2 });
+					t_vec.push_back(token{ tokens::gotoo,codes::NOOP,"",line });
 				}
 				else if (str == "jump") {
-					t_vec.push_back(token{ tokens::jump,codes::NOOP,"",line - 2 });
+					t_vec.push_back(token{ tokens::jump,codes::NOOP,"",line });
 				}
 				else if (str == "exit") {
-					t_vec.push_back(token{ tokens::exit,codes::NOOP,"",line - 2 });
+					t_vec.push_back(token{ tokens::exit,codes::NOOP,"",line });
 				}
 				else if (str == "debug") {
-					t_vec.push_back(token{ tokens::debug,codes::NOOP,"",line - 2 });
+					t_vec.push_back(token{ tokens::debug,codes::NOOP,"",line });
 				}
 				else if (utils::isNum(str) && str.size()!=0) {
-					t_vec.push_back(token{ tokens::number,codes::NOOP,stream.processBuffer(buffer),line - 2 });
+					t_vec.push_back(token{ tokens::number,codes::NOOP,stream.processBuffer(buffer),line });
 					isNum = false;
 				}
 				else if (utils::isalphanum(str) && str.size() > 0) {
-					t_vec.push_back(token{ tokens::name,codes::NOOP,stream.processBuffer(buffer),line - 2 });
-				}
-				else {
-					// Unknown command!
-					/*tok.build(tokens::noop, codes::UNWN);
-					tok.name = str;
-					tok.line_num = line;*/
+					t_vec.push_back(token{ tokens::name,codes::NOOP,stream.processBuffer(buffer),line });
 				}
 				buffer.clear();
 			}
@@ -306,7 +300,7 @@ namespace dms {
 	void LineParser::_Parse(tokenstream stream) {
 		token current = stream.next();
 		while (stream.peek().type != tokens::eof) {
-			//print(current);
+			print(current);
 			if (current.type == tokens::flag) {
 				temp = stream.next(tokens::newline);
 				stream.prev(); // Unconsume the newline piece
@@ -343,7 +337,8 @@ namespace dms {
 				}
 			}
 			// Default block
-			if (stream.match(tokens::newline, tokens::bracketo, tokens::name, tokens::bracketc)) {
+			if (stream.match(tokens::newline,tokens::bracketo, tokens::name, tokens::bracketc)) {
+				stream.next();
 				stream.next();
 				std::string name = stream.next().name;
 				createBlock(name, bt_block);
@@ -432,6 +427,6 @@ namespace dms {
 			//	tabs = 0;
 			current = stream.next();
 		}
-		state->push_chunk(current_chunk->name, current_chunk);
+		createBlock("$END$", bt_block);
 	}
 }

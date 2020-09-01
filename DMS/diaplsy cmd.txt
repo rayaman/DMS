@@ -1,0 +1,24 @@
+Chat Stuff
+--------------------------------------------------------------------------
+DISP spk "msg"							display message from a speaker
+DSPD #									set display speed
+DACT path							
+WAIT #									delay until next cmd is processed
+APND "msg"								appends text to last message, keeping all applied stats
+SSPK spk								sets the speaker
+
+Ryan: {
+	speed 100
+	calm "Hello Bob, "
+	wait 0.455
+	excited "how are you doing? "
+	"It's a nice day we are having!"
+}
+
+DISP ""
+DSPD Ryan 100
+DACT Ryan [path defined by: Ryan.calm]
+APND Ryan "Hello Bob, "
+WAIT 0.455
+DACT Ryan [path defined by: Ryan.excited]
+APND "how are you doing?"

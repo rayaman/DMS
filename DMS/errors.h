@@ -11,7 +11,8 @@ namespace dms::errors {
 		badtoken,
 		block_already_defined,
 		choice_unknown,
-		nested_function
+		nested_function,
+		disp_unknown
 	};
 	struct error {
 		errortype code=unknown;
