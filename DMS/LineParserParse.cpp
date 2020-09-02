@@ -1,5 +1,4 @@
 #include "LineParser.h"
-#include "errors.h"
 using namespace dms::tokens;
 using namespace dms::utils;
 namespace dms {
@@ -23,7 +22,7 @@ namespace dms {
 		if (myfile.is_open())
 		{
 			std::string line;
-			rawdata << ";;"; // For things to work I added 2 newlines. The issue is with how I decided to parse things.
+			rawdata << ";;"; // For things to work I added 2 newlines. Using ';' doesn't change the actual line numbers
 			// This way you are allowed to start a block at the top of the screen!
 			while (std::getline(myfile, line)) {
 				trim(line);
@@ -52,7 +51,7 @@ namespace dms {
 				stream.next('\n'); // Seek until you find a newline
 			}
 			else if (data == '\n') {
-				doCheck(&stream, &t_vec, line-2, isNum, hasDec, &buffer);
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
 				t_vec.push_back(token{ tokens::newline,codes::NOOP,"",line });
 				if (isNum) {
 					t_vec.push_back(token{ tokens::number,codes::NOOP,stream.processBuffer(buffer),line });
@@ -297,13 +296,13 @@ namespace dms {
 		}
 		outputFile.close();
 	}
-	void LineParser::_Parse(tokenstream stream) {
-		token current = stream.next();
-		while (stream.peek().type != tokens::eof) {
+	void LineParser::_Parse(tokenstream* stream) {
+		token current = stream->next();
+		while (stream->peek().type != tokens::eof) {
 			print(current);
 			if (current.type == tokens::flag) {
-				temp = stream.next(tokens::newline);
-				stream.prev(); // Unconsume the newline piece
+				temp = stream->next(tokens::newline);
+				stream->prev(); // Unconsume the newline piece
 				if (temp.size() != 2) {
 					std::cout << "Error";
 				}
@@ -337,20 +336,20 @@ namespace dms {
 				}
 			}
 			// Default block
-			if (stream.match(tokens::newline,tokens::bracketo, tokens::name, tokens::bracketc)) {
-				stream.next();
-				stream.next();
-				std::string name = stream.next().name;
+			if (stream->match(tokens::newline,tokens::bracketo, tokens::name, tokens::bracketc)) {
+				stream->next();
+				stream->next();
+				std::string name = stream->next().name;
 				createBlock(name, bt_block);
-				line = stream.next().line_num; // Consume
+				line = stream->next().line_num; // Consume
 			}
 			// This handles a few block types since they all follow a similar format
-			else if (stream.match(tokens::newline, tokens::bracketo, tokens::name, tokens::colon, tokens::name, tokens::bracketc)) {
-				stream.next();
-				stream.next();
-				std::string name = stream.next().name;
-				line = stream.next().line_num;
-				std::string temp = stream.next().name;
+			else if (stream->match(tokens::newline, tokens::bracketo, tokens::name, tokens::colon, tokens::name, tokens::bracketc)) {
+				stream->next();
+				stream->next();
+				std::string name = stream->next().name;
+				line = stream->next().line_num;
+				std::string temp = stream->next().name;
 				// Characters are a feature I want to have intergrated into the language
 				if (temp == "char") {
 					createBlock(name, bt_character);
@@ -365,18 +364,18 @@ namespace dms {
 				}
 			}
 			// Function block type
-			else if (stream.match(tokens::newline, tokens::bracketo, tokens::name, tokens::colon, tokens::name, tokens::parao)) {
+			else if (stream->match(tokens::newline, tokens::bracketo, tokens::name, tokens::colon, tokens::name, tokens::parao)) {
 				std::stringstream str;
-				stream.next();
-				stream.next();
-				std::string name = stream.next().name;
-				line = stream.next().line_num; // The color, not needed after the inital match, but we still need to consume it
-				std::string b = stream.next().name;
+				stream->next();
+				stream->next();
+				std::string name = stream->next().name;
+				line = stream->next().line_num; // The color, not needed after the inital match, but we still need to consume it
+				std::string b = stream->next().name;
 				if (b == "function") {
 					createBlock(name, bt_method); // We have a method let's set the block type to that, but we aren't done yet
 					// We need to set the params if any so the method can be supplied with arguments
-					stream.next(); // parao
-					std::vector<token> tokens = stream.next(tokens::parac); // Consume until we see parac
+					stream->next(); // parao
+					std::vector<token> tokens = stream->next(tokens::parac); // Consume until we see parac
 					dms_args args;
 					for (size_t i = 0; i < tokens.size() - 1; i++) {//The lase symbol is parac since that was the consume condition
 						if (tokens[i].type == tokens::name) {
@@ -405,27 +404,26 @@ namespace dms {
 				}
 			}
 			// Control Handle all controls here
-			if (stream.match(tokens::control)) {
-				//token control = stream.next();
-				if (match_process_choice(&stream)) {
+			if (stream->match(tokens::control)) {
+				//token control = stream->next();
+				if (match_process_choice(stream)) {
 					// Handle choice stuff
 				}
-				else if (match_process_IFFF(&stream)) {
+				else if (match_process_IFFF(stream)) {
 					// This will probably be the toughest one of them all
 				}
 			}
 
 			// Displays both with a target and without
-			match_process_disp(&stream); // Match and process displays
-			if (stream.match(tokens::newline,tokens::label)) { // Match and process labels
-				stream.next();
-				buildLabel(stream.next().name);
+			match_process_disp(stream); // Match and process dialogue
+			if (stream->match(tokens::newline,tokens::label)) { // Match and process labels
+				stream->next();
+				buildLabel(stream->next().name);
 			}
-			match_process_debug(&stream);
-
-			//if (current.type != tokens::tab) // Old code for an old system...
-			//	tabs = 0;
-			current = stream.next();
+			match_process_assignment(stream);
+			match_process_debug(stream);
+			match_process_goto(stream);
+			current = stream->next();
 		}
 		createBlock("$END$", bt_block);
 	}

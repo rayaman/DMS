@@ -1,5 +1,4 @@
 #include "LineParser.h"
-#include "errors.h"
 using namespace dms::tokens;
 using namespace dms::utils;
 namespace dms {
@@ -78,6 +77,7 @@ namespace dms {
 	std::string passer::processBuffer(std::vector<uint8_t> buf) {
 		return std::string(buf.begin(), buf.end());
 	}
+
 	bool LineParser::isBlock() {
 		return isBlock(bt_block); // Default block type
 	}
@@ -200,7 +200,7 @@ namespace dms {
 		stream.init(&toks);
 		_stream = &stream;
 		this->state = state; // Grab the pointer to the state and store it within the parser object
-		_Parse(stream);
+		_Parse(&stream);
 	}
 	void LineParser::tolower(std::string &s1) {
 		std::transform(s1.begin(), s1.end(), s1.begin(), std::tolower);

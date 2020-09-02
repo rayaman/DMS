@@ -13,6 +13,7 @@
 #include "token.h"
 #include "utils.h"
 #include "Scope.h"
+#include "errors.h"
 #include <stack>
 
 
@@ -56,10 +57,10 @@ namespace dms {
 		std::vector<tokens::token> temp;
 		std::vector<tokens::token> tdump;
 		size_t tabs = 0;
-		tokenstream* _stream;
-		dms_state* state;
+		tokenstream* _stream = nullptr;
+		dms_state* state = nullptr;
 		void doCheck(passer* stream, std::vector<tokens::token>* t_vec, size_t line, bool& isNum, bool& hasDec, std::vector<uint8_t>* buffer);
-		void _Parse(tokenstream stream);
+		void _Parse(tokenstream* stream);
 		// Match Process Code
 		bool match_process_debug(tokenstream* stream);
 		bool match_process_disp(tokenstream* stream);
@@ -70,6 +71,7 @@ namespace dms {
 		bool match_process_exit(tokenstream* stream);
 		bool match_process_expression(tokenstream* stream, value* v);
 		bool match_process_IFFF(tokenstream* stream);
+		bool match_process_assignment(tokenstream* stream);
 		// Build
 		void buildGoto(std::string g, bool v = false);
 		void buildNoop();

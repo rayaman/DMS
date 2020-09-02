@@ -10,5 +10,3 @@ namespace dms::number_utils {
 	dms_number* max(dms_state* state, dms_args args);
 	dms_number* pow(dms_state* state, dms_args args);
 }
-
-

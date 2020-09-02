@@ -19,6 +19,7 @@ namespace dms {
 		std::ofstream outputFile("dump.bin");
 		for (const auto& [key, val] : chunks) {
 			std::cout << "Key: " << key << "<" << getBlockType(val->type) << ">" << std::endl << *val << std::endl;
+			outputFile << "Key: " << key << "<" << getBlockType(val->type) << ">" << std::endl << *val << std::endl;
 		}
 		//If the error has a chunk then we get the data from it
 		if (err.current_chunk != nullptr) {
@@ -31,6 +32,7 @@ namespace dms {
 		std::ofstream outputFile("dump.bin");
 		for (const auto& [key, val] : chunks) {
 			std::cout << "Key: " << key << "<" << getBlockType(val->type) << ">" << std::endl << *val << std::endl;
+			outputFile << "Key: " << key << "<" << getBlockType(val->type) << ">" << std::endl << *val << std::endl;
 		}
 		outputFile.close();
 	}

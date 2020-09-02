@@ -6,7 +6,7 @@
 
 namespace dms {
 	struct dms_env;
-	enum datatypes { nil, number, boolean, env, string, custom, variable };
+	enum datatypes { nil, number, boolean, env, string, custom, variable, block };
 	struct dms_number {
 		double val;
 		double getValue() { return val; }
@@ -77,6 +77,9 @@ namespace dms {
 			else if (c.type == custom) {
 				out << (char)c.type << "Custom Data: " << c;
 			}
+			else if (c.type == block) {
+				out << (char)c.type << c.s->getValue();
+			}
 			// Internal kinda
 			else if (c.type == datatypes::variable) {
 				out << (char)c.type << c.s->getValue(); // Do the lookup
@@ -91,6 +94,7 @@ namespace dms {
 	value* buildValue(double dbl);
 	value* buildValue(int i);
 	value* buildValue(bool b);
+	value* buildBlock(std::string str);
 
 	struct dms_args {
 		std::vector<value*> args;

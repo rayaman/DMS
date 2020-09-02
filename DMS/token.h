@@ -52,7 +52,7 @@ namespace dms::tokens {
 	};//stream, t_vec, line, isNum, buffer
 	struct token {
 		tokentype type = noop;
-		codes::op raw = codes::NOOP;
+		codes::op raw = codes::op::NOOP;
 		std::string name="";
 		size_t line_num=0;
 		void build(tokentype tt, codes::op o) {
@@ -121,7 +121,7 @@ namespace dms::tokens {
 				"ampersand",
 				"nil"
 			};
-			out << "Line <" << c.line_num << ">" << codes::list[c.raw] << " " << tokenlist[c.type] << " \t\t " << c.name;
+			out << "Line <" << c.line_num << ">" << codes::list[(int)c.raw] << " " << tokenlist[c.type] << " \t\t " << c.name;
 			return out;
 		}
 	};

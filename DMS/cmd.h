@@ -6,7 +6,7 @@
 namespace dms {
 	struct cmd
 	{
-		dms::codes::op opcode;
+		dms::codes::op opcode = codes::NOOP;
 		dms_args args;
 		friend std::ostream& operator << (std::ostream& out, const cmd& c) {
 			out << codes::list[c.opcode] << " ";
