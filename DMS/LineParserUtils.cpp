@@ -82,7 +82,6 @@ namespace dms {
 		return isBlock(bt_block); // Default block type
 	}
 	bool LineParser::isBlock(blocktype bk_type) {
-		//print();
 		if (current_chunk == nullptr) {
 			return false; // If a chunk wasn't defined then code was probably defined outside of a block
 		}
@@ -119,10 +118,13 @@ namespace dms {
 	void LineParser::doCheck(passer* stream, std::vector<token>* t_vec, size_t line, bool& isNum, bool& hasDec, std::vector<uint8_t>* buffer) {
 		std::string str = stream->processBuffer(*buffer);
 		if (utils::isNum(str) && isNum) {
-			t_vec->push_back(token{ tokens::number,codes::NOOP,stream->processBuffer(*buffer),line });
-			buffer->clear();
-			isNum = false;
-			hasDec = false;
+			trim(str);
+			if (str.size() != 0) {
+				t_vec->push_back(token{ tokens::number,codes::NOOP,stream->processBuffer(*buffer),line });
+				buffer->clear();
+				isNum = false;
+				hasDec = false;
+			}
 		}
 		else if (buffer->size() > 0) {
 			if (str == "nil") {
@@ -141,10 +143,13 @@ namespace dms {
 				hasDec = false;
 			}
 			else if (utils::isNum(str) && str.size() > 0) {
-				t_vec->push_back(token{ tokens::number,codes::NOOP,stream->processBuffer(*buffer),line });
-				buffer->clear();
-				isNum = false;
-				hasDec = false;
+				trim(str);
+				if (str.size() != 0) {
+					t_vec->push_back(token{ tokens::number,codes::NOOP,stream->processBuffer(*buffer),line });
+					buffer->clear();
+					isNum = false;
+					hasDec = false;
+				}
 			}
 			else if (utils::isalphanum(str) && str.size() > 0) {
 				t_vec->push_back(token{ tokens::name,codes::NOOP,stream->processBuffer(*buffer),line });
@@ -160,7 +165,7 @@ namespace dms {
 		state->push_error(errors::error{ err,concat("Unexpected symbol '",stream->next().toString(),"'"),true,stream->peek().line_num,current_chunk });
 	}
 	void LineParser::badSymbol(tokenstream* stream) {
-		state->push_error(errors::error{ errors::unknown,concat("Unexpected symbol '",stream->next().toString(),"'"),true,stream->peek().line_num,current_chunk });
+		state->push_error(errors::error{ errors::unknown,concat("Unexpected symbol '",stream->next().toString(),"' RAW:",stream->last(), " Last Call: ",lastCall.top()),true,stream->peek().line_num,current_chunk });
 	}
 	void LineParser::badSymbol() {
 		state->push_error(errors::error{ errors::unknown,concat("Unexpected symbol '",_stream->next().toString(),"'"),true,_stream->peek().line_num,current_chunk });

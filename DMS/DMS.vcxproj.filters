@@ -104,8 +104,5 @@
     <ClInclude Include="token.h">
       <Filter>Header Files\DMS</Filter>
     </ClInclude>
-    <ClInclude Include="Scope.h">
-      <Filter>Header Files\DMS</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

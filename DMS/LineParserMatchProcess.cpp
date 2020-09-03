@@ -9,6 +9,7 @@ namespace dms {
 
 			Compound DISP
 		*/
+		lastCall.push("MP_disp");
 		if ((isBlock(bt_block) || isBlock(bt_method)) && stream->match(tokens::newline, tokens::string, tokens::newline)) {
 			stream->next(); // Standard consumption
 			std::string msg = stream->next().name;
@@ -17,6 +18,7 @@ namespace dms {
 			c->args.push(buildValue());
 			c->args.push(buildValue(msg));
 			current_chunk->addCmd(c); // Add the cmd to the current chunk
+			lastCall.pop();
 			return true;
 		}
 		else if ((isBlock(bt_block) || isBlock(bt_method)) && stream->match(tokens::newline, tokens::name, tokens::colon, tokens::string, tokens::newline)) {
@@ -32,6 +34,7 @@ namespace dms {
 			c->args.push(buildValue(msg));
 			current_chunk->addCmd(c); // Add the cmd to the current chunk
 			// We might have to consume a newline... Depends on what's next
+			lastCall.pop();
 			return true;
 		}
 		else if ((isBlock(bt_block) || isBlock(bt_method)) && stream->match(tokens::name,tokens::colon,tokens::cbracketo)) {
@@ -78,8 +81,10 @@ namespace dms {
 						}
 						else {
 							badSymbol(stream);
+							return false;
 						}
 					}
+					return true;
 				}
 				else if (stream->match(tokens::string)) {
 					cmd* c = new cmd;
@@ -92,53 +97,73 @@ namespace dms {
 				}
 				else {
 					badSymbol(stream);
+					return false;
 				}
 			}
 		}
 		// emotion: "path"
 		// looks like a simple disp command
 		else if (isBlock(bt_character) && stream->match(tokens::tab, tokens::name, tokens::colon, tokens::string, tokens::newline)) {
+			lastCall.pop();
 			return true;
 		}
 
 		// TODO: We still have to implement the compound disp
-
+		lastCall.pop();
 		return false;
 	}
 	bool LineParser::match_process_assignment(tokenstream* stream) {
 		// something equals something else lets go
+		lastCall.push("MP_assignment");
 		if (stream->match(tokens::name,tokens::equal)) {
 			value* var = buildVariable(stream->next().name); // The variable that we will be setting stuff to
 			stream->next(); // Consume the equal
 			cmd* c = new cmd;
 			c->opcode = codes::ASGN;
 			c->args.push(var);
-			if (stream->match(tokens::True)) {
+			if (match_process_expression(stream, var)) {
+				// Expressions can internally set variables
+				// We actually need to clean up our cmds
+				lastCall.pop();
+				return true;
+			}
+			else if (match_process_function(stream, var)) {
+				// Functions can internally set variables
+				// We actually need to clean up our cmds
+				lastCall.pop();
+				return true;
+			}
+			else if (stream->match(tokens::True)) {
 				stream->next();
 				c->args.push(buildValue(true));
 				current_chunk->addCmd(c);
+				lastCall.pop();
 				return true;
 			}
 			else if (stream->match(tokens::False)) {
 				stream->next();
 				c->args.push(buildValue(false));
 				current_chunk->addCmd(c);
+				lastCall.pop();
 				return true;
 			}
 			else if (stream->match(tokens::string)) {
 				c->args.push(buildValue(stream->next().name));
 				current_chunk->addCmd(c);
+				lastCall.pop();
 				return true;
 			}
 			else if (stream->match(tokens::nil)) {
 				stream->next();
 				c->args.push(buildValue());
 				current_chunk->addCmd(c);
+				lastCall.pop();
 				return true;
 			}
 			else if (stream->match(tokens::number)) {
 				c->args.push(buildValue(std::stod(stream->next().name)));
 				current_chunk->addCmd(c);
+				lastCall.pop();
 				return true;
 			}
 			else if (stream->match(tokens::bracketo, tokens::name, tokens::bracketc)) {
@@ -147,28 +172,20 @@ namespace dms {
 				c->args.push(buildBlock(stream->next().name));
 				current_chunk->addCmd(c);
 				stream->next();
-				return true;
-			}
-			else if (match_process_expression(stream,var)) {
-				// Expressions can internally set variables
-				// We actually need to clean up our cmds
-				current_chunk->cmds.pop_back();
-				delete c;
-				return true;
-			}
-			else if (match_process_function(stream,var)) {
-				// Functions can internally set variables
-				// We actually need to clean up our cmds
-				current_chunk->cmds.pop_back();
-				delete c;
+				lastCall.pop();
 				return true;
 			}
 			else if (stream->match(tokens::name)) {
 				c->args.push(buildVariable(stream->next().name));
 				current_chunk->addCmd(c);
+				lastCall.pop();
 				return true;
 			}
+			else if (stream->match(tokens::newline)) {
+				stream->next();
+			}
 		}
+		lastCall.pop();
 		return false;
 	}
 	bool LineParser::match_process_debug(tokenstream* stream) {
@@ -195,6 +212,7 @@ namespace dms {
 		return false;
 	}
 	bool LineParser::match_process_choice(tokenstream* stream) {
+		lastCall.push("MP_choice");
 		token temp = stream->peek();
 		if (temp.raw == codes::CHOI && stream->match(tokens::control,tokens::string)) {
 			// Let's parse choice blocks.
@@ -284,8 +302,10 @@ namespace dms {
 			delete cc;
 			if (hasfunc)
 				buildLabel(str);
+			lastCall.pop();
 			return true;
 		}
+		lastCall.pop();
 		return false;
 	}
 
@@ -294,6 +314,7 @@ namespace dms {
 		delete[] v; // We didn't need it, lets clean it up!
 	}
 	bool LineParser::match_process_function(tokenstream* stream, value* v, bool nested) {
+		lastCall.push("MP_function");
 		/*
 			Functions should be able to handle function calls as arguments, 
 			HOWEVER functions cannot be passed as values since they aren't values like they are in other languages!
@@ -372,6 +393,7 @@ namespace dms {
 				else if (tempstream.match(tokens::number)) {
 					cleanup(tempval);
 					std::string str = tempstream.next().name;
+					print(str);
 					tempval = buildValue(std::stod(str)); // Get the number and convert it to a double then build a value
 					c->args.push(tempval); // add this argument to the function opcodes
 				}
@@ -410,6 +432,7 @@ namespace dms {
 					cleanup(tempval);
 					tempstream.next();
 					current_chunk->addCmd(c); // We push this onto the chunk after all dependants if any have been handled
+					lastCall.pop();
 					return true;
 				}
 				else {
@@ -418,6 +441,7 @@ namespace dms {
 				}
 			}
 		}
+		lastCall.pop();
 		return false;
 	}
 	bool LineParser::match_process_goto(tokenstream* stream) {
@@ -470,7 +494,7 @@ namespace dms {
 		return false; // TODO finish this
 	}
 	bool LineParser::match_process_expression(tokenstream* stream, value* v) {
-		return false; // Method isn't done yet, we will get an error without this!
+		return false;
 		// I will have to consume for this to work so we need to keep track of what was incase we return false!
 		size_t start_pos = stream->pos;
 		// It has to start with one of these 3 to even be considered an expression
@@ -488,24 +512,6 @@ namespace dms {
 			* MOD val v1 v2
 			*/
 
-			/* lua code which was actually really compact and works!
-			if not expr:match("[/%^%+%-%*%%]") then --[[print("No math to do!")]] return expr end
-			-- handle pharanses
-			expr=expr:gsub("([%W])(%-%d)",function(b,a)
-				return b.."(0-"..a:match("%d+")..")"
-			end)
-			-- Work on functions
-			expr = expr:gsub("([_%w]+)(%b())",function(func,args)
-				local v = gen("$")
-				local fnwr = {self.current_line[1],self.current_line[2],FWNR,self.current_line[4],v.." = "..func..args}
-				self:parseFNWR(fnwr)
-				return v
-			end)
-			expr = expr:gsub("(%b())",function(a)
-				return self:parseExpr(a:sub(2,-2))
-			end)
-			return self:chop(expr)
-			*/
 			token left; // lefthand
 			token op; // opperator
 			token right; // righthand
@@ -513,7 +519,8 @@ namespace dms {
 				if (t.type == tokens::parao) {
 					tokenstream temp;
 					temp.init(&(stream->next(tokens::parao, tokens::parac))); // Balanced match!
-					return match_process_expression(&temp,buildVariable("Work On This")); // Return true is everything else checks out!
+					value* tmpvalue = buildVariable();
+					match_process_expression(&temp,tmpvalue);
 				}
 				// We have a number
 				else if (t.type == tokens::number) {

@@ -6,16 +6,14 @@
 #include <iterator>
 #include <stdio.h>
 #include <ctype.h>
+#include <stack>
 #include "codes.h"
 #include "cmd.h"
 #include "dms_state.h"
 #include "chunk.h"
 #include "token.h"
 #include "utils.h"
-#include "Scope.h"
 #include "errors.h"
-#include <stack>
-
 
 namespace dms {
 	struct tokenstream {
@@ -52,7 +50,6 @@ namespace dms {
 		chunk* current_chunk = nullptr;
 		std::string chunk_name;
 		blocktype chunk_type = bt_block;
-		std::stack<scope> scopes;
 		size_t line = 1;
 		std::vector<tokens::token> temp;
 		std::vector<tokens::token> tdump;
@@ -61,6 +58,7 @@ namespace dms {
 		dms_state* state = nullptr;
 		void doCheck(passer* stream, std::vector<tokens::token>* t_vec, size_t line, bool& isNum, bool& hasDec, std::vector<uint8_t>* buffer);
 		void _Parse(tokenstream* stream);
+		std::stack<std::string> lastCall;
 		// Match Process Code
 		bool match_process_debug(tokenstream* stream);
 		bool match_process_disp(tokenstream* stream);

@@ -1,6 +1,11 @@
 #include "LineParser.h"
 using namespace dms::tokens;
 using namespace dms::utils;
+bool is_file_exist(const char* fileName)
+{
+	std::ifstream infile(fileName);
+	return infile.good();
+}
 namespace dms {
 	dms_state* dms::LineParser::Parse() {
 		if (fn == "") {
@@ -10,6 +15,7 @@ namespace dms {
 		return Parse(fn);
 	}
 	dms_state* dms::LineParser::Parse(std::string file) {
+		std::remove("dump.txt");
 		dms_state* state = new dms_state();
 		return Parse(state, fn);
 	}
@@ -51,12 +57,16 @@ namespace dms {
 				stream.next('\n'); // Seek until you find a newline
 			}
 			else if (data == '\n') {
+				std::string str = stream.processBuffer(buffer);
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
 				t_vec.push_back(token{ tokens::newline,codes::NOOP,"",line });
-				if (isNum) {
-					t_vec.push_back(token{ tokens::number,codes::NOOP,stream.processBuffer(buffer),line });
-					buffer.clear();
-					isNum = false;
+				if (isNum && str.size() != 0) {
+					trim(str);
+					if (str.size() != 0) {
+						t_vec.push_back(token{ tokens::number,codes::NOOP,str,line });
+						buffer.clear();
+						isNum = false;
+					}
 				}
 				line++;
 				data = ' ';
@@ -271,8 +281,11 @@ namespace dms {
 					t_vec.push_back(token{ tokens::debug,codes::NOOP,"",line });
 				}
 				else if (utils::isNum(str) && str.size()!=0) {
-					t_vec.push_back(token{ tokens::number,codes::NOOP,stream.processBuffer(buffer),line });
-					isNum = false;
+					trim(str);
+					if(str!=""){
+						t_vec.push_back(token{ tokens::number,codes::NOOP,stream.processBuffer(buffer),line });
+						isNum = false;
+					}
 				}
 				else if (utils::isalphanum(str) && str.size() > 0) {
 					t_vec.push_back(token{ tokens::name,codes::NOOP,stream.processBuffer(buffer),line });
@@ -289,12 +302,22 @@ namespace dms {
 		return state;
 	}
 	void LineParser::tokenDump(std::vector<token>* v) {
-		std::ofstream outputFile("dump.txt");
-		outputFile << "Token Dump:" << std::endl;
-		for (size_t i = 0; i < v->size(); i++) {
-			outputFile << (*v)[i] << std::endl;
+		if (is_file_exist("dump.txt")) {
+			std::ofstream outputFile;
+			outputFile.open("dump.txt", std::ios_base::app); // append instead of overwrite
+			for (size_t i = 0; i < v->size(); i++) {
+				outputFile << (*v)[i] << std::endl;
+			}
+			outputFile.close();
 		}
-		outputFile.close();
+		else {
+			std::ofstream outputFile("dump.txt");
+			outputFile << "Token Dump:" << std::endl;
+			for (size_t i = 0; i < v->size(); i++) {
+				outputFile << (*v)[i] << std::endl;
+			}
+			outputFile.close();
+		}
 	}
 	void LineParser::_Parse(tokenstream* stream) {
 		token current = stream->next();

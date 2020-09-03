@@ -2,100 +2,13 @@ entry main
 enable warnings
 disable omniscient
 enable debugging
-loadfile "loadtest.dms"
+//loadfile "loadtest.dms"
 version 1.2
 using extendedDefine
 
 [main]
-	Bob: "Hi Ryan!"
-	DEBUG "What's up" // Debug lines are removed when debug mode is disabled
-	Ryan: {
-		speed 100;calm "Hello Bob, "
-		wait 0.455
-		excited "how are you doing?"
-		// Becomes: Hello Bob, how are you doing?
-	}
-	Bob: {
-		speed 50
-		happy "You won't believe what just happened!"
-	}
-	Ryan: "Let me gue..."
-	Bob: {
-		speed 150
-		excited "I got the job! "
-				 "The pay is amazing, "
-		speed 50
-		calm "but wait theres more!"
-		excited "I also get to go on a company trip and "
-				 "I'm able to invite 2 friends to come along"
-	}
-	Ryan: {
-		happy "That's awesome! "
-		curious "Who do you plan on inviting?"
-	}
-	Bob: {
-		calm "Well you obviously, but I'm not sure who else I would want to bring..."
-		curious "Wanted to ask if you had any suggestions?"
-	}
-	Ryan: "Hmm, let me see..."
-	CHOICE "Who should I pick?" {
-		"Marie" goto "pickMarie"
-		"Sammy" goto "pickSammy"
-		"Ana" goto "pickAna"
-		"No Idea" goto "noIdea"
-	}
-	::pickMarie::
-		Ryan: "I think inviting Marie would be a good idea."
-		Bob: "I was actually thinking the same thing, let's invite her."
-		friend = [Marie] // Marie is a character block so obviously we set friend to a block
-		goto endpick
-	::pickSammy::
-		Ryan: "I think inviting Sammy would be a good idea."
-		Bob: "I haven't hung out with Sammy in too long, good pick."
-		friend = [Sammy]
-		goto endpick
-	::pickAna::
-		Ryan: "I think inviting Ana would be a good idea."
-		Bob: "Ana a name I haven't heard in a long time, sure sounds like a good time."
-		friend = [Ana]
-		goto endpick
-	::noIdea::
-		Ryan: "I really don't know who to bring..."
-		Bob: "Huh you having issues thinking of someone too. How about we bring Frank?"
-		Ryan: "Oh man Frank, for sure its been a minute since I last saw him."
-		friend = [Frank]
-	::endpick::
-	Bob: "Ill give ${friend} a call later!"
-	Ryan: "Sounds good looking forward to the trip!"
-	Bob: "Same, I'll send you the details later as well, see ya!"
-	Ryan: "Take care!"
-	
-	tester = "Hello"
-	food = 3
-	
-	if statment {
-		"test"
-	} elseif statement {
-		"test"
-		} if statement {
-			"test"
-			"test"
-			if statement {
-				"test"
-			} else {
-				"test"
-			}
-		} elseif statement {
-			"test"
-		} else {
-			"test"
-		}
-	
-	goto "somewhere"
-	jump "overhere"
-
-	hungry = (-2+4-((5*5)/sqrt(144+5)))^2*2+2
-	var1 = func(1,"string", 2+5)
+	"hello?"
+	var1 = func(1,"string",test(1,2),test2())
 	a = 100 + func(1,"string", 2+5) + 100
 	func(1,"string", 2+5)
 	::mylabel::

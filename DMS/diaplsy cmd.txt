@@ -15,10 +15,10 @@ Ryan: {
 	"It's a nice day we are having!"
 }
 
-DISP ""
-DSPD Ryan 100
-DACT Ryan [path defined by: Ryan.calm]
-APND Ryan "Hello Bob, "
+SSPK Ryan 
+DSPD 100
+DACT [path defined by: Ryan.calm]
+APND "Hello Bob, "
 WAIT 0.455
-DACT Ryan [path defined by: Ryan.excited]
+DACT [path defined by: Ryan.excited]
 APND "how are you doing?"

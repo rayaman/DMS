@@ -162,7 +162,6 @@
     <ClInclude Include="cmd.h" />
     <ClInclude Include="codes.h" />
     <ClInclude Include="dms_state.h" />
-    <ClInclude Include="Scope.h" />
     <ClInclude Include="string_utils.h" />
     <ClInclude Include="dms_exceptions.h" />
     <ClInclude Include="errors.h" />
