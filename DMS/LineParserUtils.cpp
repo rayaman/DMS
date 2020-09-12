@@ -16,6 +16,21 @@ namespace dms {
 	void tokenstream::prev() {
 		pos--;
 	}
+	void tokenstream::store(chunk* c) {
+		stack.push(c->cmds.size());
+		spos.push(pos);
+	}
+	bool tokenstream::restore(cmd* c, chunk* cnk) {
+		pos = spos.top();
+		spos.pop();
+		size_t temp = stack.top(); 
+		stack.pop();
+		if (temp == cnk->cmds.size())
+			return false;
+
+		//cnk->cmds.erase(cnk->cmds.begin()+temp, cnk->cmds.end());
+		return false;
+	}
 	std::vector<token> tokenstream::next(tokentype to, tokentype tc) {
 		std::vector<token> tok;
 		size_t open = 0;

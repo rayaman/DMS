@@ -1,6 +1,6 @@
 #pragma once
 #include "Codes.h"
-const std::string dms::codes::list[] = { 
+const std::string dms::codes::list[] = {
 	"NOOP",
 	"ENTR",
 	"ENAB",
@@ -36,5 +36,11 @@ const std::string dms::codes::list[] = {
 	"DACT",
 	"WAIT",
 	"APND",
-	"SSPK"
+	"SSPK",
+	"ADD",
+	"SUB",
+	"MUL",
+	"DIV",
+	"POW",
+	"MOD"
 };

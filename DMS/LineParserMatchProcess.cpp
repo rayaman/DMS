@@ -9,7 +9,7 @@ namespace dms {
 
 			Compound DISP
 		*/
-		lastCall.push("MP_disp");
+		//lastCall.push("MP_disp");
 		if ((isBlock(bt_block) || isBlock(bt_method)) && stream->match(tokens::newline, tokens::string, tokens::newline)) {
 			stream->next(); // Standard consumption
 			std::string msg = stream->next().name;
@@ -18,7 +18,7 @@ namespace dms {
 			c->args.push(buildValue());
 			c->args.push(buildValue(msg));
 			current_chunk->addCmd(c); // Add the cmd to the current chunk
-			lastCall.pop();
+			//lastCall.pop();
 			return true;
 		}
 		else if ((isBlock(bt_block) || isBlock(bt_method)) && stream->match(tokens::newline, tokens::name, tokens::colon, tokens::string, tokens::newline)) {
@@ -34,7 +34,7 @@ namespace dms {
 			c->args.push(buildValue(msg));
 			current_chunk->addCmd(c); // Add the cmd to the current chunk
 			// We might have to consume a newline... Depends on what's next
-			lastCall.pop();
+			//lastCall.pop();
 			return true;
 		}
 		else if ((isBlock(bt_block) || isBlock(bt_method)) && stream->match(tokens::name,tokens::colon,tokens::cbracketo)) {
@@ -104,17 +104,17 @@ namespace dms {
 		// emotion: "path"
 		// looks like a simple disp command
 		else if (isBlock(bt_character) && stream->match(tokens::tab, tokens::name, tokens::colon, tokens::string, tokens::newline)) {
-			lastCall.pop();
+			//lastCall.pop();
 			return true;
 		}
 
 		// TODO: We still have to implement the compound disp
-		lastCall.pop();
+		//lastCall.pop();
 		return false;
 	}
 	bool LineParser::match_process_assignment(tokenstream* stream) {
 		// something equals something else lets go
-		lastCall.push("MP_assignment");
+		//lastCall.push("MP_assignment");
 		if (stream->match(tokens::name,tokens::equal)) {
 			value* var = buildVariable(stream->next().name); // The variable that we will be setting stuff to
 			stream->next(); // Consume the equal
@@ -124,46 +124,47 @@ namespace dms {
 			if (match_process_expression(stream, var)) {
 				// Expressions can internally set variables
 				// We actually need to clean up our cmds
-				lastCall.pop();
+				//lastCall.pop();
 				return true;
 			}
 			else if (match_process_function(stream, var)) {
 				// Functions can internally set variables
 				// We actually need to clean up our cmds
-				lastCall.pop();
+				print("> assign consumed!");
+				//lastCall.pop();
 				return true;
 			}
 			else if (stream->match(tokens::True)) {
 				stream->next();
 				c->args.push(buildValue(true));
 				current_chunk->addCmd(c);
-				lastCall.pop();
+				//lastCall.pop();
 				return true;
 			}
 			else if (stream->match(tokens::False)) {
 				stream->next();
 				c->args.push(buildValue(false));
 				current_chunk->addCmd(c);
-				lastCall.pop();
+				//lastCall.pop();
 				return true;
 			}
 			else if (stream->match(tokens::string)) {
 				c->args.push(buildValue(stream->next().name));
 				current_chunk->addCmd(c);
-				lastCall.pop();
+				//lastCall.pop();
 				return true;
 			}
 			else if (stream->match(tokens::nil)) {
 				stream->next();
 				c->args.push(buildValue());
 				current_chunk->addCmd(c);
-				lastCall.pop();
+				//lastCall.pop();
 				return true;
 			}
 			else if (stream->match(tokens::number)) {
 				c->args.push(buildValue(std::stod(stream->next().name)));
 				current_chunk->addCmd(c);
-				lastCall.pop();
+				//lastCall.pop();
 				return true;
 			}
 			else if (stream->match(tokens::bracketo, tokens::name, tokens::bracketc)) {
@@ -172,20 +173,20 @@ namespace dms {
 				c->args.push(buildBlock(stream->next().name));
 				current_chunk->addCmd(c);
 				stream->next();
-				lastCall.pop();
+				//lastCall.pop();
 				return true;
 			}
 			else if (stream->match(tokens::name)) {
 				c->args.push(buildVariable(stream->next().name));
 				current_chunk->addCmd(c);
-				lastCall.pop();
+				//lastCall.pop();
 				return true;
 			}
 			else if (stream->match(tokens::newline)) {
 				stream->next();
 			}
 		}
-		lastCall.pop();
+		//lastCall.pop();
 		return false;
 	}
 	bool LineParser::match_process_debug(tokenstream* stream) {
@@ -212,7 +213,7 @@ namespace dms {
 		return false;
 	}
 	bool LineParser::match_process_choice(tokenstream* stream) {
-		lastCall.push("MP_choice");
+		//lastCall.push("MP_choice");
 		token temp = stream->peek();
 		if (temp.raw == codes::CHOI && stream->match(tokens::control,tokens::string)) {
 			// Let's parse choice blocks.
@@ -302,10 +303,10 @@ namespace dms {
 			delete cc;
 			if (hasfunc)
 				buildLabel(str);
-			lastCall.pop();
+			//lastCall.pop();
 			return true;
 		}
-		lastCall.pop();
+		//lastCall.pop();
 		return false;
 	}
 
@@ -314,7 +315,7 @@ namespace dms {
 		delete[] v; // We didn't need it, lets clean it up!
 	}
 	bool LineParser::match_process_function(tokenstream* stream, value* v, bool nested) {
-		lastCall.push("MP_function");
+		//lastCall.push("MP_function");
 		/*
 			Functions should be able to handle function calls as arguments, 
 			HOWEVER functions cannot be passed as values since they aren't values like they are in other languages!
@@ -373,11 +374,17 @@ namespace dms {
 			tokenstream tempstream;
 			// This is a balanced consuming method (()(()))
 			std::vector<token> t = stream->next(tokens::parao, tokens::parac); // Consume and get tokens
+			token end = t.back();
+			t.pop_back();
+			t.push_back(token{ tokens::seperator,codes::NOOP,"",t[0].line_num });
+			t.push_back(token{ tokens::nil,codes::NOOP,"",t[0].line_num });
+			t.push_back(end);
 			tempstream.init(&t); // Turn tokens we consumed into a tokenstream
 			value* tempval;
 			token tok;
 			// This part we add values to the opcodes for the bytecode FUNC val a1 a2 a3 ... an
 			while (tempstream.peek().type != tokens::none) { // End of stream
+				print("> ", tempstream.peek());
 				tempval = buildVariable();
 				tok = tempstream.peek();
 				if (tempstream.match(tokens::seperator)) {
@@ -385,6 +392,9 @@ namespace dms {
 					tempstream.next(); // Consume it
 					cleanup(tempval); // We don't need it
 				} 
+				else if (match_process_expression(&tempstream, tempval)) {
+					c->args.push(tempval);
+				}
 				else if (tempstream.match(tokens::string)) {
 					cleanup(tempval);
 					tempval = buildValue(tempstream.next().name); // Get the string
@@ -408,9 +418,11 @@ namespace dms {
 					tempval = buildValue(false);
 					c->args.push(tempval);
 					tempstream.next();
-				}
-				else if (match_process_expression(&tempstream, tempval)) {
-					// We have an expression and its been handled Whoo!!!
+				} else if (tempstream.match(tokens::nil)){
+					cleanup(tempval);
+					tempval = buildValue();
+					c->args.push(tempval);
+					tempstream.next();
 				}
 				// Final match this could be a function it might also be an expression
 				else if (match_process_function(&tempstream, tempval)) {
@@ -432,7 +444,7 @@ namespace dms {
 					cleanup(tempval);
 					tempstream.next();
 					current_chunk->addCmd(c); // We push this onto the chunk after all dependants if any have been handled
-					lastCall.pop();
+					//lastCall.pop();
 					return true;
 				}
 				else {
@@ -441,7 +453,7 @@ namespace dms {
 				}
 			}
 		}
-		lastCall.pop();
+		//lastCall.pop();
 		return false;
 	}
 	bool LineParser::match_process_goto(tokenstream* stream) {
@@ -493,14 +505,20 @@ namespace dms {
 	bool LineParser::match_process_IFFF(tokenstream* stream) {
 		return false; // TODO finish this
 	}
+	void reset(value*& l,codes::op& op, value*& r) {
+		l = nullptr;
+		op = codes::NOOP;
+		r = nullptr;
+	}
 	bool LineParser::match_process_expression(tokenstream* stream, value* v) {
-		return false;
 		// I will have to consume for this to work so we need to keep track of what was incase we return false!
-		size_t start_pos = stream->pos;
+		stream->store(current_chunk);
+		cmd* lastcmd = nullptr;
+		/*if(!current_chunk->cmds.empty())
+			lastcmd = current_chunk->cmds.back();*/
 		// It has to start with one of these 3 to even be considered an expression
 		if (stream->match(tokens::number) || stream->match(tokens::name) || stream->match(tokens::parao)) {
 			// What do we know, math expressions can only be on a single line. We know where to stop looking if we have to
-			token t = stream->peek();
 			cmd* c = new cmd;
 			/*
 			* We have a few built-in methods we will have to handle
@@ -511,25 +529,151 @@ namespace dms {
 			* POW val v1 v2
 			* MOD val v1 v2
 			*/
-
-			token left; // lefthand
-			token op; // opperator
-			token right; // righthand
+			value* wv = nullptr;
+			value* left; // lefthand
+			codes::op op; // opperator
+			value* right; // righthand
+			reset(left, op, right);
+			size_t loops = 0;
+			bool hasOP = false;
 			while (stream->peek().type != tokens::none) {
-				if (t.type == tokens::parao) {
+				print(stream->peek());
+				if (stream->match(tokens::parao)) {
 					tokenstream temp;
 					temp.init(&(stream->next(tokens::parao, tokens::parac))); // Balanced match!
 					value* tmpvalue = buildVariable();
-					match_process_expression(&temp,tmpvalue);
+					if (match_process_expression(&temp, tmpvalue)) {
+						if (left == nullptr)
+							left = tmpvalue;
+						else if (right == nullptr)
+							right = tmpvalue;
+						else
+							badSymbol();
+					}
+					else {
+						badSymbol();
+					}
+					// Take that temp value and set it to left or right TODO finish this
 				}
-				// We have a number
-				else if (t.type == tokens::number) {
-
+				else if (stream->match(tokens::plus)) {
+					hasOP = true;
+					if (op == codes::NOOP)
+						op = codes::ADD;
+					else
+						badSymbol();
+					stream->next();
+				}
+				else if (stream->match(tokens::minus)) {
+					hasOP = true;
+					if (left == nullptr) {
+						left = buildValue(0); // -5 is the same as 0-5 right? Also -(5+5) is the same as 0-(5+5) So we good
+					}
+					if (op == codes::NOOP)
+						op = codes::SUB;
+					else
+						badSymbol();
+					stream->next();
+				}
+				else if (stream->match(tokens::multiply)) {
+					hasOP = true;
+					if (op == codes::NOOP)
+						op = codes::MUL;
+					else
+						badSymbol();
+					stream->next();
+				}
+				else if (stream->match(tokens::divide)) {
+					hasOP = true;
+					if (op == codes::NOOP)
+						op = codes::DIV;
+					else
+						badSymbol();
+					stream->next();
+				}
+				else if (stream->match(tokens::percent)) {
+					hasOP = true;
+					if (op == codes::NOOP)
+						op = codes::MOD;
+					else
+						badSymbol();
+					stream->next();
+				}
+				else if (stream->match(tokens::caret)) {
+					hasOP = true;
+					if (op == codes::NOOP)
+						op = codes::POW;
+					else
+						badSymbol();
+					stream->next();
+				}
+				else if (stream->match(tokens::name,tokens::parao)) {
+					//Function template ^^^ If we encounter an issue the method should push an error, incase it misses something we will!
+					value* tmpvalue = buildVariable();
+					if (match_process_function(stream,tmpvalue)) {
+						if (left == nullptr)
+							left = tmpvalue;
+						else if (right == nullptr)
+							right = tmpvalue;
+						else
+							badSymbol();
+					}
+					else {
+						badSymbol();
+					}
+				}
+				else if (stream->match(tokens::number)) {
+					double num = std::stod(stream->next().name);
+					if (left == nullptr)
+						left = buildValue(num);
+					else if (right == nullptr)
+						right = buildValue(num);
+					else
+						badSymbol();
+				}
+				else if (stream->match(tokens::name)) {
+					// We tested functions already! So if that fails and we have a name then... we have a variable lets handle this!
+					if (left == nullptr)
+						left = buildVariable(stream->next().name);
+					else if (right == nullptr)
+						right = buildVariable(stream->next().name);
+					else
+						badSymbol();
+				}
+				else if (stream->match(tokens::newline) || stream->match(tokens::parac) || stream->match(tokens::seperator)) {
+					if (wv == nullptr)
+						return stream->restore(lastcmd, current_chunk); // Always return false and restores the position in stream!
+					cmd* cc = new cmd;
+					cc->opcode = codes::ASGN;
+					cc->args.push(v);
+					cc->args.push(wv);
+					current_chunk->addCmd(cc);
+					if (stream->match(tokens::newline) || stream->match(tokens::parac))
+						stream->next();
+					// We done!
+					return true;
+				}
+				if (left != nullptr && right != nullptr && op != codes::NOOP) {
+					cmd* c = new cmd;
+					c->opcode = op;
+					if (wv == nullptr) {
+						value* temp = buildVariable();
+						c->args.push(temp);
+						wv = temp;
+					}
+					else {
+						wv = buildVariable();
+						c->args.push(wv);
+					}
+					c->args.push(left);
+					c->args.push(right);
+					current_chunk->addCmd(c);
+					reset(left, op, right);
+					left = wv;
 				}
 			}
 		}
 		else {
-			return stream->restore(start_pos); // Always return false and restores the position in stream!
+			return stream->restore(lastcmd, current_chunk); // Always return false and restores the position in stream!
 		}
 	}
 }

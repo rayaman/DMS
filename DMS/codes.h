@@ -38,7 +38,13 @@ namespace dms::codes {
 		DACT,
 		WAIT,
 		APND,
-		SSPK
+		SSPK,
+		ADD,
+		SUB,
+		MUL,
+		DIV,
+		POW,
+		MOD
 	};
 	extern const std::string list[];
 	static bool isControl(const op code) {
