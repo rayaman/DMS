@@ -180,7 +180,7 @@ namespace dms {
 		state->push_error(errors::error{ err,concat("Unexpected symbol '",stream->next().toString(),"'"),true,stream->peek().line_num,current_chunk });
 	}
 	void LineParser::badSymbol(tokenstream* stream) {
-		state->push_error(errors::error{ errors::unknown,concat("Unexpected symbol '",stream->next().toString(),"' RAW:",stream->last(), " Last Call: ",lastCall.top()),true,stream->peek().line_num,current_chunk });
+		state->push_error(errors::error{ errors::unknown,concat("Unexpected symbol '",stream->next().toString(),"' RAW:",stream->last()),true,stream->peek().line_num,current_chunk });
 	}
 	void LineParser::badSymbol() {
 		state->push_error(errors::error{ errors::unknown,concat("Unexpected symbol '",_stream->next().toString(),"'"),true,_stream->peek().line_num,current_chunk });
@@ -213,6 +213,10 @@ namespace dms {
 		current_chunk->name = bk_name;
 		chunk_type = bk_type;
 		current_chunk->type = bk_type;
+
+		cmd* c = new cmd;
+		c->opcode = codes::NOOP;
+		current_chunk->addCmd(c);
 		return true;
 	}
 	void LineParser::tokenizer(dms_state* state,std::vector<token> &toks) {

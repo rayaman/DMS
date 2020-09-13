@@ -1,145 +1,128 @@
 Token Dump:
-Line <1>NOOP newline 		 
-Line <1>NOOP newline 		 
-Line <1>ENTR flag 		 
-Line <1>NOOP name 		 main
-Line <1>NOOP newline 		 
-Line <1>NOOP newline 		 
-Line <2>ENAB flag 		 
-Line <2>NOOP name 		 warnings
-Line <2>NOOP newline 		 
-Line <2>NOOP newline 		 
-Line <3>DISA flag 		 
-Line <3>NOOP name 		 omniscient
-Line <3>NOOP newline 		 
-Line <3>NOOP newline 		 
-Line <4>ENAB flag 		 
-Line <4>NOOP name 		 debugging
-Line <4>NOOP newline 		 
-Line <4>NOOP newline 		 
-Line <5>NOOP newline 		 
-Line <6>VERN flag 		 
-Line <6>NOOP number 		 1.2
-Line <6>NOOP newline 		 
-Line <6>NOOP newline 		 
-Line <7>USIN flag 		 
-Line <7>NOOP name 		 extendedDefine
-Line <7>NOOP newline 		 
-Line <7>NOOP newline 		 
-Line <8>NOOP newline 		 
-Line <8>NOOP newline 		 
-Line <9>NOOP bracketo 		 
-Line <9>NOOP name 		 main
-Line <9>NOOP bracketc 		 
-Line <9>NOOP newline 		 
-Line <9>NOOP newline 		 
-Line <10>NOOP name 		 a
-Line <10>NOOP equal 		 
-Line <10>NOOP number 		 100
-Line <10>NOOP plus 		 
-Line <10>NOOP name 		 test
-Line <10>NOOP parao 		 
-Line <10>NOOP number 		 1
-Line <10>NOOP seperator 		 
-Line <10>NOOP number 		 2
-Line <10>NOOP parac 		 
-Line <10>NOOP minus 		 
-Line <10>NOOP parao 		 
-Line <10>NOOP name 		 test2
-Line <10>NOOP parao 		 
-Line <10>NOOP number 		 52
-Line <10>NOOP plus 		 
-Line <10>NOOP name 		 re
-Line <10>NOOP seperator 		 
-Line <10>NOOP number 		 44
-Line <10>NOOP minus 		 
-Line <10>NOOP name 		 ee
-Line <10>NOOP divide 		 
-Line <10>NOOP name 		 test
-Line <10>NOOP parao 		 
-Line <10>NOOP number 		 1
-Line <10>NOOP seperator 		 
-Line <10>NOOP number 		 3
-Line <10>NOOP parac 		 
-Line <10>NOOP seperator 		 
-Line <10>NOOP number 		 55
-Line <10>NOOP minus 		 
-Line <10>NOOP number 		 23
-Line <10>NOOP parac 		 
-Line <10>NOOP divide 		 
-Line <10>NOOP number 		 100
-Line <10>NOOP parac 		 
-Line <10>NOOP newline 		 
-Line <10>NOOP newline 		 
-Line <11>NOOP string 		 Break for your eyes ;)
-Line <11>NOOP newline 		 
-Line <11>NOOP newline 		 
-Line <12>NOOP name 		 tes
-Line <12>NOOP equal 		 
-Line <12>NOOP number 		 100
-Line <12>NOOP plus 		 
-Line <12>NOOP number 		 5
-Line <12>NOOP newline 		 
-Line <12>NOOP newline 		 
-Line <13>NOOP name 		 gg
-Line <13>NOOP equal 		 
-Line <13>NOOP true 		 true
-Line <13>NOOP newline 		 
-Line <13>NOOP newline 		 
-Line <14>NOOP name 		 temp
-Line <14>NOOP equal 		 
-Line <14>NOOP name 		 func
-Line <14>NOOP parao 		 
-Line <14>NOOP number 		 123
-Line <14>NOOP plus 		 
-Line <14>NOOP name 		 test
-Line <14>NOOP parao 		 
-Line <14>NOOP number 		 1
-Line <14>NOOP seperator 		 
-Line <14>NOOP number 		 2
-Line <14>NOOP parac 		 
-Line <14>NOOP seperator 		 
-Line <14>NOOP string 		 TEST
-Line <14>NOOP parac 		 
-Line <14>NOOP newline 		 
-Line <14>NOOP newline 		 
-Line <15>NOOP newline 		 
-Line <15>NOOP newline 		 
-Line <16>NOOP bracketo 		 
-Line <16>NOOP name 		 Bob
-Line <16>NOOP colon 		 
-Line <16>NOOP name 		 char
-Line <16>NOOP bracketc 		 
-Line <16>NOOP newline 		 
-Line <16>NOOP newline 		 
-Line <17>NOOP name 		 age
-Line <17>NOOP equal 		 
-Line <17>NOOP number 		 24
-Line <17>NOOP newline 		 
-Line <17>NOOP newline 		 
-Line <18>NOOP name 		 money
-Line <18>NOOP equal 		 
-Line <18>NOOP number 		 100
-Line <18>NOOP newline 		 
-Line <18>NOOP newline 		 
-Line <19>NOOP newline 		 
-Line <19>NOOP newline 		 
-Line <20>NOOP bracketo 		 
-Line <20>NOOP name 		 newblock
-Line <20>NOOP colon 		 
-Line <20>NOOP name 		 function
-Line <20>NOOP parao 		 
-Line <20>NOOP parac 		 
-Line <20>NOOP bracketc 		 
-Line <20>NOOP newline 		 
-Line <20>NOOP newline 		 
-Line <21>NOOP string 		 Test #2
-Line <21>NOOP newline 		 
-Line <21>NOOP newline 		 
-Line <22>NOOP string 		 Does it parse this part properly?
-Line <22>NOOP newline 		 
-Line <22>NOOP newline 		 
-Line <23>NOOP string 		 huh
-Line <23>NOOP newline 		 
-Line <23>NOOP newline 		 
-Line <23>NOOP eof 		 
+Line <1> newline 		 
+Line <1> newline 		 
+Line <1> flag 		 
+Line <1> name 		 main
+Line <1> newline 		 
+Line <1> newline 		 
+Line <2> flag 		 
+Line <2> name 		 warnings
+Line <2> newline 		 
+Line <2> newline 		 
+Line <3> flag 		 
+Line <3> name 		 omniscient
+Line <3> newline 		 
+Line <3> newline 		 
+Line <4> flag 		 
+Line <4> name 		 debugging
+Line <4> newline 		 
+Line <4> newline 		 
+Line <5> newline 		 
+Line <6> flag 		 
+Line <6> number 		 1.2
+Line <6> newline 		 
+Line <6> newline 		 
+Line <7> flag 		 
+Line <7> name 		 extendedDefine
+Line <7> newline 		 
+Line <7> newline 		 
+Line <8> newline 		 
+Line <8> newline 		 
+Line <9> bracketo 		 [
+Line <9> name 		 main
+Line <9> bracketc 		 ]
+Line <9> newline 		 
+Line <9> newline 		 
+Line <10> string 		 Testing
+Line <10> newline 		 
+Line <10> newline 		 
+Line <11> name 		 Bob
+Line <11> colon 		 :
+Line <11> cbracketo 		 {
+Line <11> newline 		 
+Line <11> newline 		 
+Line <12> name 		 speed
+Line <12> number 		 50
+Line <12> newline 		 
+Line <12> newline 		 
+Line <13> name 		 excited
+Line <13> multiply 		 *
+Line <13> string 		 Hello Ryan! 
+Line <13> newline 		 
+Line <13> newline 		 
+Line <14> name 		 wait
+Line <14> number 		 200
+Line <14> newline 		 
+Line <14> newline 		 
+Line <15> string 		 How are you doing?
+Line <15> newline 		 
+Line <15> newline 		 
+Line <16> cbracketc 		 }
+Line <16> newline 		 
+Line <16> newline 		 
+Line <17> newline 		 
+Line <17> newline 		 
+Line <18> name 		 Ryan
+Line <18> colon 		 :
+Line <18> cbracketo 		 {
+Line <18> newline 		 
+Line <18> newline 		 
+Line <19> string 		 Hey Bob I'm good how are you?
+Line <19> newline 		 
+Line <19> newline 		 
+Line <20> cbracketc 		 }
+Line <20> newline 		 
+Line <20> newline 		 
+Line <21> newline 		 
+Line <21> newline 		 
+Line <22> name 		 Bob
+Line <22> colon 		 :
+Line <22> string 		 Testing...
+Line <22> newline 		 
+Line <22> newline 		 
+Line <23> newline 		 
+Line <23> newline 		 
+Line <24> bracketo 		 [
+Line <24> name 		 Bob
+Line <24> colon 		 :
+Line <24> name 		 char
+Line <24> bracketc 		 ]
+Line <24> newline 		 
+Line <24> newline 		 
+Line <25> name 		 age
+Line <25> equal 		 =
+Line <25> number 		 24
+Line <25> newline 		 
+Line <25> newline 		 
+Line <26> name 		 money
+Line <26> equal 		 =
+Line <26> number 		 100
+Line <26> newline 		 
+Line <26> newline 		 
+Line <27> name 		 excited
+Line <27> colon 		 :
+Line <27> string 		 path/to/file
+Line <27> name 		 function
+Line <27> newline 		 
+Line <27> newline 		 
+Line <28> newline 		 
+Line <28> newline 		 
+Line <29> bracketo 		 [
+Line <29> name 		 newblock
+Line <29> colon 		 :
+Line <29> name 		 function
+Line <29> parao 		 (
+Line <29> parac 		 )
+Line <29> bracketc 		 ]
+Line <29> newline 		 
+Line <29> newline 		 
+Line <30> string 		 Test #2
+Line <30> newline 		 
+Line <30> newline 		 
+Line <31> string 		 Does it parse this part properly?
+Line <31> newline 		 
+Line <31> newline 		 
+Line <32> string 		 huh
+Line <32> newline 		 
+Line <32> newline 		 
+Line <32> eof 		 

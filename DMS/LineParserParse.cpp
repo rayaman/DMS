@@ -112,67 +112,67 @@ namespace dms {
 			}
 			else if (data == '[') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::bracketo,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::bracketo,codes::NOOP,"[",line });
 			}
 			else if (data == ']') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::bracketc,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::bracketc,codes::NOOP,"]",line });
 			}
 			else if (data == '(') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::parao,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::parao,codes::NOOP,"(",line });
 			}
 			else if (data == ')') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::parac,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::parac,codes::NOOP,")",line });
 			}
 			else if (data == ',') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::seperator,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::seperator,codes::NOOP,",",line });
 			}
 			else if (data == '.') {
 				//doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::dot,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::dot,codes::NOOP,".",line });
 			}
 			else if (data == '{') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::cbracketo,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::cbracketo,codes::NOOP,"{",line });
 			}
 			else if (data == '}') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::cbracketc,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::cbracketc,codes::NOOP,"}",line });
 			}
 			else if (data == '+') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::plus,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::plus,codes::NOOP,"+",line });
 			}
 			else if (data == '-') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::minus,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::minus,codes::NOOP,"-",line });
 			}
 			else if (data == '*') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::multiply,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::multiply,codes::NOOP,"*",line });
 			}
 			else if (data == '/') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::divide,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::divide,codes::NOOP,"/",line });
 			}
 			else if (data == '^') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::caret,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::caret,codes::NOOP,"^",line });
 			}
 			else if (data == '%') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::percent,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::percent,codes::NOOP,"%",line });
 			}
 			else if (data == '=') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::equal,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::equal,codes::NOOP,"=",line });
 			}
 			else if (data == ':') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::colon,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::colon,codes::NOOP,":",line });
 			}
 			else if (data == ';') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
@@ -180,35 +180,35 @@ namespace dms {
 			}
 			else if (data == '!') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::exclamation,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::exclamation,codes::NOOP,"!",line });
 			}
 			else if (data == '~') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::tilde,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::tilde,codes::NOOP,"~",line });
 			}
 			else if (data == '`') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::backtick,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::backtick,codes::NOOP,"`",line });
 			}
 			else if (data == '@') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::at,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::at,codes::NOOP,"@",line });
 			}
 			else if (data == '#') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::pound,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::pound,codes::NOOP,"#",line });
 			}
 			else if (data == '$') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::dollar,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::dollar,codes::NOOP,"$",line });
 			}
 			else if (data == '&') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::ampersand,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::ampersand,codes::NOOP,"&",line });
 			}
 			else if (data == '\t') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::tab,codes::NOOP,"",line });
+				t_vec.push_back(token{ tokens::tab,codes::NOOP,"\t",line });
 			}
 
 			if (data == ' ' && !isStr) { // tokens end with a space

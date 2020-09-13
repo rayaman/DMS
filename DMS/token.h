@@ -121,7 +121,7 @@ namespace dms::tokens {
 				"ampersand",
 				"nil"
 			};
-			out << "Line <" << c.line_num << ">" << codes::list[(int)c.raw] << " " << tokenlist[c.type] << " \t\t " << c.name;
+			out << "Line <" << c.line_num << "> " << tokenlist[c.type] << " \t\t " << c.name;
 			return out;
 		}
 	};

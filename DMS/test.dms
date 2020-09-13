@@ -7,15 +7,24 @@ version 1.2
 using extendedDefine
 
 [main]
-	a = 100 + test(1,2) - (test2(52+re,44-ee/test(1,3),55-23)/100)
-	"Break for your eyes ;)"
-	tes = 100 + 5
-	gg = true
-	temp = func(123+test(1,2),"TEST")
+	"Testing"
+	Bob: {
+		speed 50
+		excited: "Hello Ryan! "
+		wait 200
+		"How are you doing?"
+	}
+	
+	Ryan: {
+		"Hey Bob I'm good how are you?"
+	}
+	
+	Bob: "Testing..."
 
 [Bob:char]
 	age = 24
 	money = 100
+	excited: "path/to/file" | function
 
 [newblock:function()]
 	"Test #2"

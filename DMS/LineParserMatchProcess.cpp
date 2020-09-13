@@ -29,8 +29,12 @@ namespace dms {
 			stream->next(); // That colon
 			std::string msg = stream->next().name;
 			cmd* c = new cmd;
-			c->opcode = codes::DISP;
+			c->opcode = codes::SSPK;
 			c->args.push(buildVariable(name));
+			current_chunk->addCmd(c);
+			c = new cmd;
+			c->opcode = codes::DISP;
+			c->args.push(buildValue());
 			c->args.push(buildValue(msg));
 			current_chunk->addCmd(c); // Add the cmd to the current chunk
 			// We might have to consume a newline... Depends on what's next
@@ -42,6 +46,12 @@ namespace dms {
 			cmd* c = new cmd;
 			c->opcode = codes::SSPK;
 			c->args.push(buildVariable(name));
+			current_chunk->addCmd(c);
+			// Reset the display for the new speaker. Append can be used!
+			c = new cmd;
+			c->opcode = codes::DISP;
+			c->args.push(buildValue());
+			c->args.push(buildValue(std::string("")));
 			current_chunk->addCmd(c);
 			// Command to set the speaker
 			stream->next();
@@ -56,6 +66,7 @@ namespace dms {
 						}
 						else {
 							badSymbol(stream);
+							return false;
 						}
 					}
 					else if (mode == "wait") {
@@ -68,7 +79,10 @@ namespace dms {
 					}
 					else {
 						// Assume we have a dact
-						if (stream->match(tokens::string)) {
+						if (stream->match(tokens::string) || stream->match(tokens::colon,tokens::string)) {
+							if (stream->match(tokens::colon)) {
+								stream->next();
+							}
 							cmd* c = new cmd;
 							c->opcode = codes::DACT;
 							c->args.push(buildValue(mode));
@@ -84,7 +98,6 @@ namespace dms {
 							return false;
 						}
 					}
-					return true;
 				}
 				else if (stream->match(tokens::string)) {
 					cmd* c = new cmd;
@@ -100,6 +113,8 @@ namespace dms {
 					return false;
 				}
 			}
+			print(stream->next());
+			return true;
 		}
 		// emotion: "path"
 		// looks like a simple disp command
