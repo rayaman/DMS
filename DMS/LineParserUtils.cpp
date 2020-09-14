@@ -28,7 +28,7 @@ namespace dms {
 		if (temp == cnk->cmds.size())
 			return false;
 
-		//cnk->cmds.erase(cnk->cmds.begin()+temp, cnk->cmds.end());
+		cnk->cmds.erase(cnk->cmds.begin()+temp, cnk->cmds.end());
 		return false;
 	}
 	std::vector<token> tokenstream::next(tokentype to, tokentype tc) {
@@ -42,6 +42,24 @@ namespace dms {
 					open++;
 				else if (peek().type == tc)
 					open--;
+				tok.push_back(next());
+			}
+		}
+		return tok;
+	}
+	std::vector<token> tokenstream::next(tokentype to, tokentype tc, bool nonewline) {
+		std::vector<token> tok;
+		size_t open = 0;
+		if (peek().type == to) {
+			open++;
+			next(); // Consume
+			while (open != 0) {
+				if (peek().type == to)
+					open++;
+				else if (peek().type == tc)
+					open--;
+				else if (peek().type == tokens::newline)
+					return std::vector<token>();
 				tok.push_back(next());
 			}
 		}
@@ -180,10 +198,10 @@ namespace dms {
 		state->push_error(errors::error{ err,concat("Unexpected symbol '",stream->next().toString(),"'"),true,stream->peek().line_num,current_chunk });
 	}
 	void LineParser::badSymbol(tokenstream* stream) {
-		state->push_error(errors::error{ errors::unknown,concat("Unexpected symbol '",stream->next().toString(),"' RAW:",stream->last()),true,stream->peek().line_num,current_chunk });
+		state->push_error(errors::error{ errors::unknown,concat("Unexpected symbol '",stream->peek().toString(),"'"),true,stream->next().line_num,current_chunk });
 	}
 	void LineParser::badSymbol() {
-		state->push_error(errors::error{ errors::unknown,concat("Unexpected symbol '",_stream->next().toString(),"'"),true,_stream->peek().line_num,current_chunk });
+		state->push_error(errors::error{ errors::unknown,concat("Unexpected symbol '",_stream->peek().toString(),"'"),true,_stream->next().line_num,current_chunk });
 	}
 	void LineParser::buildSpeed(double s) {
 		cmd* c = new cmd;
@@ -214,9 +232,6 @@ namespace dms {
 		chunk_type = bk_type;
 		current_chunk->type = bk_type;
 
-		cmd* c = new cmd;
-		c->opcode = codes::NOOP;
-		current_chunk->addCmd(c);
 		return true;
 	}
 	void LineParser::tokenizer(dms_state* state,std::vector<token> &toks) {

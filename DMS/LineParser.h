@@ -24,7 +24,8 @@ namespace dms {
 		void init(std::vector<tokens::token>* ptr);
 		tokens::token next();
 		void prev();
-		std::vector<tokens::token> next(tokens::tokentype to,tokens::tokentype tc);
+		std::vector<tokens::token> next(tokens::tokentype to, tokens::tokentype tc);
+		std::vector<tokens::token> next(tokens::tokentype to, tokens::tokentype tc, bool nonewline);
 		tokens::token peek();
 		tokens::token last();
 		std::vector<tokens::token> next(tokens::tokentype tk);
@@ -70,6 +71,10 @@ namespace dms {
 		bool match_process_expression(tokenstream* stream, value* v);
 		bool match_process_IFFF(tokenstream* stream);
 		bool match_process_assignment(tokenstream* stream);
+		bool match_process_list(tokenstream* stream, value* v = nullptr);
+		bool match_process_standard(tokenstream* stream, value* v = nullptr); // All types that are matchable are handled here!
+
+
 		// Build
 		void buildGoto(std::string g, bool v = false);
 		void buildNoop();

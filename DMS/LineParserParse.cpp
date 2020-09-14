@@ -446,6 +446,7 @@ namespace dms {
 			match_process_assignment(stream);
 			match_process_debug(stream);
 			match_process_goto(stream);
+			match_process_function(stream); // Naked Function
 			current = stream->next();
 		}
 		createBlock("$END$", bt_block);

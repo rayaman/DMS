@@ -42,5 +42,6 @@ const std::string dms::codes::list[] = {
 	"MUL",
 	"DIV",
 	"POW",
-	"MOD"
+	"MOD",
+	"LIST"
 };

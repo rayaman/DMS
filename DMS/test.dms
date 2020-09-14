@@ -21,6 +21,28 @@ using extendedDefine
 	
 	Bob: "Testing..."
 
+	list = {
+		"Hello",
+		true,
+		nil,
+		(1000+
+		342)/hi,false,
+		test(1,2),
+		{
+			1,
+			false,
+			nil
+		}
+	}
+	
+	test(
+		{
+			1,
+			2,
+			3
+		}
+	)
+
 [Bob:char]
 	age = 24
 	money = 100

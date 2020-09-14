@@ -69,7 +69,10 @@ namespace dms {
 				out << (char)c.type << "nil";
 			}
 			else if (c.type == boolean) {
-				out << (char)c.type << c.b->getValue();
+				if(c.b->getValue())
+					out << (char)c.type << "true";
+				else
+					out << (char)c.type << "false";
 			}
 			else if (c.type == env) {
 				out << (char)c.type << "Env: " << c;

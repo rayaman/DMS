@@ -46,7 +46,7 @@ Line <12> number 		 50
 Line <12> newline 		 
 Line <12> newline 		 
 Line <13> name 		 excited
-Line <13> multiply 		 *
+Line <13> colon 		 :
 Line <13> string 		 Hello Ryan! 
 Line <13> newline 		 
 Line <13> newline 		 
@@ -82,47 +82,135 @@ Line <22> newline
 Line <22> newline 		 
 Line <23> newline 		 
 Line <23> newline 		 
-Line <24> bracketo 		 [
-Line <24> name 		 Bob
-Line <24> colon 		 :
-Line <24> name 		 char
-Line <24> bracketc 		 ]
+Line <24> name 		 list
+Line <24> equal 		 =
+Line <24> cbracketo 		 {
 Line <24> newline 		 
 Line <24> newline 		 
-Line <25> name 		 age
-Line <25> equal 		 =
-Line <25> number 		 24
+Line <25> string 		 Hello
+Line <25> seperator 		 ,
 Line <25> newline 		 
 Line <25> newline 		 
-Line <26> name 		 money
-Line <26> equal 		 =
-Line <26> number 		 100
+Line <26> true 		 true
+Line <26> seperator 		 ,
 Line <26> newline 		 
 Line <26> newline 		 
-Line <27> name 		 excited
-Line <27> colon 		 :
-Line <27> string 		 path/to/file
-Line <27> name 		 function
+Line <27> nil 		 nil
+Line <27> seperator 		 ,
 Line <27> newline 		 
 Line <27> newline 		 
+Line <28> parao 		 (
+Line <28> number 		 1000
+Line <28> plus 		 +
 Line <28> newline 		 
 Line <28> newline 		 
-Line <29> bracketo 		 [
-Line <29> name 		 newblock
-Line <29> colon 		 :
-Line <29> name 		 function
-Line <29> parao 		 (
+Line <29> number 		 342
 Line <29> parac 		 )
-Line <29> bracketc 		 ]
+Line <29> divide 		 /
+Line <29> name 		 hi
+Line <29> seperator 		 ,
+Line <29> false 		 false
+Line <29> seperator 		 ,
 Line <29> newline 		 
 Line <29> newline 		 
-Line <30> string 		 Test #2
+Line <30> name 		 test
+Line <30> parao 		 (
+Line <30> number 		 1
+Line <30> seperator 		 ,
+Line <30> number 		 2
+Line <30> parac 		 )
+Line <30> seperator 		 ,
 Line <30> newline 		 
 Line <30> newline 		 
-Line <31> string 		 Does it parse this part properly?
+Line <31> cbracketo 		 {
 Line <31> newline 		 
 Line <31> newline 		 
-Line <32> string 		 huh
+Line <32> number 		 1
+Line <32> seperator 		 ,
 Line <32> newline 		 
 Line <32> newline 		 
-Line <32> eof 		 
+Line <33> false 		 false
+Line <33> seperator 		 ,
+Line <33> newline 		 
+Line <33> newline 		 
+Line <34> nil 		 nil
+Line <34> newline 		 
+Line <34> newline 		 
+Line <35> cbracketc 		 }
+Line <35> newline 		 
+Line <35> newline 		 
+Line <36> cbracketc 		 }
+Line <36> newline 		 
+Line <36> newline 		 
+Line <37> newline 		 
+Line <37> newline 		 
+Line <38> name 		 test
+Line <38> parao 		 (
+Line <38> newline 		 
+Line <38> newline 		 
+Line <39> cbracketo 		 {
+Line <39> newline 		 
+Line <39> newline 		 
+Line <40> number 		 1
+Line <40> seperator 		 ,
+Line <40> newline 		 
+Line <40> newline 		 
+Line <41> number 		 2
+Line <41> seperator 		 ,
+Line <41> newline 		 
+Line <41> newline 		 
+Line <42> number 		 3
+Line <42> newline 		 
+Line <42> newline 		 
+Line <43> cbracketc 		 }
+Line <43> newline 		 
+Line <43> newline 		 
+Line <44> parac 		 )
+Line <44> newline 		 
+Line <44> newline 		 
+Line <45> newline 		 
+Line <45> newline 		 
+Line <46> bracketo 		 [
+Line <46> name 		 Bob
+Line <46> colon 		 :
+Line <46> name 		 char
+Line <46> bracketc 		 ]
+Line <46> newline 		 
+Line <46> newline 		 
+Line <47> name 		 age
+Line <47> equal 		 =
+Line <47> number 		 24
+Line <47> newline 		 
+Line <47> newline 		 
+Line <48> name 		 money
+Line <48> equal 		 =
+Line <48> number 		 100
+Line <48> newline 		 
+Line <48> newline 		 
+Line <49> name 		 excited
+Line <49> colon 		 :
+Line <49> string 		 path/to/file
+Line <49> name 		 function
+Line <49> newline 		 
+Line <49> newline 		 
+Line <50> newline 		 
+Line <50> newline 		 
+Line <51> bracketo 		 [
+Line <51> name 		 newblock
+Line <51> colon 		 :
+Line <51> name 		 function
+Line <51> parao 		 (
+Line <51> parac 		 )
+Line <51> bracketc 		 ]
+Line <51> newline 		 
+Line <51> newline 		 
+Line <52> string 		 Test #2
+Line <52> newline 		 
+Line <52> newline 		 
+Line <53> string 		 Does it parse this part properly?
+Line <53> newline 		 
+Line <53> newline 		 
+Line <54> string 		 huh
+Line <54> newline 		 
+Line <54> newline 		 
+Line <54> eof 		 
