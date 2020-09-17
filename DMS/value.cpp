@@ -1,10 +1,23 @@
 #include "value.h"
 #include "utils.h"
 #include "string"
-#include <sstream>
-#include <map>
-#include <vector>
 namespace dms {
+	std::vector<value*> _VALUES;
+	value::value() {
+		_VALUES.push_back(this); // Used for the interperter! In the end everything is a value
+		// We need to clean up this stuff when it all comes crashing.
+		// We also might clean things while the code is running.
+		// Values at runtime aren't "Deleted, they are set to nil"
+		// At the end we actually delete them!
+	}
+	value* value::resolve(std::unordered_map<std::string, value*> map, value* v) {
+		if (v != nullptr) {
+			if (this->type == datatypes::variable) {
+				return resolve(map, map[this->s->getValue()]); // Variable types return the value
+			}
+		}
+		return this;
+	}
 	void dms_args::push(value* val) {
 		args.push_back(val);
 	}

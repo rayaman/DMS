@@ -1,13 +1,14 @@
 #include "LineParser.h"
 using namespace dms::tokens;
 using namespace dms::utils;
+// TODO: process if elseif else statements, for loops and while loops
 namespace dms {
 	bool LineParser::match_process_standard(tokenstream* stream, value* v) {
 		if (match_process_expression(stream,v)) {
-			return true; // Nothing todo
+			return true;
 		}
 		else if (match_process_function(stream, v)) {
-			return true; // Nothing todo
+			return true;
 		}
 		else if (match_process_list(stream, v)) {
 			return true;
@@ -56,51 +57,66 @@ namespace dms {
 	bool LineParser::match_process_list(tokenstream* stream, value* v) {
 		if (stream->match(tokens::cbracketo)) {
 			token start = stream->peek();
+			token ancor = start;
 			std::vector<token> t = stream->next(tokens::cbracketo, tokens::cbracketc);
 			tokenstream tempstream;
 			tempstream.init(&t);
 			value* ref = buildVariable();
 			value* length = new value;
+			value* dict = nullptr;
 			size_t count = 0;
 			cmd* c = new cmd;
 			c->opcode = codes::LIST;
 			c->args.push(v);
 			c->args.push(length);
 			current_chunk->addCmd(c);
+			bool ready = true;
 			while (tempstream.peek().type != tokens::none) {
-				print(tempstream.peek());
 				if (tempstream.match(tokens::cbracketc)) {
+					ready = true;
 					c = new cmd;
 					c->opcode = codes::INST;
 					c->args.push(v);
 					c->args.push(ref);
+					if (dict != nullptr) {
+						c->args.push(dict);
+						dict = nullptr;
+					}
 					current_chunk->addCmd(c);
 					break;
+				}
+				// Match Dict
+				else if (tempstream.match(tokens::name,tokens::colon)) {
+					dict = buildVariable(tempstream.next().name);
+					tempstream.next();
+					if (!match_process_standard(&tempstream,ref)) {
+						badSymbol();
+					}
 				}
 				// This will modify the ref!!!
 				else if (match_process_standard(&tempstream, ref)) {
 					count++;
-					print(">>",tempstream.peek());
-
-					// TODO: make sure each statement is properly seperated by a comma n such
-
-					/*if (tempstream.match(tokens::seperator) || tempstream.match(tokens::newline,tokens::seperator)) {
-						print("Good!");
-					}*/
-					/*if (!(tempstream.match(tokens::seperator) || tempstream.match(tokens::cbracketc) || tempstream.match(tokens::newline))) {
-						state->push_error(errors::error{ errors::badtoken,concat("Unexpected symbol '",tempstream.next().toString(),"' Expected '}' to close list at ",start.line_num),true,tempstream.peek().line_num,current_chunk });
-						return false;
-					}*/
+					if (ready) {
+						ancor = tempstream.last();
+						ready = false;
+					}
+					else
+						state->push_error(errors::error{ errors::badtoken,concat("Unexpected symbol '",ancor.toString(),"' Expected '}' to close list (line: ",start.line_num,") Did you forget a comma?"),true,ancor.line_num,current_chunk });
 				}
 				else if (tempstream.match(tokens::newline)) {
 					tempstream.next(); // this is fine
 				}
 				else if (tempstream.match(tokens::seperator)) {
 					// Handle the next piece
+					ready = true;
 					c = new cmd;
 					c->opcode = codes::INST;
 					c->args.push(v);
 					c->args.push(ref);
+					if (dict != nullptr) {
+						c->args.push(dict);
+						dict = nullptr;
+					}
 					current_chunk->addCmd(c);
 					// Build new value
 					ref = buildVariable();
@@ -120,22 +136,13 @@ namespace dms {
 		return false;
 	}
 	bool LineParser::match_process_disp(tokenstream* stream) {
-		/*
-			DISP, "msg"
-			DISP, "msg" speaker
-
-			Compound DISP
-		*/
-		//lastCall.push("MP_disp");
 		if ((isBlock(bt_block) || isBlock(bt_method)) && stream->match(tokens::newline, tokens::string, tokens::newline)) {
 			stream->next(); // Standard consumption
 			std::string msg = stream->next().name;
 			cmd* c = new cmd;
 			c->opcode = codes::DISP;
-			//c->args.push(buildValue());
 			c->args.push(buildValue(msg));
 			current_chunk->addCmd(c); // Add the cmd to the current chunk
-			//lastCall.pop();
 			return true;
 		}
 		else if ((isBlock(bt_block) || isBlock(bt_method)) && stream->match(tokens::newline, tokens::name, tokens::colon, tokens::string, tokens::newline)) {
@@ -151,26 +158,18 @@ namespace dms {
 			current_chunk->addCmd(c);
 			c = new cmd;
 			c->opcode = codes::DISP;
-			//c->args.push(buildValue());
 			c->args.push(buildValue(msg));
 			current_chunk->addCmd(c); // Add the cmd to the current chunk
 			// We might have to consume a newline... Depends on what's next
-			//lastCall.pop();
 			return true;
 		}
 		else if ((isBlock(bt_block) || isBlock(bt_method)) && stream->match(tokens::name,tokens::colon,tokens::cbracketo)) {
 			std::string name = stream->next().name;
+			// Command to set the speaker
 			cmd* c = new cmd;
 			c->opcode = codes::SSPK;
 			c->args.push(buildVariable(name));
 			current_chunk->addCmd(c);
-			// Reset the display for the new speaker. Append can be used!
-			//c = new cmd;
-			//c->opcode = codes::DISP;
-			//c->args.push(buildValue());
-			//c->args.push(buildValue(std::string("")));
-			//current_chunk->addCmd(c);
-			// Command to set the speaker
 			stream->next();
 			stream->next();
 			while (stream->peek().type != tokens::cbracketc) {
@@ -235,74 +234,21 @@ namespace dms {
 		// emotion: "path"
 		// looks like a simple disp command
 		else if (isBlock(bt_character) && stream->match(tokens::tab, tokens::name, tokens::colon, tokens::string, tokens::newline)) {
-			//lastCall.pop();
 			return true;
 		}
-
-		// TODO: We still have to implement the compound disp
-		//lastCall.pop();
 		return false;
 	}
 	bool LineParser::match_process_assignment(tokenstream* stream) {
-		// something equals something else lets go
-		//lastCall.push("MP_assignment");
 		if (stream->match(tokens::name,tokens::equal)) {
 			value* var = buildVariable(stream->next().name); // The variable that we will be setting stuff to
 			stream->next(); // Consume the equal
 			cmd* c = new cmd;
 			c->opcode = codes::ASGN;
 			c->args.push(var);
-			if (match_process_list(stream, var)) {
-				return true;
-			}
-			else if (match_process_expression(stream, var)) {
-				// Expressions can internally set variables
-				// We actually need to clean up our cmds
-				return true;
-			}
-			else if (match_process_function(stream, var)) {
-				// Functions can internally set variables
-				// We actually need to clean up our cmds
-				return true;
-			}
-			else if (stream->match(tokens::True)) {
-				stream->next();
-				c->args.push(buildValue(true));
-				current_chunk->addCmd(c);
-				return true;
-			}
-			else if (stream->match(tokens::False)) {
-				stream->next();
-				c->args.push(buildValue(false));
-				current_chunk->addCmd(c);
-				return true;
-			}
-			else if (stream->match(tokens::string)) {
-				c->args.push(buildValue(stream->next().name));
-				current_chunk->addCmd(c);
-				return true;
-			}
-			else if (stream->match(tokens::nil)) {
-				stream->next();
-				c->args.push(buildValue());
-				current_chunk->addCmd(c);
-				return true;
-			}
-			else if (stream->match(tokens::number)) {
-				c->args.push(buildValue(std::stod(stream->next().name)));
-				current_chunk->addCmd(c);
-				return true;
-			}
-			else if (stream->match(tokens::bracketo, tokens::name, tokens::bracketc)) {
-				// We are assigning a block as a variable
-				stream->next();
-				c->args.push(buildBlock(stream->next().name));
-				current_chunk->addCmd(c);
-				stream->next();
-				return true;
-			}
-			else if (stream->match(tokens::name)) {
-				c->args.push(buildVariable(stream->next().name));
+			value* ref = buildVariable();
+			print(stream->peek());
+			if (match_process_standard(stream,ref)) {
+				c->args.push(ref);
 				current_chunk->addCmd(c);
 				return true;
 			}
@@ -336,7 +282,6 @@ namespace dms {
 		return false;
 	}
 	bool LineParser::match_process_choice(tokenstream* stream) {
-		//lastCall.push("MP_choice");
 		token temp = stream->peek();
 		if (temp.raw == codes::CHOI && stream->match(tokens::control,tokens::string)) {
 			// Let's parse choice blocks.
@@ -383,7 +328,6 @@ namespace dms {
 				The NOOP ensures the pattern stays.
 				If we are provided with a number greater than 3 then we can push an execption.
 			*/
-			std::string str = concat("$",stream->peek().line_num);
 			while (!stream->match(tokens::cbracketc)) {
 				if (stream->match(tokens::cbracketo) && !start) {
 					start = true;
@@ -400,7 +344,7 @@ namespace dms {
 					if (match_process_function(stream,nullptr,false)) { // No returns and also no nesting of functions!
 						// We cannot have a nested function here, but if we dont have that then we add our goto
 						hasfunc = true;
-						buildGoto(str);
+						buildGoto(choicelabel);
 					}
 					else if (match_process_goto(stream)) {
 						buildNoop(); // Add noop to post-goto command
@@ -424,11 +368,9 @@ namespace dms {
 			current_chunk->cmds.pop_back();
 			delete cc;
 			if (hasfunc)
-				buildLabel(str);
-			//lastCall.pop();
+				buildLabel(choicelabel);
 			return true;
 		}
-		//lastCall.pop();
 		return false;
 	}
 
@@ -437,7 +379,6 @@ namespace dms {
 		delete[] v; // We didn't need it, lets clean it up!
 	}
 	bool LineParser::match_process_function(tokenstream* stream, value* v, bool nested) {
-		//lastCall.push("MP_function");
 		/*
 			Functions should be able to handle function calls as arguments, 
 			HOWEVER functions cannot be passed as values since they aren't values like they are in other languages!
@@ -504,9 +445,9 @@ namespace dms {
 			tempstream.init(&t); // Turn tokens we consumed into a tokenstream
 			value* tempval;
 			token tok;
+			value* ref = buildVariable();
 			// This part we add values to the opcodes for the bytecode FUNC val a1 a2 a3 ... an
 			while (tempstream.peek().type != tokens::none) { // End of stream
-				print("> ", tempstream.peek());
 				tempval = buildVariable();
 				tok = tempstream.peek();
 				if (tempstream.match(tokens::seperator)) {
@@ -576,7 +517,6 @@ namespace dms {
 				}
 			}
 		}
-		//lastCall.pop();
 		return false;
 	}
 	bool LineParser::match_process_goto(tokenstream* stream) {
@@ -637,21 +577,10 @@ namespace dms {
 		// I will have to consume for this to work so we need to keep track of what was incase we return false!
 		stream->store(current_chunk);
 		cmd* lastcmd = nullptr;
-		/*if(!current_chunk->cmds.empty())
-			lastcmd = current_chunk->cmds.back();*/
 		// It has to start with one of these 3 to even be considered an expression
 		if (stream->match(tokens::number) || stream->match(tokens::name) || stream->match(tokens::parao)) {
 			// What do we know, math expressions can only be on a single line. We know where to stop looking if we have to
 			cmd* c = new cmd;
-			/*
-			* We have a few built-in methods we will have to handle
-			* ADD val v1 v2
-			* SUB val v1 v2
-			* MUL val v1 v2
-			* DIV val v1 v2
-			* POW val v1 v2
-			* MOD val v1 v2
-			*/
 			value* wv = nullptr;
 			value* left; // lefthand
 			codes::op op; // opperator
@@ -761,7 +690,7 @@ namespace dms {
 					else
 						badSymbol(stream);
 				}
-				else if (/*stream->match(tokens::newline) || */stream->match(tokens::parac) || stream->match(tokens::seperator)) {
+				else if (stream->match(tokens::newline) || stream->match(tokens::parac) || stream->match(tokens::seperator)) {
 					if (wv == nullptr)
 						return stream->restore(lastcmd, current_chunk); // Always return false and restores the position in stream!
 					cmd* cc = new cmd;
@@ -769,7 +698,8 @@ namespace dms {
 					cc->args.push(v);
 					cc->args.push(wv);
 					current_chunk->addCmd(cc);
-					stream->next();
+					if(stream->match(tokens::parac))
+						stream->next();
 					// We done!
 					int t=0;
 					return true;

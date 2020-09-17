@@ -3,6 +3,7 @@
 #include <sstream>
 #include <vector>
 #include <unordered_map>
+#include <map>
 
 namespace dms {
 	struct dms_env;
@@ -41,15 +42,14 @@ namespace dms {
 	dms_boolean* buildBool(bool b);
 	dms_number* buildNumber(double num);
 	struct value {
-		/*~value() {
-			nuke();
-		}*/
 		datatypes type = nil;
 		dms_boolean* b = nullptr;
 		dms_number* n = nullptr;
 		dms_string* s = nullptr;
 		dms_env* e = nullptr;
 		dms_custom* c = nullptr;
+		value();
+		value* resolve(std::unordered_map<std::string,value*> map,value* v=nullptr);
 		void nuke();
 		void set(dms_string* str);
 		void set(dms_boolean* bo);

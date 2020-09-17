@@ -1,8 +1,9 @@
-entry main
+entry test // Will either start the first block seen or the block supplied by you!
 enable warnings
 disable omniscient
+enable leaking
 enable debugging
-//loadfile "loadtest.dms"
+loadfile "loadtest.dms"
 version 1.2
 using extendedDefine
 
@@ -18,33 +19,19 @@ using extendedDefine
 	Ryan: {
 		"Hey Bob I'm good how are you?"
 	}
-	
 	Bob: "Testing..."
-
-	list = {
-		"Hello",
-		true,
-		nil,
-		(1000+
-		342)/hi,false,
-		test(1,2),
-		{
-			1,
-			false,
-			nil
-		}
-	}
 	
-	test(
-		{
-			1,
-			2,
-			3
-		}
-	)
+	choice "What do you want to do?" {
+		"option 0" test2("testing")
+		"option 1" jump "here"
+		"option 2" jump there
+		"option 3" goto "o3"
+		"option 4" goto here
+		"option 5" test("here")
+	}
 
 [Bob:char]
-	age = 24
+	age = .24
 	money = 100
 	excited: "path/to/file" | function
 

@@ -131,8 +131,17 @@ namespace dms {
 				t_vec.push_back(token{ tokens::seperator,codes::NOOP,",",line });
 			}
 			else if (data == '.') {
-				//doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
-				t_vec.push_back(token{ tokens::dot,codes::NOOP,".",line });
+				// If a number starts with a .## then we need to ensure that we create the value properly
+				if (std::isdigit(stream.peek()) && buffer.size()==0) {
+					// If the buffer has data then something isn't right
+					isNum = true;
+					buffer.push_back('0');
+					buffer.push_back('.');
+				}
+				else {
+					doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+					t_vec.push_back(token{ tokens::dot,codes::NOOP,".",line });
+				}
 			}
 			else if (data == '{') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
@@ -296,7 +305,6 @@ namespace dms {
 		}
 		t_vec.push_back(token{ tokens::eof,codes::NOOP,"",line - 1 });
 		tokenDump(&t_vec);
-		print("Running tokenizer");
 		// Tokens build let's parse
 		tokenizer(state, t_vec);
 		return state;
@@ -321,8 +329,9 @@ namespace dms {
 	}
 	void LineParser::_Parse(tokenstream* stream) {
 		token current = stream->next();
+		createBlock("$INIT", blocktype::bt_block);
+		cmd* flagcmd = new cmd;
 		while (stream->peek().type != tokens::eof) {
-			print(current);
 			if (current.type == tokens::flag) {
 				temp = stream->next(tokens::newline);
 				stream->prev(); // Unconsume the newline piece
@@ -333,33 +342,51 @@ namespace dms {
 				tokens::tokentype tok = temp[0].type;
 				if (code == codes::ENAB && tok == tokens::name) {
 					tolower(temp[0].name);
-					state->enables.insert_or_assign(temp[0].name, true);
+					state->enable(temp[0].name);
+					flagcmd->opcode = code;
+					flagcmd->args.push(buildValue(temp[0].name));
+					current_chunk->addCmd(flagcmd);
+					flagcmd = new cmd;
 				}
 				else if (code == codes::ENTR && tok == tokens::name) {
 					state->entry = temp[0].name;
+					flagcmd->opcode = code;
+					flagcmd->args.push(buildValue(temp[0].name));
+					current_chunk->addCmd(flagcmd);
+					flagcmd = new cmd;
 				}
 				else if (code == codes::DISA && tok == tokens::name) {
 					tolower(temp[0].name);
-					state->enables.insert_or_assign(temp[0].name, false);
+					state->disable(temp[0].name);
+					flagcmd->opcode = code;
+					flagcmd->args.push(buildValue(temp[0].name));
+					current_chunk->addCmd(flagcmd);
+					flagcmd = new cmd;
 				}
 				else if (code == codes::VERN && tok == tokens::number) {
 					state->version = std::stod(temp[0].name);
+					flagcmd->opcode = code;
+					flagcmd->args.push(buildValue(std::stod(temp[0].name)));
+					current_chunk->addCmd(flagcmd);
+					flagcmd = new cmd;
 				}
 				else if (code == codes::USIN && tok == tokens::name) {
 					// TODO add usings, kinda useless atm since everything will be packed in. Perhaps extensions?
 				}
 				else if (code == codes::LOAD && tok == tokens::string) {
+					flagcmd->opcode = code;
+					flagcmd->args.push(buildValue(temp[0].name));
+					current_chunk->addCmd(flagcmd);
+					flagcmd = new cmd;
 					LineParser parser = LineParser();
 					parser.Parse(state, temp[0].name);// Load another file
 				}
 				else {
-					std::stringstream str;
-					str << "Expected <FLAG IDENTIFIER> " << " got: " << current << temp[0];
-					state->push_error(errors::error{ errors::badtoken,str.str(),true,line,current_chunk });
+					state->push_error(errors::error{ errors::badtoken,concat("Expected <FLAG IDENTIFIER> got: ", current, temp[0]),true,line,current_chunk });
 				}
 			}
 			// Default block
-			if (stream->match(tokens::newline,tokens::bracketo, tokens::name, tokens::bracketc)) {
+			if (stream->match(tokens::newline,tokens::bracketo, tokens::name, tokens::bracketc,tokens::newline)) {
 				stream->next();
 				stream->next();
 				std::string name = stream->next().name;
@@ -449,6 +476,6 @@ namespace dms {
 			match_process_function(stream); // Naked Function
 			current = stream->next();
 		}
-		createBlock("$END$", bt_block);
+		createBlock("$END", blocktype::bt_block);// Runs code that ensures that last user block is processed into the chunks array. Yes, I could have simply added in the lines of code at the end, but I didn't want to rewrite code again!
 	}
 }

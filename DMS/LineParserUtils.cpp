@@ -217,21 +217,59 @@ namespace dms {
 	}
 	bool LineParser::createBlock(std::string bk_name, blocktype bk_type) {
 		if (current_chunk != nullptr) {
-			if (!state->chunks.count(current_chunk->name))
+			if (state->chunks.count(bk_name)==0 && bk_name!="$END")
 				state->push_chunk(current_chunk->name, current_chunk);
 			else
 			{
-				std::stringstream str;
-				str << "Block <" << current_chunk->name << "> already defined!";
-				state->push_error(errors::error{ errors::block_already_defined,str.str(),true,line,current_chunk });
-				return false;
+				if (bk_name == "$INIT") {
+					current_chunk = state->chunks["$INIT"];
+					return true;
+				}
+				else if (bk_name == "$END") {
+					cmd* c = new cmd;
+					c->opcode = codes::JUMP;
+					c->args.push(buildVariable("$END"));
+					current_chunk->addCmd(c);
+					state->push_chunk(current_chunk->name, current_chunk);
+					current_chunk = state->chunks["$END"];
+					return true;
+				}
+				else {
+					std::stringstream str;
+					str << "Block <" << current_chunk->name << "> already defined!";
+					state->push_error(errors::error{ errors::block_already_defined,str.str(),true,line,current_chunk });
+					return false;
+				}
 			}
+		}
+		if (state->isEnabled("leaking") && (current_chunk != nullptr && current_chunk->name != "$INIT")) {
+			cmd* c = new cmd;
+			c->opcode = codes::JUMP;
+			c->args.push(buildVariable(bk_name));
+			current_chunk->addCmd(c);
+		}
+		if (current_chunk!= nullptr && current_chunk->name == "$INIT") {
+			cmd* c = new cmd;
+			c->opcode = codes::JUMP;
+			if(state->entry!="$undefined")
+				c->args.push(buildVariable(state->entry));
+			else
+				c->args.push(buildVariable(bk_name));
+			current_chunk->addCmd(c);
+		}
+		if (current_chunk != nullptr && current_chunk->name == "$END") {
+			cmd* c = new cmd;
+			c->opcode = codes::EXIT;
+			if (state->entry != "$undefined")
+				c->args.push(buildValue(0));
+			else
+				c->args.push(buildVariable(bk_name));
+			current_chunk->addCmd(c);
 		}
 		current_chunk = new chunk;
 		current_chunk->name = bk_name;
 		chunk_type = bk_type;
 		current_chunk->type = bk_type;
-
 		return true;
 	}
 	void LineParser::tokenizer(dms_state* state,std::vector<token> &toks) {

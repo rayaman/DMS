@@ -7,6 +7,20 @@ namespace dms {
 		enables.insert_or_assign("warnings",false); //
 		enables.insert_or_assign("statesave",true); // Allows you to save state
 		enables.insert_or_assign("omniscient",true); // Allows you to know who's who when you first meet them
+		chunk* c = new chunk;
+		c->name = "$END";
+		c->type = blocktype::bt_block;
+		cmd* cc = new cmd;
+		cc->opcode = codes::EXIT;
+		cc->args.push(buildValue(0));
+		c->addCmd(cc);
+		push_chunk("$END", c);
+	}
+	void dms_state::enable(std::string flag) {
+		enables[flag] = true;
+	}
+	void dms_state::disable(std::string flag) {
+		enables[flag] = false;
 	}
 	bool dms_state::isEnabled(std::string flag) {
 		if (enables.count(flag)) {
@@ -41,12 +55,13 @@ namespace dms {
 	}
 	void dms_state::push_error(errors::error err) {
 		std::cout << err.err_msg << " On Line <" << err.linenum << ">" << std::endl;
+		this->err = err;
 		if (err.crash)
-			std::exit(err.code);
+			stop = true;
 	}
 	void dms_state::push_warning(errors::error err) {
 		err.crash = false; // Force code to not crash then push the error
-		if(enables.count("warnings"))
+		if(isEnabled("warnings"))
 			push_error(err);
 	}
 }
