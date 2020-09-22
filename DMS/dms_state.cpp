@@ -1,4 +1,5 @@
 #include "dms_state.h"
+#include "Handlers.h"
 namespace dms {
 	dms_state::dms_state() {
 		// We should define the defaults for the enables
@@ -15,6 +16,7 @@ namespace dms {
 		cc->args.push(buildValue(0));
 		c->addCmd(cc);
 		push_chunk("$END", c);
+		setChoiceHandler(new choiceHandler); // Use the default implementation
 	}
 	void dms_state::enable(std::string flag) {
 		enables[flag] = true;

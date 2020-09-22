@@ -12,7 +12,8 @@ namespace dms::errors {
 		block_already_defined,
 		choice_unknown,
 		nested_function,
-		disp_unknown
+		disp_unknown,
+		non_existing_block
 	};
 	struct error {
 		errortype code=unknown;

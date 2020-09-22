@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Handlers.cpp" />
     <ClCompile Include="chunk.cpp" />
     <ClCompile Include="cmd.cpp" />
     <ClCompile Include="codes.cpp" />
@@ -159,6 +160,7 @@
     <ClCompile Include="value.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Handlers.h" />
     <ClInclude Include="chunk.h" />
     <ClInclude Include="cmd.h" />
     <ClInclude Include="codes.h" />

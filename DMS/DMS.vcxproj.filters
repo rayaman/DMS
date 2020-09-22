@@ -66,6 +66,9 @@
     <ClCompile Include="dms_state_interpret.cpp">
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
+    <ClCompile Include="Handlers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="value.h">
@@ -106,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="token.h">
       <Filter>Header Files\DMS</Filter>
+    </ClInclude>
+    <ClInclude Include="Handlers.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

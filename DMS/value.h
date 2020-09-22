@@ -7,6 +7,9 @@
 
 namespace dms {
 	struct dms_env;
+	struct value;
+	struct dms_args;
+	extern const std::string datatype[];
 	enum datatypes { nil, number, boolean, env, string, custom, variable, block };
 	struct dms_number {
 		double val;
@@ -35,8 +38,20 @@ namespace dms {
 			return out;
 		};
 	};
+	// Custom data that you can work with by overriding this code
 	struct dms_custom {
-
+		virtual value* Index(value* data);
+		virtual bool NewIndex(value* var, value* val);
+		virtual value* Call(dms_args* args);
+		virtual value* ToString();
+		virtual value* ADD(value* left, value* right);
+		virtual value* SUB(value* left, value* right);
+		virtual value* MUL(value* left, value* right);
+		virtual value* DIV(value* left, value* right);
+		virtual value* POW(value* left, value* right);
+		virtual value* EQUAL(value* left, value* right);
+		virtual value* LESS_THAN(value* left, value* right);
+		virtual value* GREATER_THAN(value* left, value* right);
 	};
 	dms_string* buildString(std::string str);
 	dms_boolean* buildBool(bool b);

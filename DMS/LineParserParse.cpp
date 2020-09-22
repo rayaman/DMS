@@ -331,7 +331,15 @@ namespace dms {
 		token current = stream->next();
 		createBlock("$INIT", blocktype::bt_block);
 		cmd* flagcmd = new cmd;
+		size_t current_line = 0;
 		while (stream->peek().type != tokens::eof) {
+			if (stream->peek().line_num != current_line) {
+				current_line = stream->peek().line_num;
+				cmd* ln = new cmd;
+				ln->opcode = codes::LINE;
+				ln->args.push(buildValue((int)current_line+1));
+				current_chunk->addCmd(ln);
+			}
 			if (current.type == tokens::flag) {
 				temp = stream->next(tokens::newline);
 				stream->prev(); // Unconsume the newline piece

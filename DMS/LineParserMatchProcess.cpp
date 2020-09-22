@@ -246,7 +246,6 @@ namespace dms {
 			c->opcode = codes::ASGN;
 			c->args.push(var);
 			value* ref = buildVariable();
-			print(stream->peek());
 			if (match_process_standard(stream,ref)) {
 				c->args.push(ref);
 				current_chunk->addCmd(c);

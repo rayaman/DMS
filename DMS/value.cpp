@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "string"
 namespace dms {
+	const std::string datatype[] = { "nil", "number", "boolean", "env", "string", "custom", "variable", "block" };
 	std::vector<value*> _VALUES;
 	value::value() {
 		_VALUES.push_back(this); // Used for the interperter! In the end everything is a value

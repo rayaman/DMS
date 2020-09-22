@@ -2,7 +2,7 @@ Token Dump:
 Line <1> newline 		 
 Line <1> newline 		 
 Line <1> flag 		 
-Line <1> name 		 test
+Line <1> name 		 main
 Line <1> newline 		 
 Line <2> flag 		 
 Line <2> name 		 warnings
@@ -12,9 +12,6 @@ Line <3> flag
 Line <3> name 		 omniscient
 Line <3> newline 		 
 Line <3> newline 		 
-Line <4> flag 		 
-Line <4> name 		 leaking
-Line <4> newline 		 
 Line <4> newline 		 
 Line <5> flag 		 
 Line <5> name 		 debugging
@@ -91,34 +88,34 @@ Line <24> string 		 What do you want to do?
 Line <24> cbracketo 		 {
 Line <24> newline 		 
 Line <24> newline 		 
-Line <25> string 		 option 0
+Line <25> string 		 option 1
 Line <25> name 		 test2
 Line <25> parao 		 (
 Line <25> string 		 testing
 Line <25> parac 		 )
 Line <25> newline 		 
 Line <25> newline 		 
-Line <26> string 		 option 1
+Line <26> string 		 option 2
 Line <26> jump 		 
-Line <26> string 		 here
+Line <26> string 		 test
 Line <26> newline 		 
 Line <26> newline 		 
-Line <27> string 		 option 2
+Line <27> string 		 option 3
 Line <27> jump 		 
 Line <27> name 		 there
 Line <27> newline 		 
 Line <27> newline 		 
-Line <28> string 		 option 3
+Line <28> string 		 option 4
 Line <28> gotoo 		 
 Line <28> string 		 o3
 Line <28> newline 		 
 Line <28> newline 		 
-Line <29> string 		 option 4
+Line <29> string 		 option 5
 Line <29> gotoo 		 
 Line <29> name 		 here
 Line <29> newline 		 
 Line <29> newline 		 
-Line <30> string 		 option 5
+Line <30> string 		 option 6
 Line <30> name 		 test
 Line <30> parao 		 (
 Line <30> string 		 here
@@ -131,49 +128,64 @@ Line <31> newline
 Line <32> newline 		 
 Line <32> newline 		 
 Line <33> bracketo 		 [
-Line <33> name 		 Bob
-Line <33> colon 		 :
-Line <33> name 		 char
+Line <33> name 		 test
 Line <33> bracketc 		 ]
 Line <33> newline 		 
 Line <33> newline 		 
-Line <34> name 		 age
-Line <34> equal 		 =
-Line <34> number 		 .24
+Line <34> name 		 Ryan
+Line <34> colon 		 :
+Line <34> string 		 We are here now!
 Line <34> newline 		 
 Line <34> newline 		 
-Line <35> name 		 money
-Line <35> equal 		 =
-Line <35> number 		 100
+Line <35> string 		 hehe
 Line <35> newline 		 
 Line <35> newline 		 
-Line <36> name 		 excited
-Line <36> colon 		 :
-Line <36> string 		 path/to/file
-Line <36> name 		 function
 Line <36> newline 		 
 Line <36> newline 		 
+Line <37> bracketo 		 [
+Line <37> name 		 Bob
+Line <37> colon 		 :
+Line <37> name 		 char
+Line <37> bracketc 		 ]
 Line <37> newline 		 
 Line <37> newline 		 
-Line <38> bracketo 		 [
-Line <38> name 		 newblock
-Line <38> colon 		 :
-Line <38> name 		 function
-Line <38> parao 		 (
-Line <38> parac 		 )
-Line <38> bracketc 		 ]
+Line <38> name 		 age
+Line <38> equal 		 =
+Line <38> number 		 .24
 Line <38> newline 		 
 Line <38> newline 		 
-Line <39> string 		 Test #2
+Line <39> name 		 money
+Line <39> equal 		 =
+Line <39> number 		 100
 Line <39> newline 		 
 Line <39> newline 		 
-Line <40> string 		 Does it parse this part properly?
+Line <40> name 		 excited
+Line <40> colon 		 :
+Line <40> string 		 path/to/file
+Line <40> name 		 function
 Line <40> newline 		 
 Line <40> newline 		 
-Line <41> string 		 huh
 Line <41> newline 		 
 Line <41> newline 		 
-Line <41> eof 		 
+Line <42> bracketo 		 [
+Line <42> name 		 newblock
+Line <42> colon 		 :
+Line <42> name 		 function
+Line <42> parao 		 (
+Line <42> parac 		 )
+Line <42> bracketc 		 ]
+Line <42> newline 		 
+Line <42> newline 		 
+Line <43> string 		 Test #2
+Line <43> newline 		 
+Line <43> newline 		 
+Line <44> string 		 Does it parse this part properly?
+Line <44> newline 		 
+Line <44> newline 		 
+Line <45> string 		 huh
+Line <45> newline 		 
+Line <45> newline 		 
+Line <45> eof 		 
 Line <1> newline 		 
 Line <1> newline 		 
 Line <1> bracketo 		 [

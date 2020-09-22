@@ -228,7 +228,7 @@ namespace dms {
 				else if (bk_name == "$END") {
 					cmd* c = new cmd;
 					c->opcode = codes::JUMP;
-					c->args.push(buildVariable("$END"));
+					c->args.push(buildValue("$END"));
 					current_chunk->addCmd(c);
 					state->push_chunk(current_chunk->name, current_chunk);
 					current_chunk = state->chunks["$END"];
@@ -245,16 +245,16 @@ namespace dms {
 		if (state->isEnabled("leaking") && (current_chunk != nullptr && current_chunk->name != "$INIT")) {
 			cmd* c = new cmd;
 			c->opcode = codes::JUMP;
-			c->args.push(buildVariable(bk_name));
+			c->args.push(buildValue(bk_name));
 			current_chunk->addCmd(c);
 		}
 		if (current_chunk!= nullptr && current_chunk->name == "$INIT") {
 			cmd* c = new cmd;
 			c->opcode = codes::JUMP;
 			if(state->entry!="$undefined")
-				c->args.push(buildVariable(state->entry));
+				c->args.push(buildValue(state->entry));
 			else
-				c->args.push(buildVariable(bk_name));
+				c->args.push(buildValue(bk_name));
 			current_chunk->addCmd(c);
 		}
 		if (current_chunk != nullptr && current_chunk->name == "$END") {
@@ -263,7 +263,7 @@ namespace dms {
 			if (state->entry != "$undefined")
 				c->args.push(buildValue(0));
 			else
-				c->args.push(buildVariable(bk_name));
+				c->args.push(buildValue(bk_name));
 			current_chunk->addCmd(c);
 		}
 		current_chunk = new chunk;

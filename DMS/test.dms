@@ -1,7 +1,7 @@
-entry test // Will either start the first block seen or the block supplied by you!
+entry main // Will either start the first block seen or the block supplied by you!
 enable warnings
 disable omniscient
-enable leaking
+//enable leaking
 enable debugging
 loadfile "loadtest.dms"
 version 1.2
@@ -22,13 +22,17 @@ using extendedDefine
 	Bob: "Testing..."
 	
 	choice "What do you want to do?" {
-		"option 0" test2("testing")
-		"option 1" jump "here"
-		"option 2" jump there
-		"option 3" goto "o3"
-		"option 4" goto here
-		"option 5" test("here")
+		"option 1" test2("testing")
+		"option 2" jump "test"
+		"option 3" jump there
+		"option 4" goto "o3"
+		"option 5" goto here
+		"option 6" test("here")
 	}
+
+[test]
+	Ryan: "We are here now!"
+	"hehe"
 
 [Bob:char]
 	age = .24
