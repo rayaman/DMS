@@ -10,7 +10,11 @@
 namespace dms::utils {
 	template<class... Args>
 	void print(Args... args) {
-		(std::cout << ... << args) << "\n";
+		(std::cout << ... << args) << std::endl;
+	}
+	template<class... Args>
+	void write(Args... args) {
+		(std::cout << ... << args);
 	}
 	template<class... Args>
 	std::string concat(Args... args) {

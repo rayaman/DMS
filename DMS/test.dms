@@ -35,9 +35,11 @@ using extendedDefine
 	"hehe"
 
 [Bob:char]
+	fname = "Bob"
+	//lname = ""
 	age = .24
 	money = 100
-	excited: "path/to/file" | function
+	excited: "path/to/file"
 
 [newblock:function()]
 	"Test #2"

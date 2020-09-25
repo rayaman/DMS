@@ -113,5 +113,8 @@
     <ClInclude Include="Handlers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>Header Files\DMS</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -149,43 +149,48 @@ Line <37> name 		 char
 Line <37> bracketc 		 ]
 Line <37> newline 		 
 Line <37> newline 		 
-Line <38> name 		 age
+Line <38> name 		 fname
 Line <38> equal 		 =
-Line <38> number 		 .24
+Line <38> string 		 Bob
 Line <38> newline 		 
 Line <38> newline 		 
-Line <39> name 		 money
-Line <39> equal 		 =
-Line <39> number 		 100
 Line <39> newline 		 
-Line <39> newline 		 
-Line <40> name 		 excited
-Line <40> colon 		 :
-Line <40> string 		 path/to/file
-Line <40> name 		 function
+Line <40> name 		 age
+Line <40> equal 		 =
+Line <40> number 		 .24
 Line <40> newline 		 
 Line <40> newline 		 
+Line <41> name 		 money
+Line <41> equal 		 =
+Line <41> number 		 100
 Line <41> newline 		 
 Line <41> newline 		 
-Line <42> bracketo 		 [
-Line <42> name 		 newblock
+Line <42> name 		 excited
 Line <42> colon 		 :
-Line <42> name 		 function
-Line <42> parao 		 (
-Line <42> parac 		 )
-Line <42> bracketc 		 ]
+Line <42> string 		 path/to/file
 Line <42> newline 		 
 Line <42> newline 		 
-Line <43> string 		 Test #2
 Line <43> newline 		 
 Line <43> newline 		 
-Line <44> string 		 Does it parse this part properly?
+Line <44> bracketo 		 [
+Line <44> name 		 newblock
+Line <44> colon 		 :
+Line <44> name 		 function
+Line <44> parao 		 (
+Line <44> parac 		 )
+Line <44> bracketc 		 ]
 Line <44> newline 		 
 Line <44> newline 		 
-Line <45> string 		 huh
+Line <45> string 		 Test #2
 Line <45> newline 		 
 Line <45> newline 		 
-Line <45> eof 		 
+Line <46> string 		 Does it parse this part properly?
+Line <46> newline 		 
+Line <46> newline 		 
+Line <47> string 		 huh
+Line <47> newline 		 
+Line <47> newline 		 
+Line <47> eof 		 
 Line <1> newline 		 
 Line <1> newline 		 
 Line <1> bracketo 		 [
@@ -225,112 +230,117 @@ Line <8> equal 		 =
 Line <8> number 		 1000
 Line <8> newline 		 
 Line <8> newline 		 
+Line <9> name 		 lname
+Line <9> equal 		 =
+Line <9> string 		 Ward
 Line <9> newline 		 
-Line <10> name 		 calm
-Line <10> colon 		 :
-Line <10> string 		 ./path/to/file
+Line <9> newline 		 
 Line <10> newline 		 
-Line <10> newline 		 
-Line <11> name 		 excited
+Line <11> name 		 calm
 Line <11> colon 		 :
 Line <11> string 		 ./path/to/file
 Line <11> newline 		 
 Line <11> newline 		 
+Line <12> name 		 excited
+Line <12> colon 		 :
+Line <12> string 		 ./path/to/file
 Line <12> newline 		 
 Line <12> newline 		 
-Line <13> bracketo 		 [
-Line <13> name 		 step
-Line <13> colon 		 :
-Line <13> name 		 function
-Line <13> parao 		 (
-Line <13> name 		 a
-Line <13> seperator 		 ,
-Line <13> name 		 b
-Line <13> seperator 		 ,
-Line <13> name 		 c
-Line <13> parac 		 )
-Line <13> bracketc 		 ]
 Line <13> newline 		 
 Line <13> newline 		 
-Line <14> string 		 Testing...
+Line <14> bracketo 		 [
+Line <14> name 		 step
+Line <14> colon 		 :
+Line <14> name 		 function
+Line <14> parao 		 (
+Line <14> name 		 a
+Line <14> seperator 		 ,
+Line <14> name 		 b
+Line <14> seperator 		 ,
+Line <14> name 		 c
+Line <14> parac 		 )
+Line <14> bracketc 		 ]
 Line <14> newline 		 
-Line <15> name 		 d
-Line <15> equal 		 =
-Line <15> parao 		 (
-Line <15> number 		 100
-Line <15> plus 		 +
-Line <15> name 		 b
-Line <15> parac 		 )
-Line <15> divide 		 /
-Line <15> name 		 c
+Line <14> newline 		 
+Line <15> string 		 Testing...
 Line <15> newline 		 
-Line <15> newline 		 
-Line <16> name 		 e
+Line <16> name 		 d
 Line <16> equal 		 =
-Line <16> string 		 somestring
+Line <16> parao 		 (
+Line <16> number 		 100
+Line <16> plus 		 +
+Line <16> name 		 b
+Line <16> parac 		 )
+Line <16> divide 		 /
+Line <16> name 		 c
 Line <16> newline 		 
 Line <16> newline 		 
 Line <17> name 		 e
 Line <17> equal 		 =
-Line <17> nil 		 nil
+Line <17> string 		 somestring
 Line <17> newline 		 
 Line <17> newline 		 
-Line <18> name 		 g
+Line <18> name 		 e
 Line <18> equal 		 =
-Line <18> false 		 false
+Line <18> nil 		 nil
 Line <18> newline 		 
 Line <18> newline 		 
-Line <19> ret 		 
-Line <19> name 		 d
+Line <19> name 		 g
+Line <19> equal 		 =
+Line <19> false 		 false
 Line <19> newline 		 
 Line <19> newline 		 
+Line <20> ret 		 
+Line <20> name 		 d
 Line <20> newline 		 
 Line <20> newline 		 
-Line <21> bracketo 		 [
-Line <21> name 		 inventory
-Line <21> colon 		 :
-Line <21> name 		 env
-Line <21> bracketc 		 ]
 Line <21> newline 		 
 Line <21> newline 		 
-Line <22> name 		 slot1
-Line <22> equal 		 =
-Line <22> string 		 
+Line <22> bracketo 		 [
+Line <22> name 		 inventory
+Line <22> colon 		 :
+Line <22> name 		 env
+Line <22> bracketc 		 ]
 Line <22> newline 		 
 Line <22> newline 		 
-Line <23> name 		 slot2
+Line <23> name 		 slot1
 Line <23> equal 		 =
 Line <23> string 		 
 Line <23> newline 		 
 Line <23> newline 		 
-Line <24> name 		 slot3
+Line <24> name 		 slot2
 Line <24> equal 		 =
 Line <24> string 		 
 Line <24> newline 		 
 Line <24> newline 		 
-Line <25> name 		 slot4
+Line <25> name 		 slot3
 Line <25> equal 		 =
 Line <25> string 		 
 Line <25> newline 		 
 Line <25> newline 		 
-Line <26> name 		 slot5
+Line <26> name 		 slot4
 Line <26> equal 		 =
 Line <26> string 		 
 Line <26> newline 		 
 Line <26> newline 		 
-Line <27> name 		 slot6
+Line <27> name 		 slot5
 Line <27> equal 		 =
 Line <27> string 		 
 Line <27> newline 		 
 Line <27> newline 		 
-Line <28> name 		 slot7
+Line <28> name 		 slot6
 Line <28> equal 		 =
 Line <28> string 		 
 Line <28> newline 		 
 Line <28> newline 		 
-Line <29> name 		 slot8
+Line <29> name 		 slot7
 Line <29> equal 		 =
 Line <29> string 		 
 Line <29> newline 		 
 Line <29> newline 		 
-Line <29> eof 		 
+Line <30> name 		 slot8
+Line <30> equal 		 =
+Line <30> string 		 
+Line <30> newline 		 
+Line <30> newline 		 
+Line <30> eof 		 

@@ -130,7 +130,6 @@ namespace dms {
 				}
 			}
 			length->set(buildNumber(count)); // the second argument is the length of the list! This should be modified if lists are changed at runtime!
-
 			return true;
 		}
 		return false;
@@ -143,7 +142,19 @@ namespace dms {
 			c->opcode = codes::DISP;
 			c->args.push(buildValue(msg));
 			current_chunk->addCmd(c); // Add the cmd to the current chunk
+			current_chunk->addCmd(new cmd{ codes::HALT });
 			return true;
+		}
+		else if (isBlock(bt_character) && stream->match(tokens::newline, tokens::name, tokens::colon, tokens::string, tokens::newline)) {
+			stream->next(); // Standard consumption
+			std::string name = stream->next().name;
+			stream->next(); // That colon
+			std::string msg = stream->next().name;
+			cmd* c = new cmd;
+			c->opcode = codes::STAT;
+			c->args.push(buildVariable(name));
+			c->args.push(buildValue(msg));
+			current_chunk->addCmd(c); // Add the cmd to the current chunk
 		}
 		else if ((isBlock(bt_block) || isBlock(bt_method)) && stream->match(tokens::newline, tokens::name, tokens::colon, tokens::string, tokens::newline)) {
 			// We might have to handle scope here
@@ -160,7 +171,7 @@ namespace dms {
 			c->opcode = codes::DISP;
 			c->args.push(buildValue(msg));
 			current_chunk->addCmd(c); // Add the cmd to the current chunk
-			// We might have to consume a newline... Depends on what's next
+			current_chunk->addCmd(new cmd{ codes::HALT });
 			return true;
 		}
 		else if ((isBlock(bt_block) || isBlock(bt_method)) && stream->match(tokens::name,tokens::colon,tokens::cbracketo)) {
@@ -229,6 +240,7 @@ namespace dms {
 				}
 			}
 			stream->next();
+			current_chunk->addCmd(new cmd{ codes::HALT });
 			return true;
 		}
 		// emotion: "path"

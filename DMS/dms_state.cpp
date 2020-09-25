@@ -18,6 +18,12 @@ namespace dms {
 		push_chunk("$END", c);
 		setChoiceHandler(new choiceHandler); // Use the default implementation
 	}
+	bool dms_state::characterExists(std::string bk_name) {
+		return (chunks.count(bk_name) && chunks[bk_name]->type == blocktype::bt_character);
+	}
+	bool dms_state::blockExists(std::string bk_name) {
+		return (chunks.count(bk_name));
+	}
 	void dms_state::enable(std::string flag) {
 		enables[flag] = true;
 	}

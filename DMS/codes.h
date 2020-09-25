@@ -46,7 +46,8 @@ namespace dms::codes {
 		POW,
 		MOD,
 		LIST,
-		LINE
+		LINE,
+		HALT,
 	};
 	extern const std::string list[];
 	static bool isControl(const op code) {

@@ -27,6 +27,6 @@ int main()
         std::cout << e.what() << '\n';
         return -1;
     }
-    state->dump();
+    //state->dump();
     state->run();
 }

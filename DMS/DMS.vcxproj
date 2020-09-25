@@ -160,6 +160,7 @@
     <ClCompile Include="value.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Character.h" />
     <ClInclude Include="Handlers.h" />
     <ClInclude Include="chunk.h" />
     <ClInclude Include="cmd.h" />

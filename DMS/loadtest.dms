@@ -6,6 +6,7 @@
 [Ryan:char]
 	age = 21
 	money = 1000
+	lname = "Ward"
 	// Inside a character block this syntax defines animation/image file for an emotion
 	calm: "./path/to/file"
 	excited: "./path/to/file"
