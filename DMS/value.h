@@ -137,7 +137,7 @@ namespace dms {
 	struct dms_env
 	{
 		std::unordered_map<std::string, value*> hpart;
-		std::unordered_map<double, value*> ipart;
+		std::vector<value*> ipart;
 		void pushValue(value* val);
 		void pushValue(value* ind, value* val);
 		value* getValue(value* val);

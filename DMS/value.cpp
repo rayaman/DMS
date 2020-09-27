@@ -133,32 +133,17 @@ namespace dms {
 		return temp.str();
 	}
 	void dms_env::pushValue(value* val) {
-		double count = 0;
-		while (ipart[count++]->type != nil) {}
-		ipart.insert_or_assign(count-1, val);
+		ipart.push_back(val);
 	}
 	void dms_env::pushValue(value* ind, value* val) {
-		if (ind->type == number) {
-			size_t size = ipart.size();
-			if (val->type == nil) {
-				ipart[ind->n->val]->nuke();
-				ipart.erase(ind->n->val);
-				count--;
-			}
-			else {
-				ipart.insert_or_assign(ind->n->val, val);
-				count++;
-			}
-		} else {
-			if (val->type == nil) {
-				hpart[ind->toString()]->nuke();
-				hpart.erase(ind->toString());
-				count--;
-			}
-			else {
-				hpart.insert_or_assign(ind->toString(), val);
-				count++;
-			}
+		if (val->type == nil) {
+			hpart[ind->toString()]->nuke();
+			hpart.erase(ind->toString());
+			count--;
+		}
+		else {
+			hpart.insert_or_assign(ind->toString(), val);
+			count++;
 		}
 	}
 	value* dms_env::getValue(value* ind) {

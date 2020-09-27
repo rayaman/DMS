@@ -72,6 +72,7 @@ namespace dms {
 			current_chunk->addCmd(c);
 			bool ready = true;
 			while (tempstream.peek().type != tokens::none) {
+				debugInvoker(stream);
 				if (tempstream.match(tokens::cbracketc)) {
 					ready = true;
 					c = new cmd;
@@ -184,6 +185,7 @@ namespace dms {
 			stream->next();
 			stream->next();
 			while (stream->peek().type != tokens::cbracketc) {
+				debugInvoker(stream);
 				if (stream->match(tokens::name)) {
 					std::string mode = stream->next().name;
 					if (mode == "speed") {
@@ -302,9 +304,12 @@ namespace dms {
 			std::string option;
 			cmd* c = new cmd;
 			// Create a unique label name by using the line number
-			std::string choicelabel = concat("$CHOI_END_", stream->peek().line_num);
+			int CHOI_ID = 0;
+			std::string choi_str = concat("CHOI_", fn);
+			std::string choicelabel = concat("$CHOI_END_", choi_str,"_", stream->peek().line_num);
 			c->opcode = codes::CHOI;
 			c->args.push(buildValue(prompt));
+			c->args.push(buildValue(fn));
 			current_chunk->addCmd(c); // We will keep a reference to this and add to it as we go through the list
 			bool start = false;
 			bool hasfunc = false;
@@ -340,6 +345,10 @@ namespace dms {
 				If we are provided with a number greater than 3 then we can push an execption.
 			*/
 			while (!stream->match(tokens::cbracketc)) {
+				debugInvoker(stream);
+				if (start && !stream->match(tokens::newline)) {
+					buildLabel(concat(choi_str,"_", CHOI_ID++));
+				} 
 				if (stream->match(tokens::cbracketo) && !start) {
 					start = true;
 					stream->next();
@@ -357,15 +366,9 @@ namespace dms {
 						hasfunc = true;
 						buildGoto(choicelabel);
 					}
-					else if (match_process_goto(stream)) {
-						buildNoop(); // Add noop to post-goto command
-					}
-					else if (match_process_jump(stream)) {
-						buildNoop(); // Add noop to post-jump command
-					}
-					else if (match_process_exit(stream)) {
-						buildNoop(); // Add noop to post-exit command
-					}
+					else if (match_process_goto(stream)) {}
+					else if (match_process_jump(stream)) {}
+					else if (match_process_exit(stream)) {}
 				}
 				// Last Match
 				else if (stream->match(tokens::newline)) {
@@ -459,6 +462,7 @@ namespace dms {
 			value* ref = buildVariable();
 			// This part we add values to the opcodes for the bytecode FUNC val a1 a2 a3 ... an
 			while (tempstream.peek().type != tokens::none) { // End of stream
+				debugInvoker(stream);
 				tempval = buildVariable();
 				tok = tempstream.peek();
 				if (tempstream.match(tokens::seperator)) {
@@ -600,6 +604,7 @@ namespace dms {
 			size_t loops = 0;
 			bool hasOP = false;
 			while (stream->peek().type != tokens::none) {
+				debugInvoker(stream);
 				if (stream->match(tokens::parao)) {
 					tokenstream temp;
 					temp.init(&(stream->next(tokens::parao, tokens::parac))); // Balanced match!

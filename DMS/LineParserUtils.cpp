@@ -215,6 +215,20 @@ namespace dms {
 		c->args.push(buildValue(w));
 		current_chunk->addCmd(c);
 	}
+	void LineParser::debugInvoker(tokenstream* stream) {
+		if (state->isEnabled("debugging") && stream->peek().type != tokens::newline) {
+			// A very nasty if statement, I won't hide it, this could be made much more readable
+			// This checks if the last cmd is a LINE cmd and if its the same line number as the current one we simply skip it
+			if (current_chunk->cmds.size() >= 2 && current_chunk->cmds[current_chunk->cmds.size() - 1]!=nullptr && current_chunk->cmds[current_chunk->cmds.size() - 1]->opcode==codes::LINE && (size_t)current_chunk->cmds[current_chunk->cmds.size()-1]->args.args[0]->n->getValue()== (size_t)stream->peek().line_num) {
+				return;
+			}
+			int current_line = stream->peek().line_num;
+			cmd* ln = new cmd;
+			ln->opcode = codes::LINE;
+			ln->args.push(buildValue(current_line));
+			current_chunk->addCmd(ln);
+		}
+	}
 	bool LineParser::createBlock(std::string bk_name, blocktype bk_type) {
 		if (current_chunk != nullptr) {
 			if (state->chunks.count(bk_name)==0 && bk_name!="$END")

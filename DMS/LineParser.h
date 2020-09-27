@@ -94,6 +94,7 @@ namespace dms {
 		bool isBlock(blocktype bk_type);
 		void tolower(std::string &str);
 		void tokenizer(dms_state* state, std::vector<tokens::token> &tok);
+		void debugInvoker(tokenstream* stream);
 	public:
 		//Refer to streams.cpp for the match_process_CMD code.
 		dms_state* Parse();

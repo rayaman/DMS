@@ -1,13 +1,17 @@
 entry main // Will either start the first block seen or the block supplied by you!
 enable warnings
 disable omniscient
+enable forseelabels
 //enable leaking
-enable debugging
+//enable debugging
 loadfile "loadtest.dms"
 version 1.2
 using extendedDefine
 
 [main]
+	"why"
+	works = true
+	jump Bob
 	"Testing"
 	Bob: {
 		speed 50
@@ -22,7 +26,7 @@ using extendedDefine
 	Bob: "Testing..."
 	
 	choice "What do you want to do?" {
-		"option 1" test2("testing")
+		"option 1" test2("testing",{1,2,3})
 		"option 2" jump "test"
 		"option 3" jump there
 		"option 4" goto "o3"

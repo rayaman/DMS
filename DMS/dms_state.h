@@ -15,13 +15,15 @@
 namespace dms {
 	struct dms_state
 	{
-		void* choi = nullptr;
+		void* handler = nullptr;
 		std::unordered_map<std::string, value*> memory;
 		std::vector<value*> garbage;
 		std::map<std::string, chunk*> chunks;
 		std::map<std::string, character*> characters;
+		std::map<std::string, size_t> labels;
 		std::string entry = "$undefined";
 		std::map<std::string, bool> enables;
+		std::size_t cur_line=0;
 		const double Iversion = 1.0;
 		double Cversion; // The version of
 		errors::error err;
@@ -38,9 +40,11 @@ namespace dms {
 		void enable(std::string flag);
 		void disable(std::string flag);
 		bool isEnabled(std::string flag);
-		void setChoiceHandler(void* choi);
+		void setHandler(void* hand);
 
 		// Gets or creates a character
+		bool assign(value* var, value* val);
+		size_t seek(std::string label,std::vector<cmd*> cmds ,codes::op code, size_t pos);
 		character* getCharacter(std::string c);
 		bool characterExists(std::string bk_name);
 		bool blockExists(std::string bk_name);

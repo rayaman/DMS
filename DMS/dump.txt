@@ -12,185 +12,206 @@ Line <3> flag
 Line <3> name 		 omniscient
 Line <3> newline 		 
 Line <3> newline 		 
+Line <4> flag 		 
+Line <4> name 		 forseelabels
 Line <4> newline 		 
-Line <5> flag 		 
-Line <5> name 		 debugging
+Line <4> newline 		 
 Line <5> newline 		 
-Line <5> newline 		 
-Line <6> flag 		 
-Line <6> string 		 loadtest.dms
-Line <6> newline 		 
 Line <6> newline 		 
 Line <7> flag 		 
-Line <7> number 		 1.2
+Line <7> string 		 loadtest.dms
 Line <7> newline 		 
 Line <7> newline 		 
 Line <8> flag 		 
-Line <8> name 		 extendedDefine
+Line <8> number 		 1.2
 Line <8> newline 		 
 Line <8> newline 		 
+Line <9> flag 		 
+Line <9> name 		 extendedDefine
 Line <9> newline 		 
 Line <9> newline 		 
-Line <10> bracketo 		 [
-Line <10> name 		 main
-Line <10> bracketc 		 ]
 Line <10> newline 		 
 Line <10> newline 		 
-Line <11> string 		 Testing
+Line <11> bracketo 		 [
+Line <11> name 		 main
+Line <11> bracketc 		 ]
 Line <11> newline 		 
 Line <11> newline 		 
-Line <12> name 		 Bob
-Line <12> colon 		 :
-Line <12> cbracketo 		 {
+Line <12> string 		 why
 Line <12> newline 		 
 Line <12> newline 		 
-Line <13> name 		 speed
-Line <13> number 		 50
+Line <13> name 		 works
+Line <13> equal 		 =
+Line <13> true 		 true
 Line <13> newline 		 
 Line <13> newline 		 
-Line <14> name 		 excited
-Line <14> colon 		 :
-Line <14> string 		 Hello Ryan! 
+Line <14> jump 		 
+Line <14> name 		 Bob
 Line <14> newline 		 
 Line <14> newline 		 
-Line <15> name 		 wait
-Line <15> number 		 200
+Line <15> string 		 Testing
 Line <15> newline 		 
 Line <15> newline 		 
-Line <16> string 		 How are you doing?
+Line <16> name 		 Bob
+Line <16> colon 		 :
+Line <16> cbracketo 		 {
 Line <16> newline 		 
 Line <16> newline 		 
-Line <17> cbracketc 		 }
+Line <17> name 		 speed
+Line <17> number 		 50
 Line <17> newline 		 
 Line <17> newline 		 
+Line <18> name 		 excited
+Line <18> colon 		 :
+Line <18> string 		 Hello Ryan! 
 Line <18> newline 		 
 Line <18> newline 		 
-Line <19> name 		 Ryan
-Line <19> colon 		 :
-Line <19> cbracketo 		 {
+Line <19> name 		 wait
+Line <19> number 		 200
 Line <19> newline 		 
 Line <19> newline 		 
-Line <20> string 		 Hey Bob I'm good how are you?
+Line <20> string 		 How are you doing?
 Line <20> newline 		 
 Line <20> newline 		 
 Line <21> cbracketc 		 }
 Line <21> newline 		 
 Line <21> newline 		 
-Line <22> name 		 Bob
-Line <22> colon 		 :
-Line <22> string 		 Testing...
 Line <22> newline 		 
 Line <22> newline 		 
+Line <23> name 		 Ryan
+Line <23> colon 		 :
+Line <23> cbracketo 		 {
 Line <23> newline 		 
 Line <23> newline 		 
-Line <24> control 		 
-Line <24> string 		 What do you want to do?
-Line <24> cbracketo 		 {
+Line <24> string 		 Hey Bob I'm good how are you?
 Line <24> newline 		 
 Line <24> newline 		 
-Line <25> string 		 option 1
-Line <25> name 		 test2
-Line <25> parao 		 (
-Line <25> string 		 testing
-Line <25> parac 		 )
+Line <25> cbracketc 		 }
 Line <25> newline 		 
 Line <25> newline 		 
-Line <26> string 		 option 2
-Line <26> jump 		 
-Line <26> string 		 test
+Line <26> name 		 Bob
+Line <26> colon 		 :
+Line <26> string 		 Testing...
 Line <26> newline 		 
 Line <26> newline 		 
-Line <27> string 		 option 3
-Line <27> jump 		 
-Line <27> name 		 there
 Line <27> newline 		 
 Line <27> newline 		 
-Line <28> string 		 option 4
-Line <28> gotoo 		 
-Line <28> string 		 o3
+Line <28> control 		 
+Line <28> string 		 What do you want to do?
+Line <28> cbracketo 		 {
 Line <28> newline 		 
 Line <28> newline 		 
-Line <29> string 		 option 5
-Line <29> gotoo 		 
-Line <29> name 		 here
+Line <29> string 		 option 1
+Line <29> name 		 test2
+Line <29> parao 		 (
+Line <29> string 		 testing
+Line <29> seperator 		 ,
+Line <29> cbracketo 		 {
+Line <29> number 		 1
+Line <29> seperator 		 ,
+Line <29> number 		 2
+Line <29> seperator 		 ,
+Line <29> number 		 3
+Line <29> cbracketc 		 }
+Line <29> parac 		 )
 Line <29> newline 		 
 Line <29> newline 		 
-Line <30> string 		 option 6
-Line <30> name 		 test
-Line <30> parao 		 (
-Line <30> string 		 here
-Line <30> parac 		 )
+Line <30> string 		 option 2
+Line <30> jump 		 
+Line <30> string 		 test
 Line <30> newline 		 
 Line <30> newline 		 
-Line <31> cbracketc 		 }
+Line <31> string 		 option 3
+Line <31> jump 		 
+Line <31> name 		 there
 Line <31> newline 		 
 Line <31> newline 		 
+Line <32> string 		 option 4
+Line <32> gotoo 		 
+Line <32> string 		 o3
 Line <32> newline 		 
 Line <32> newline 		 
-Line <33> bracketo 		 [
-Line <33> name 		 test
-Line <33> bracketc 		 ]
+Line <33> string 		 option 5
+Line <33> gotoo 		 
+Line <33> name 		 here
 Line <33> newline 		 
 Line <33> newline 		 
-Line <34> name 		 Ryan
-Line <34> colon 		 :
-Line <34> string 		 We are here now!
+Line <34> string 		 option 6
+Line <34> name 		 test
+Line <34> parao 		 (
+Line <34> string 		 here
+Line <34> parac 		 )
 Line <34> newline 		 
 Line <34> newline 		 
-Line <35> string 		 hehe
+Line <35> cbracketc 		 }
 Line <35> newline 		 
 Line <35> newline 		 
 Line <36> newline 		 
 Line <36> newline 		 
 Line <37> bracketo 		 [
-Line <37> name 		 Bob
-Line <37> colon 		 :
-Line <37> name 		 char
+Line <37> name 		 test
 Line <37> bracketc 		 ]
 Line <37> newline 		 
 Line <37> newline 		 
-Line <38> name 		 fname
-Line <38> equal 		 =
-Line <38> string 		 Bob
+Line <38> name 		 Ryan
+Line <38> colon 		 :
+Line <38> string 		 We are here now!
 Line <38> newline 		 
 Line <38> newline 		 
+Line <39> string 		 hehe
 Line <39> newline 		 
-Line <40> name 		 age
-Line <40> equal 		 =
-Line <40> number 		 .24
+Line <39> newline 		 
 Line <40> newline 		 
 Line <40> newline 		 
-Line <41> name 		 money
-Line <41> equal 		 =
-Line <41> number 		 100
+Line <41> bracketo 		 [
+Line <41> name 		 Bob
+Line <41> colon 		 :
+Line <41> name 		 char
+Line <41> bracketc 		 ]
 Line <41> newline 		 
 Line <41> newline 		 
-Line <42> name 		 excited
-Line <42> colon 		 :
-Line <42> string 		 path/to/file
+Line <42> name 		 fname
+Line <42> equal 		 =
+Line <42> string 		 Bob
 Line <42> newline 		 
 Line <42> newline 		 
 Line <43> newline 		 
-Line <43> newline 		 
-Line <44> bracketo 		 [
-Line <44> name 		 newblock
-Line <44> colon 		 :
-Line <44> name 		 function
-Line <44> parao 		 (
-Line <44> parac 		 )
-Line <44> bracketc 		 ]
+Line <44> name 		 age
+Line <44> equal 		 =
+Line <44> number 		 0.24
 Line <44> newline 		 
 Line <44> newline 		 
-Line <45> string 		 Test #2
+Line <45> name 		 money
+Line <45> equal 		 =
+Line <45> number 		 100
 Line <45> newline 		 
 Line <45> newline 		 
-Line <46> string 		 Does it parse this part properly?
+Line <46> name 		 excited
+Line <46> colon 		 :
+Line <46> string 		 path/to/file
 Line <46> newline 		 
 Line <46> newline 		 
-Line <47> string 		 huh
 Line <47> newline 		 
 Line <47> newline 		 
-Line <47> eof 		 
+Line <48> bracketo 		 [
+Line <48> name 		 newblock
+Line <48> colon 		 :
+Line <48> name 		 function
+Line <48> parao 		 (
+Line <48> parac 		 )
+Line <48> bracketc 		 ]
+Line <48> newline 		 
+Line <48> newline 		 
+Line <49> string 		 Test #2
+Line <49> newline 		 
+Line <49> newline 		 
+Line <50> string 		 Does it parse this part properly?
+Line <50> newline 		 
+Line <50> newline 		 
+Line <51> string 		 huh
+Line <51> newline 		 
+Line <51> newline 		 
+Line <51> eof 		 
 Line <1> newline 		 
 Line <1> newline 		 
 Line <1> bracketo 		 [

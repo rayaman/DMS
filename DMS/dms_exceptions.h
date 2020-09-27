@@ -11,5 +11,10 @@ namespace dms::exceptions {
 			return "ChoiceHandler Expected got ???";
 		}
 	};
+	struct InvalidChoice : public std::exception {
+		const char* what() const throw () {
+			return "Invalid Choice!";
+		}
+	};
 }
 

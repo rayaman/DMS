@@ -1,13 +1,21 @@
 #include "Handlers.h"
 namespace dms {
-	uint8_t choiceHandler::manageChoice(dms_state* state, dms_args choices) const {
-		uint8_t count = choices.args.size();
+	uint8_t Handler::manageChoice(dms_state* state, std::string prompt, std::vector<std::string> args) const {
 		std::string pos;
-		std::string prompt = choices.args[0]->s->getValue();
-		for (size_t i = 1; i < count; i++)
-			std::cout << i << ": " << choices.args[i]->s->getValue() << std::endl;
+		for (size_t i = 0; i < args.size(); i++)
+			std::cout << i+1 << ": " << args[i] << std::endl;
 		std::cout << prompt << " ";
 		std::cin >> pos;
-		return std::stoi(pos)-1;
+		try {
+			if (std::stoi(pos) > 0 && std::stoi(pos) < args.size())
+				return std::stoi(pos) - 1;
+			else
+				throw exceptions::InvalidChoice();
+		}
+		catch (std::exception e) {
+			std::cout << "Invalid Choice!" << std::endl;
+			return manageChoice(state,prompt,args);
+		}
+		
 	}
 }

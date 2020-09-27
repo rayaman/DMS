@@ -35,7 +35,7 @@ namespace dms {
 				rawdata << line << ";\n";
 			}
 			myfile.close();
-			//std::cout << rawdata.str() << std::endl;
+			fn = file;
 		}
 		else {
 			std::cout << "Unable to open file";
@@ -331,15 +331,14 @@ namespace dms {
 		token current = stream->next();
 		createBlock("$INIT", blocktype::bt_block);
 		cmd* flagcmd = new cmd;
-		size_t current_line = 0;
+		if (state->isEnabled("debugging")) {
+			cmd* c = new cmd;
+			c->opcode = codes::FILE;
+			c->args.push(buildValue(fn));
+			current_chunk->addCmd(c);
+		}
 		while (stream->peek().type != tokens::eof) {
-			if (stream->peek().line_num != current_line) {
-				current_line = stream->peek().line_num;
-				cmd* ln = new cmd;
-				ln->opcode = codes::LINE;
-				ln->args.push(buildValue((int)current_line+1));
-				current_chunk->addCmd(ln);
-			}
+			debugInvoker(stream);
 			if (current.type == tokens::flag) {
 				temp = stream->next(tokens::newline);
 				stream->prev(); // Unconsume the newline piece

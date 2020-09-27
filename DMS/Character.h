@@ -7,6 +7,7 @@ namespace dms {
 		std::string fname = "";
 		std::string lname = "";
 		bool seen = false;
+		double spd = 100;
 		std::unordered_map<std::string, std::string> paths;
 		std::unordered_map<std::string, value*> values;
 	};

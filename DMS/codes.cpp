@@ -45,5 +45,6 @@ const std::string dms::codes::list[] = {
 	"MOD",
 	"LIST",
 	"LINE",
-	"HALT"
+	"HALT",
+	"FILE"
 };

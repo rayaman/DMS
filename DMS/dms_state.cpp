@@ -16,7 +16,7 @@ namespace dms {
 		cc->args.push(buildValue(0));
 		c->addCmd(cc);
 		push_chunk("$END", c);
-		setChoiceHandler(new choiceHandler); // Use the default implementation
+		setHandler(new Handler); // Use the default implementation
 	}
 	bool dms_state::characterExists(std::string bk_name) {
 		return (chunks.count(bk_name) && chunks[bk_name]->type == blocktype::bt_character);
@@ -49,6 +49,22 @@ namespace dms {
 		}
 		outputFile.close();
 	}
+	bool dms_state::assign(value* var, value* val) {
+		if (memory.count(var->s->getValue()) == 0) {
+			memory.insert_or_assign(var->s->getValue(), val);
+			return true;
+		}
+		else {
+			value* temp = memory[var->s->getValue()];
+			if (temp->type != datatypes::variable) {
+				temp->set(); // Set the removed value to nil
+				garbage.push_back(memory[var->s->getValue()]);
+			}
+			else
+				utils::print("> so we have a variable"); // This print should be a reminder for me to do something about this.
+			memory[var->s->getValue()] = val;
+		}
+	}
 	void dms_state::dump() {
 		std::cout << "Number of chunks: " << chunks.size() << std::endl;
 		std::ofstream outputFile("dump.bin");
@@ -62,7 +78,12 @@ namespace dms {
 		chunks.insert_or_assign(s, c);
 	}
 	void dms_state::push_error(errors::error err) {
-		std::cout << err.err_msg << " On Line <" << err.linenum << ">" << std::endl;
+		if (isEnabled("debugging")) {
+			std::cout << err.err_msg << " On Line <" << cur_line << ">" << std::endl;
+		}
+		else {
+			std::cout << err.err_msg << std::endl;
+		}
 		this->err = err;
 		if (err.crash)
 			stop = true;

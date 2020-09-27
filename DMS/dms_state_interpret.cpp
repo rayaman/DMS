@@ -7,8 +7,8 @@ using namespace dms::exceptions;
 using namespace dms::codes;
 namespace dms {
 	// This is a pointer to a choicehandler! dms_state and utils have codepedencies, so I have to do this.
-	void dms_state::setChoiceHandler(void* choi) {
-		this->choi = choi;
+	void dms_state::setHandler(void* hand) {
+		this->handler = hand;
 	}
 	character* dms_state::getCharacter(std::string cha) {
 		if (characters.count(cha)) {
@@ -61,11 +61,18 @@ namespace dms {
 				return cc;
 			}
 			else {
-				push_error(errors::error{ errors::non_existing_block ,utils::concat("Attempted to index a non existing character!") });
+				push_error(errors::error{ errors::non_existing_block ,utils::concat("Attempted to index a non existing character block!") });
 				return nullptr;
 			}
 		}
 		return nullptr;
+	}
+	size_t dms_state::seek(std::string label, std::vector<cmd*> cmds, codes::op code, size_t pos) {
+		for (size_t i = pos; i < cmds.size(); i++) {
+			if (cmds[i]->opcode == code && cmds[i]->args.args[0]->s->getValue() == label)
+				return i;
+		}
+		return 0;
 	}
 	void dms_state::init(chunk* chunk, size_t& pos, size_t& max, std::vector<cmd*>& cmds) {
 		pos = 0;
@@ -86,7 +93,7 @@ namespace dms {
 		size_t max = 0;
 		std::vector<cmd*> cmds;
 		if (chunks[entry] == NULL) {
-			push_error(errors::error{errors::non_existing_block ,utils::concat("Attempted to Jump to a non existing block <",entry,">")});
+			push_error(errors::error{errors::non_existing_block ,utils::concat("Attempted to Jump to a non existing block [",entry,"]")});
 			return false;
 		}
 		init(chunks["$INIT"],pos,max,cmds);
@@ -99,8 +106,8 @@ namespace dms {
 		while (!stop || !halt) {
 			c = cmds[pos++];
 			code = c->opcode;
-			//utils::print("> ",*c);
-			//utils::wait();
+			//print("\n(",pos,")> ",*c);
+			//wait();
 			switch (code)
 			{
 				// Handle flags here
@@ -124,8 +131,33 @@ namespace dms {
 					// How we add modules into the code. This is the code that actually loads that data!
 					break;
 				// Flags handled
+				case LIST:
+					//We need to create an enviroment value then set that
+					{
+						dms_env* env = new dms_env;
+						env->hpart.insert_or_assign("$size", c->args.args[1]);
+						value* val = new value;
+						val->set(env);
+						assign(c->args.args[0], val);
+					}
+					break;
+				case INST:
+					{
+						value* list = memory[c->args.args[0]->s->getValue()];
+						list->e->pushValue(c->args.args[1]);
+					}
+					break;
 				case HALT:
-					wait();
+					//wait();
+					break;
+				case DSPD:
+					if (speaker == nullptr) {
+						push_error(errors::error{ errors::unknown ,utils::concat("A call to set speaker speed, but a speaker has not been defined!") });
+						return false;
+					}
+					else {
+						speaker->spd = c->args.args[0]->n->getValue();
+					}
 					break;
 				case SSPK:
 					if (characterExists(c->args.args[0]->s->getValue())){
@@ -145,36 +177,46 @@ namespace dms {
 					utils::write(c->args.args[0]->s->getValue());
 					break;
 				case ASGN:
-					if (memory.count(c->args.args[0]->s->getValue()) == 0) {
-						memory.insert_or_assign(c->args.args[0]->s->getValue(), c->args.args[1]);
-					}
-					else {
-						value* temp = memory[c->args.args[0]->s->getValue()];
-						if (temp->type != datatypes::variable) {
-							temp->set(); // Set the removed value to nil
-							garbage.push_back(memory[c->args.args[0]->s->getValue()]);
-						}
-						else
-							print("> so we have a variable");
-						memory[c->args.args[0]->s->getValue()] = c->args.args[1];
-					}
+					assign(c->args.args[0], c->args.args[1]);
 					break;
 				case LINE:
-					ln = c->args.args[0]->n->getValue();
+					cur_line = c->args.args[0]->n->getValue();
 					break;
 				case NOOP:
 					break;
 				case CHOI:
 					//Because we are using void* we must cast our pointers
 					//The implementation of this however should mean that you only ever have to deal with one "ChoiceHandler. One annoying void*"
-					pos += 2* (*(choiceHandler*)choi).manageChoice(this, c->args);
+					{
+						std::vector<std::string> args;
+						std::string prompt = c->args.args[0]->s->getValue();
+						std::string fn = c->args.args[1]->s->getValue();
+						for (size_t i = 2; i < c->args.args.size(); i++)
+							args.push_back(c->args.args[i]->resolve(memory)->s->getValue());
+						size_t npos = (*(Handler*)handler).manageChoice(this, prompt, args);
+						print("CHOI_", fn, "_", npos);
+						size_t nnpos = seek(concat("CHOI_", fn, "_", npos),cmds,LABL,npos);
+						if (!nnpos) {
+							push_error(errors::error{ errors::choice_unknown ,utils::concat("Unknown choice!") });
+							return false;
+						}
+						else {
+							print(nnpos);
+							pos = nnpos;
+							wait();
+						}
+					}
 					break;
 				case JUMP:
 					// Value assert resolves the data so a variable must eventually equal a string
 					if (utils::valueassert(c->args, memory, datatypes::string)) {
 						std::string block = c->args.args[0]->resolve(memory)->s->getValue();
 						if (chunks[block] == NULL) {
-							push_error(errors::error{ errors::non_existing_block ,utils::concat("Attempted to Jump to a non existing block <",block,">") });
+							push_error(errors::error{ errors::non_existing_block ,utils::concat("Attempted to Jump to a non existing block [",block,"]") });
+							return false;
+						}
+						else if (chunks[block]->type != bt_block) {
+							push_error(errors::error{ errors::non_existing_block ,utils::concat("Attempted to Jump to a non standard block [",block,"] type: ",getBlockType(chunks[block]->type))});
 							return false;
 						}
 						else {
