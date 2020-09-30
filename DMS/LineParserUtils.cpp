@@ -230,7 +230,7 @@ namespace dms {
 		}
 	}
 	bool LineParser::createBlock(std::string bk_name, blocktype bk_type) {
-		if (current_chunk != nullptr) {
+		if (current_chunk != nullptr || (bk_name == "$INIT" && state->chunks.count("$INIT"))) {
 			if (state->chunks.count(bk_name)==0 && bk_name!="$END")
 				state->push_chunk(current_chunk->name, current_chunk);
 			else
@@ -262,15 +262,6 @@ namespace dms {
 			c->args.push(buildValue(bk_name));
 			current_chunk->addCmd(c);
 		}
-		if (current_chunk!= nullptr && current_chunk->name == "$INIT") {
-			cmd* c = new cmd;
-			c->opcode = codes::JUMP;
-			if(state->entry!="$undefined")
-				c->args.push(buildValue(state->entry));
-			else
-				c->args.push(buildValue(bk_name));
-			current_chunk->addCmd(c);
-		}
 		if (current_chunk != nullptr && current_chunk->name == "$END") {
 			cmd* c = new cmd;
 			c->opcode = codes::EXIT;
@@ -284,6 +275,7 @@ namespace dms {
 		current_chunk->name = bk_name;
 		chunk_type = bk_type;
 		current_chunk->type = bk_type;
+		state->push_chunk(bk_name, current_chunk);
 		return true;
 	}
 	void LineParser::tokenizer(dms_state* state,std::vector<token> &toks) {

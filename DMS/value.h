@@ -27,10 +27,12 @@ namespace dms {
 			return out;
 		};
 	};
+	struct dms_state;
 	struct dms_string {
 		size_t length = 0;
 		uint8_t* val = nullptr;
 		std::string getValue();
+		std::string getValue(dms_state* state);
 		friend std::ostream& operator << (std::ostream& out, const dms_string& c) {
 			for (size_t i = 0; i < c.length; i++) {
 				std::cout << c.val[i];
@@ -64,7 +66,7 @@ namespace dms {
 		dms_env* e = nullptr;
 		dms_custom* c = nullptr;
 		value();
-		value* resolve(std::unordered_map<std::string,value*> map,value* v=nullptr);
+		value* resolve(std::unordered_map<std::string,value*> map);
 		void nuke();
 		void set(dms_string* str);
 		void set(dms_boolean* bo);
@@ -72,6 +74,7 @@ namespace dms {
 		void set(dms_env* en);
 		void set();
 		bool typeMatch(const value* o) const;
+		std::string getPrintable() const;
 		std::string toString() const;
 		friend std::ostream& operator << (std::ostream& out, const value& c) {
 			if (c.type == string) {
@@ -98,7 +101,6 @@ namespace dms {
 			else if (c.type == block) {
 				out << (char)c.type << c.s->getValue();
 			}
-			// Internal kinda
 			else if (c.type == datatypes::variable) {
 				out << (char)c.type << c.s->getValue(); // Do the lookup
 			}

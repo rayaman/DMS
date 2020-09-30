@@ -7,7 +7,7 @@ namespace dms {
 		enables.insert_or_assign("debugging",false);
 		enables.insert_or_assign("warnings",false); //
 		enables.insert_or_assign("statesave",true); // Allows you to save state
-		enables.insert_or_assign("omniscient",true); // Allows you to know who's who when you first meet them
+		enables.insert_or_assign("omniscient",false); // Allows you to know who's who when you first meet them
 		chunk* c = new chunk;
 		c->name = "$END";
 		c->type = blocktype::bt_block;
@@ -17,6 +17,13 @@ namespace dms {
 		c->addCmd(cc);
 		push_chunk("$END", c);
 		setHandler(new Handler); // Use the default implementation
+	}
+	bool dms_state::typeAssert(value* val, datatypes type) {
+		if (val->type != type) {
+			push_error(errors::error{ errors::invalid_type ,utils::concat("Expected a ",datatype[type]," got a ",datatype[val->type],"!") });
+			return false;
+		}
+		return true;
 	}
 	bool dms_state::characterExists(std::string bk_name) {
 		return (chunks.count(bk_name) && chunks[bk_name]->type == blocktype::bt_character);
@@ -65,11 +72,13 @@ namespace dms {
 			memory[var->s->getValue()] = val;
 		}
 	}
-	void dms_state::dump() {
-		std::cout << "Number of chunks: " << chunks.size() << std::endl;
+	void dms_state::dump(bool print) {
+		if (print)
+			std::cout << "Number of chunks: " << chunks.size() << std::endl;
 		std::ofstream outputFile("dump.bin");
 		for (const auto& [key, val] : chunks) {
-			std::cout << "Key: " << key << "<" << getBlockType(val->type) << ">" << std::endl << *val << std::endl;
+			if(print)
+				std::cout << "Key: " << key << "<" << getBlockType(val->type) << ">" << std::endl << *val << std::endl;
 			outputFile << "Key: " << key << "<" << getBlockType(val->type) << ">" << std::endl << *val << std::endl;
 		}
 		outputFile.close();
@@ -90,7 +99,9 @@ namespace dms {
 	}
 	void dms_state::push_warning(errors::error err) {
 		err.crash = false; // Force code to not crash then push the error
-		if(isEnabled("warnings"))
+		if (isEnabled("warnings")) {
+			err.err_msg = utils::concat("Warning: ", err.err_msg);
 			push_error(err);
+		}
 	}
 }

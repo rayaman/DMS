@@ -16,6 +16,7 @@ namespace dms {
 	struct dms_state
 	{
 		void* handler = nullptr;
+		bool hasFirst = false;
 		std::unordered_map<std::string, value*> memory;
 		std::vector<value*> garbage;
 		std::map<std::string, chunk*> chunks;
@@ -25,13 +26,13 @@ namespace dms {
 		std::map<std::string, bool> enables;
 		std::size_t cur_line=0;
 		const double Iversion = 1.0;
-		double Cversion; // The version of
+		double Sversion; // The version of
 		errors::error err;
 		bool stop = false;
 
 		dms_state();
 		void dump(errors::error err);
-		void dump();
+		void dump(bool print=false);
 		void push_error(errors::error err);
 		void push_warning(errors::error err);
 		void push_chunk(std::string s, chunk* c);
@@ -43,11 +44,13 @@ namespace dms {
 		void setHandler(void* hand);
 
 		// Gets or creates a character
+		character* getCharacter(std::string c);
+
 		bool assign(value* var, value* val);
 		size_t seek(std::string label,std::vector<cmd*> cmds ,codes::op code, size_t pos);
-		character* getCharacter(std::string c);
 		bool characterExists(std::string bk_name);
 		bool blockExists(std::string bk_name);
+		bool typeAssert(value* val, datatypes type);
 		bool run();
 	private:
 		// From what I gathered

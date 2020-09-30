@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "Handlers.h"
 #include <iostream>
+#include <chrono>
 using namespace dms::utils;
 using namespace dms::exceptions;
 using namespace dms::codes;
@@ -25,6 +26,12 @@ namespace dms {
 				size_t max = 0;
 				std::vector<cmd*> cmds;
 				init(chunks[cha], pos, max, cmds);
+				if (isEnabled("omniscient")) {
+					cc->seen = true;
+				}
+				else {
+					cc->seen = false;
+				}
 				while (true) {
 					c = cmds[pos++];
 					code = c->opcode;
@@ -40,10 +47,24 @@ namespace dms {
 						break;
 					case ASGN:
 						if (c->args.args[0]->s->getValue() == "fname") {
+							if(!typeAssert(c->args.args[1],datatypes::string))
+								return nullptr;
 							cc->fname = c->args.args[1]->s->getValue();
 						}
-						else if (c->args.args[0]->s->getValue() == "lname") {
+						else if (c->args.args[0]->s->getValue() == "lname" && c->args.args[1]->type == datatypes::string) {
+							if (!typeAssert(c->args.args[1], datatypes::string))
+								return nullptr;
 							cc->lname = c->args.args[1]->s->getValue();
+						}
+						else if (c->args.args[0]->s->getValue() == "unknown" && c->args.args[1]->type == datatypes::string) {
+							if (!typeAssert(c->args.args[1], datatypes::string))
+								return nullptr;
+							cc->unknown = c->args.args[1]->s->getValue();
+						}
+						else if (c->args.args[0]->s->getValue() == "known" && c->args.args[1]->type == datatypes::boolean) {
+							if (!typeAssert(c->args.args[1], datatypes::boolean))
+								return nullptr;
+							cc->seen = c->args.args[1]->b->getValue();
 						}
 						else {
 							cc->values.insert_or_assign(c->args.args[0]->s->getValue(), c->args.args[1]);
@@ -58,6 +79,9 @@ namespace dms {
 						break;
 					}
 				}
+				characters.insert_or_assign(cha, cc);
+				// Call Character event!
+				(*(Handler*)handler).OnSpeakerCreated(this,cc);
 				return cc;
 			}
 			else {
@@ -125,7 +149,17 @@ namespace dms {
 					// Nothing needs to be done here
 					break;
 				case VERN:
-					Cversion = c->args.args[0]->n->getValue();
+					Sversion = c->args.args[0]->n->getValue();
+					// Version X.xx
+					// X: Will not guarantee compatibality. Code breaking changes should be expected especially on lower versions
+					// xx: Will not break compatibality. They may add features as it goes up the ranks, but those changes do not break older code. If they do they will increase the X part and not the xx part
+					if (Sversion > Iversion) {
+						push_error(errors::error{errors::incompatible_version ,"This script was made for a later version of this interperter!"});
+						return false;
+					}
+					else if ((int)Iversion > (int)(Sversion)) {
+						push_warning(errors::error{ errors::incompatible_version ,"This script was made for an older version of this interperter, some features might not work!" });
+					}
 					break;
 				case USIN:
 					// How we add modules into the code. This is the code that actually loads that data!
@@ -149,6 +183,8 @@ namespace dms {
 					break;
 				case HALT:
 					//wait();
+					std::this_thread::sleep_for(std::chrono::milliseconds(700));
+					std::cout << std::endl;
 					break;
 				case DSPD:
 					if (speaker == nullptr) {
@@ -160,21 +196,22 @@ namespace dms {
 					}
 					break;
 				case SSPK:
+					//Because we are using void* we must cast our pointers
 					if (characterExists(c->args.args[0]->s->getValue())){
 						speaker = getCharacter(c->args.args[0]->s->getValue());
-						if (speaker->lname != "") {
-							utils::write(speaker->fname, " ", speaker->lname, ": ");
-						}
-						else {
-							utils::write(speaker->fname, ": ");
-						}
+						if (!(*(Handler*)handler).handleSpeaker(this, speaker))
+							return false;
+					}
+					else {
+						push_error(errors::error{ errors::disp_unknown,concat("Unknown character '",c->args.args[0]->s->getValue(),"'!")});
+						return false;
 					}
 					break;
 				case APND:
-					utils::write(c->args.args[0]->s->getValue());
+					utils::write(c->args.args[0]->s->getValue(this));
 					break;
 				case DISP:
-					utils::write(c->args.args[0]->s->getValue());
+					utils::write(c->args.args[0]->s->getValue(this));
 					break;
 				case ASGN:
 					assign(c->args.args[0], c->args.args[1]);
@@ -186,24 +223,20 @@ namespace dms {
 					break;
 				case CHOI:
 					//Because we are using void* we must cast our pointers
-					//The implementation of this however should mean that you only ever have to deal with one "ChoiceHandler. One annoying void*"
 					{
 						std::vector<std::string> args;
 						std::string prompt = c->args.args[0]->s->getValue();
 						std::string fn = c->args.args[1]->s->getValue();
 						for (size_t i = 2; i < c->args.args.size(); i++)
 							args.push_back(c->args.args[i]->resolve(memory)->s->getValue());
-						size_t npos = (*(Handler*)handler).manageChoice(this, prompt, args);
-						print("CHOI_", fn, "_", npos);
+						size_t npos = (*(Handler*)handler).handleChoice(this, prompt, args);
 						size_t nnpos = seek(concat("CHOI_", fn, "_", npos),cmds,LABL,npos);
 						if (!nnpos) {
 							push_error(errors::error{ errors::choice_unknown ,utils::concat("Unknown choice!") });
 							return false;
 						}
 						else {
-							print(nnpos);
 							pos = nnpos;
-							wait();
 						}
 					}
 					break;
@@ -225,7 +258,7 @@ namespace dms {
 					}
 					else {
 						datatypes set = c->args.args[0]->resolve(memory)->type;
-						push_error(errors::error{ errors::invalid_arguments, utils::concat("String expected got ",set), true,ln });
+						push_error(errors::error{ errors::invalid_arguments, utils::concat("String expected got ",datatype[set]), true,ln });
 						return false;
 					}
 					break;

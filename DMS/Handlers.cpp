@@ -1,6 +1,6 @@
 #include "Handlers.h"
 namespace dms {
-	uint8_t Handler::manageChoice(dms_state* state, std::string prompt, std::vector<std::string> args) const {
+	uint8_t Handler::handleChoice(dms_state* state, std::string prompt, std::vector<std::string> args) const {
 		std::string pos;
 		for (size_t i = 0; i < args.size(); i++)
 			std::cout << i+1 << ": " << args[i] << std::endl;
@@ -14,8 +14,28 @@ namespace dms {
 		}
 		catch (std::exception e) {
 			std::cout << "Invalid Choice!" << std::endl;
-			return manageChoice(state,prompt,args);
+			return handleChoice(state,prompt,args);
 		}
-		
+	}
+	bool Handler::handleSpeaker(dms_state* state, character* speaker) const {
+		if (speaker == nullptr)
+			return false; // Something went wrong and we pushed the error!
+		if (speaker->seen) {
+			if (speaker->lname != "") {
+				utils::write(speaker->fname, " ", speaker->lname, ": ");
+			}
+			else {
+				utils::write(speaker->fname, ": ");
+			}
+		}
+		else {
+			utils::write(speaker->unknown, ": ");
+			speaker->seen = true;
+		}
+	}
+
+	// Simple one conn event
+	bool Handler::OnSpeakerCreated(dms_state* state, character* chara) const {
+		return true;
 	}
 }

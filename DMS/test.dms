@@ -1,30 +1,29 @@
 entry main // Will either start the first block seen or the block supplied by you!
-enable warnings
+//enable warnings
 disable omniscient
 enable forseelabels
+enable savestate
 //enable leaking
 //enable debugging
 loadfile "loadtest.dms"
-version 1.2
+version 0.2
 using extendedDefine
 
 [main]
 	"why"
-	works = true
-	jump Bob
-	"Testing"
 	Bob: {
 		speed 50
-		excited: "Hello Ryan! "
+		excited: "Hello `Ryan:fname`! "
 		wait 200
-		"How are you doing?"
+		"How are you doing? I hear you have $`Ryan:money` in your account, nice!"
 	}
 	
 	Ryan: {
 		"Hey Bob I'm good how are you?"
 	}
-	Bob: "Testing..."
 	
+	Bob: "I am great thanks!"
+
 	choice "What do you want to do?" {
 		"option 1" test2("testing",{1,2,3})
 		"option 2" jump "test"
@@ -36,11 +35,16 @@ using extendedDefine
 
 [test]
 	Ryan: "We are here now!"
-	"hehe"
+		   |"This continues from the last message!"
+		   |"Keeps code readable. This does not cause a new line!"
+	Ryan: "This does trigger a new line tho!"
+		   "This also will cause a new line!"
 
 [Bob:char]
 	fname = "Bob"
-	//lname = ""
+	//known = true // defaults to false
+	lname = ""
+	unknown = "Some Rando"
 	age = .24
 	money = 100
 	excited: "path/to/file"

@@ -1,4 +1,6 @@
 #pragma once
+#include "Handlers.h"
+#include "character.h"
 #include "chunk.h"
 #include "cmd.h"
 #include "codes.h"

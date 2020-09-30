@@ -1,3 +1,5 @@
+enable tests
+disable hello
 [default:char]
 	// The default stats for all characters.
 	money = 0
@@ -7,6 +9,7 @@
 	age = 21
 	money = 1000
 	lname = "Ward"
+	known = true
 	// Inside a character block this syntax defines animation/image file for an emotion
 	calm: "./path/to/file"
 	excited: "./path/to/file"
@@ -20,11 +23,11 @@
 	return d
 
 [inventory:env]
-	slot1 = ""
-	slot2 = ""
-	slot3 = ""
-	slot4 = ""
-	slot5 = ""
-	slot6 = ""
-	slot7 = ""
-	slot8 = ""
+	slot1 = "S1"
+	slot2 = "S2"
+	slot3 = "S3"
+	slot4 = "S4"
+	slot5 = "S5"
+	slot6 = "S6"
+	slot7 = "S7"
+	slot8 = "S8"

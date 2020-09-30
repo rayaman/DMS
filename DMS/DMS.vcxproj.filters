@@ -19,6 +19,12 @@
     <Filter Include="Source Files\DMS">
       <UniqueIdentifier>{e3410a7b-6408-4022-b606-2c14cfaac52c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\DMS\blocks">
+      <UniqueIdentifier>{978b41cd-27e4-4b8c-874e-3b6e927b3d4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DMS\blocks">
+      <UniqueIdentifier>{4c0bb4c5-388c-4f15-abb7-143cb6d6232f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cmd.cpp">
@@ -67,7 +73,13 @@
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
     <ClCompile Include="Handlers.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\DMS</Filter>
+    </ClCompile>
+    <ClCompile Include="character.cpp">
+      <Filter>Source Files\DMS\blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="enviroment.cpp">
+      <Filter>Source Files\DMS\blocks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -111,10 +123,13 @@
       <Filter>Header Files\DMS</Filter>
     </ClInclude>
     <ClInclude Include="Handlers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Character.h">
       <Filter>Header Files\DMS</Filter>
+    </ClInclude>
+    <ClInclude Include="character.h">
+      <Filter>Header Files\DMS\blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="enviroment.h">
+      <Filter>Header Files\DMS\blocks</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
