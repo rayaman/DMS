@@ -8,8 +8,11 @@ using namespace dms::exceptions;
 using namespace dms::codes;
 namespace dms {
 	// This is a pointer to a choicehandler! dms_state and utils have codepedencies, so I have to do this.
-	void dms_state::setHandler(void* hand) {
+	void dms_state::setHandler(Handler* hand) {
 		this->handler = hand;
+	}
+	enviroment* dms_state::getEnviroment(std::string c) {
+		return nullptr;
 	}
 	character* dms_state::getCharacter(std::string cha) {
 		if (characters.count(cha)) {
@@ -18,7 +21,8 @@ namespace dms {
 		else {
 			if (blockExists(cha)) {
 				character* cc = new character;
-				cc->fname = cha;
+				cc->values.insert_or_assign("fname", buildValue(cha));
+				cc->values.insert_or_assign("lname", buildValue(""));
 				codes::op code;
 				cmd* c = nullptr;
 				bool halt = false;
@@ -49,19 +53,19 @@ namespace dms {
 						if (c->args.args[0]->s->getValue() == "fname") {
 							if(!typeAssert(c->args.args[1],datatypes::string))
 								return nullptr;
-							cc->fname = c->args.args[1]->s->getValue();
+							cc->values.insert_or_assign("fname", c->args.args[1]);
 						}
-						else if (c->args.args[0]->s->getValue() == "lname" && c->args.args[1]->type == datatypes::string) {
+						else if (c->args.args[0]->s->getValue() == "lname") {
 							if (!typeAssert(c->args.args[1], datatypes::string))
 								return nullptr;
-							cc->lname = c->args.args[1]->s->getValue();
+							cc->values.insert_or_assign("lname", c->args.args[1]);
 						}
-						else if (c->args.args[0]->s->getValue() == "unknown" && c->args.args[1]->type == datatypes::string) {
+						else if (c->args.args[0]->s->getValue() == "unknown") {
 							if (!typeAssert(c->args.args[1], datatypes::string))
 								return nullptr;
-							cc->unknown = c->args.args[1]->s->getValue();
+							cc->values.insert_or_assign("unknown", c->args.args[1]);
 						}
-						else if (c->args.args[0]->s->getValue() == "known" && c->args.args[1]->type == datatypes::boolean) {
+						else if (c->args.args[0]->s->getValue() == "known") {
 							if (!typeAssert(c->args.args[1], datatypes::boolean))
 								return nullptr;
 							cc->seen = c->args.args[1]->b->getValue();
@@ -81,7 +85,7 @@ namespace dms {
 				}
 				characters.insert_or_assign(cha, cc);
 				// Call Character event!
-				(*(Handler*)handler).OnSpeakerCreated(this,cc);
+				handler->OnSpeakerCreated(this,cc);
 				return cc;
 			}
 			else {
@@ -165,6 +169,12 @@ namespace dms {
 					// How we add modules into the code. This is the code that actually loads that data!
 					break;
 				// Flags handled
+				case EXIT:
+					if (c->args.args.size()) {
+						exitcode = c->args.args[0]->n->getValue();
+					}
+					return true;
+					break;
 				case LIST:
 					//We need to create an enviroment value then set that
 					{
@@ -186,6 +196,9 @@ namespace dms {
 					std::this_thread::sleep_for(std::chrono::milliseconds(700));
 					std::cout << std::endl;
 					break;
+				case WAIT:
+					std::this_thread::sleep_for(std::chrono::milliseconds((int)(c->args.args[0]->n->getValue()*1000)));
+					break;
 				case DSPD:
 					if (speaker == nullptr) {
 						push_error(errors::error{ errors::unknown ,utils::concat("A call to set speaker speed, but a speaker has not been defined!") });
@@ -199,7 +212,7 @@ namespace dms {
 					//Because we are using void* we must cast our pointers
 					if (characterExists(c->args.args[0]->s->getValue())){
 						speaker = getCharacter(c->args.args[0]->s->getValue());
-						if (!(*(Handler*)handler).handleSpeaker(this, speaker))
+						if (!handler->handleSpeaker(this, speaker))
 							return false;
 					}
 					else {
@@ -208,10 +221,12 @@ namespace dms {
 					}
 					break;
 				case APND:
-					utils::write(c->args.args[0]->s->getValue(this));
+					if (!handler->handleMessageAppend(this, c->args.args[0]->s->getValue(this)))
+						return false;
 					break;
 				case DISP:
-					utils::write(c->args.args[0]->s->getValue(this));
+					if (!handler->handleMessageDisplay(this, c->args.args[0]->s->getValue(this)))
+						return false;
 					break;
 				case ASGN:
 					assign(c->args.args[0], c->args.args[1]);
@@ -229,7 +244,7 @@ namespace dms {
 						std::string fn = c->args.args[1]->s->getValue();
 						for (size_t i = 2; i < c->args.args.size(); i++)
 							args.push_back(c->args.args[i]->resolve(memory)->s->getValue());
-						size_t npos = (*(Handler*)handler).handleChoice(this, prompt, args);
+						size_t npos = handler->handleChoice(this, prompt, args);
 						size_t nnpos = seek(concat("CHOI_", fn, "_", npos),cmds,LABL,npos);
 						if (!nnpos) {
 							push_error(errors::error{ errors::choice_unknown ,utils::concat("Unknown choice!") });

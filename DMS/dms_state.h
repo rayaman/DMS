@@ -12,23 +12,26 @@
 #include <mutex>
 #include <chrono>
 #include "Character.h"
+#include "enviroment.h"
 namespace dms {
+	struct Handler;
 	struct dms_state
 	{
-		void* handler = nullptr;
+		Handler* handler = nullptr;
 		bool hasFirst = false;
 		std::unordered_map<std::string, value*> memory;
 		std::vector<value*> garbage;
 		std::map<std::string, chunk*> chunks;
 		std::map<std::string, character*> characters;
+		std::map<std::string, enviroment*> enviroments;
 		std::map<std::string, size_t> labels;
 		std::string entry = "$undefined";
 		std::map<std::string, bool> enables;
 		std::size_t cur_line=0;
+		int exitcode = 0;
 		const double Iversion = 1.0;
 		double Sversion; // The version of
 		errors::error err;
-		bool stop = false;
 
 		dms_state();
 		void dump(errors::error err);
@@ -37,14 +40,18 @@ namespace dms {
 		void push_warning(errors::error err);
 		void push_chunk(std::string s, chunk* c);
 		bool run(std::string instance);
-		double version=1.0;
+		double version = 1.0;
 		void enable(std::string flag);
 		void disable(std::string flag);
 		bool isEnabled(std::string flag);
-		void setHandler(void* hand);
+		
+		void setHandler(Handler* hand);
+
+		bool Inject(std::string var, value* val);
 
 		// Gets or creates a character
 		character* getCharacter(std::string c);
+		enviroment* getEnviroment(std::string c);
 
 		bool assign(value* var, value* val);
 		size_t seek(std::string label,std::vector<cmd*> cmds ,codes::op code, size_t pos);
@@ -52,9 +59,15 @@ namespace dms {
 		bool blockExists(std::string bk_name);
 		bool typeAssert(value* val, datatypes type);
 		bool run();
+		// This is called once and once only. Dynamically loading code is not a thing!
+		void init();
+
+		bool hasError();
 	private:
 		// From what I gathered
 		//std::mutex memory_mutex;
+		bool stop = false;
+		bool init_init = false;
 		void init(chunk* chunk, size_t &pos,size_t &max, std::vector<cmd*>& cmds);
 	};
 }

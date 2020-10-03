@@ -72,6 +72,7 @@ namespace dms {
 		bool match_process_IFFF(tokenstream* stream);
 		bool match_process_assignment(tokenstream* stream);
 		bool match_process_list(tokenstream* stream, value* v = nullptr);
+		bool match_process_wait(tokenstream* stream);
 		bool match_process_standard(tokenstream* stream, value* v = nullptr); // All types that are matchable are handled here!
 
 

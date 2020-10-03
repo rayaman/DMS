@@ -321,27 +321,7 @@ namespace dms {
 		// Tokens build let's parse
 		tokenizer(state, t_vec);
 		if (isFirst) {
-			cmd* c = new cmd;
-			for (const auto& [key, val] : state->chunks) {
-				if (val->type == blocktype::bt_character) {
-					value* v = buildVariable();
-					v->set(buildString(key));
-					v->type = datatypes::block;
-					c->opcode = codes::ASGN;
-					c->args.push(buildVariable(key));
-					c->args.push(v);
-					state->chunks["$INIT"]->addCmd(c);
-					c = new cmd;
-				}
-			}
-
-
-			c->opcode = codes::JUMP;
-			if (state->entry != "$undefined")
-				c->args.push(buildValue(state->entry));
-			else
-				c->args.push(buildValue(state->chunks.begin()->first));
-			state->chunks["$INIT"]->addCmd(c);
+			state->init();
 		}
 		return state;
 	}
@@ -374,7 +354,6 @@ namespace dms {
 			current_chunk->addCmd(c);
 		}
 		while (stream->peek().type != tokens::eof) {
-			//print(stream->peek());
 			debugInvoker(stream);
 			if (current.type == tokens::flag) {
 				temp = stream->next(tokens::newline);
@@ -518,7 +497,9 @@ namespace dms {
 			match_process_assignment(stream);
 			match_process_debug(stream);
 			match_process_goto(stream);
-			
+
+			match_process_exit(stream);
+			match_process_wait(stream);
 			match_process_jump(stream);
 			current = stream->next();
 		}

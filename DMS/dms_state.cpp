@@ -1,6 +1,34 @@
 #include "dms_state.h"
 #include "Handlers.h"
 namespace dms {
+	void dms_state::init() {
+		if (init_init)
+			return;
+		init_init = true;
+		cmd* c = new cmd;
+		for (const auto& [key, val] : chunks) {
+			if (val->type == blocktype::bt_character) {
+				value* v = buildVariable();
+				v->set(buildString(key));
+				v->type = datatypes::block;
+				c->opcode = codes::ASGN;
+				c->args.push(buildVariable(key));
+				c->args.push(v);
+				chunks["$INIT"]->addCmd(c);
+				c = new cmd;
+			}
+		}
+
+
+		c->opcode = codes::JUMP;
+		if (entry != "$undefined")
+			c->args.push(buildValue(entry));
+		else
+			c->args.push(buildValue(chunks.begin()->first));
+		chunks["$INIT"]->addCmd(c);
+		if (!handler->OnStateInit(this))
+			stop = true;
+	}
 	dms_state::dms_state() {
 		// We should define the defaults for the enables
 		enables.insert_or_assign("leaking",false);
@@ -56,6 +84,14 @@ namespace dms {
 		}
 		outputFile.close();
 	}
+	bool dms_state::hasError() {
+		return stop;
+	}
+
+	bool dms_state::Inject(std::string var, value* val) {
+		return false;
+	}
+
 	bool dms_state::assign(value* var, value* val) {
 		if (memory.count(var->s->getValue()) == 0) {
 			memory.insert_or_assign(var->s->getValue(), val);

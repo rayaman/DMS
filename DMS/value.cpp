@@ -41,16 +41,7 @@ namespace dms {
 					if (v->type == datatypes::block) {
 						if (state->getCharacter(v->s->getValue())!=nullptr) {
 							character* cha = state->getCharacter(v->s->getValue());
-							if (index == "fname") {
-								temp << cha->fname;
-							}
-							else if (index == "lname") {
-								temp << cha->lname;
-							}
-							else if (index == "nickname") {
-								temp << cha->nickname;
-							}
-							else if (cha->values.count(index)) {
+							if (cha->values.count(index)) {
 								temp << cha->values[index]->getPrintable();
 							}
 							else {
@@ -285,7 +276,7 @@ namespace dms {
 	}
 	value* dms_env::getValue(value* ind) {
 		if (ind->type == number) {
-			return ipart.at(ind->n->getValue());
+			return ipart.at((int)ind->n->getValue());
 		}
 		else if (ind->type == number) {
 			return new value{}; // Return a nil value

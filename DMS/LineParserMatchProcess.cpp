@@ -565,6 +565,7 @@ namespace dms {
 	}
 	bool LineParser::match_process_exit(tokenstream* stream) {
 		if (stream->match(tokens::exit)) {
+			stream->next();
 			cmd* c = new cmd;
 			c->opcode = codes::EXIT;
 			if (stream->match(tokens::number) || stream->match(tokens::name)) {
@@ -583,11 +584,26 @@ namespace dms {
 	bool LineParser::match_process_IFFF(tokenstream* stream) {
 		return false; // TODO finish this
 	}
-	void reset(value*& l,codes::op& op, value*& r) {
+	
+	bool LineParser::match_process_wait(tokenstream* stream) {
+		if (stream->match(tokens::name, tokens::number)) {
+			if (stream->peek().name == "wait") {
+				stream->next();
+				buildWait(std::stod(stream->next().name));
+			}
+			else {
+				return false;
+			}
+		}
+		return false;
+	}
+
+	void reset(value*& l, codes::op& op, value*& r) {
 		l = nullptr;
 		op = codes::NOOP;
 		r = nullptr;
 	}
+
 	bool LineParser::match_process_expression(tokenstream* stream, value* v) {
 		// I will have to consume for this to work so we need to keep track of what was incase we return false!
 		stream->store(current_chunk);

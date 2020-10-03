@@ -52,104 +52,233 @@ Line <15> newline
 Line <15> newline 		 
 Line <16> name 		 excited
 Line <16> colon 		 :
-Line <16> string 		 Hello `Ryan:fname`! 
+Line <16> string 		 Hello Mr. `Ryan:lname`, 
 Line <16> newline 		 
 Line <16> newline 		 
-Line <17> name 		 wait
-Line <17> number 		 200
+Line <17> string 		 how are you doing?
 Line <17> newline 		 
 Line <17> newline 		 
-Line <18> string 		 How are you doing? I hear you have $`Ryan:money` in your account, nice!
+Line <18> cbracketc 		 }
 Line <18> newline 		 
 Line <18> newline 		 
-Line <19> cbracketc 		 }
 Line <19> newline 		 
 Line <19> newline 		 
 Line <20> newline 		 
-Line <20> newline 		 
-Line <21> name 		 Ryan
-Line <21> colon 		 :
-Line <21> cbracketo 		 {
 Line <21> newline 		 
 Line <21> newline 		 
-Line <22> string 		 Hey Bob I'm good how are you?
+Line <22> name 		 Ryan
+Line <22> colon 		 :
+Line <22> cbracketo 		 {
 Line <22> newline 		 
 Line <22> newline 		 
-Line <23> cbracketc 		 }
+Line <23> string 		 Hey `Bob`, I'm good how are you?
 Line <23> newline 		 
 Line <23> newline 		 
+Line <24> cbracketc 		 }
 Line <24> newline 		 
-Line <24> newline 		 
-Line <25> name 		 Bob
-Line <25> colon 		 :
-Line <25> string 		 I am great thanks!
 Line <25> newline 		 
 Line <25> newline 		 
+Line <26> string 		 Waiting ...
 Line <26> newline 		 
 Line <26> newline 		 
-Line <27> control 		 
-Line <27> string 		 What do you want to do?
-Line <27> cbracketo 		 {
 Line <27> newline 		 
 Line <27> newline 		 
-Line <28> string 		 option 1
-Line <28> name 		 test2
-Line <28> parao 		 (
-Line <28> string 		 testing
-Line <28> seperator 		 ,
-Line <28> cbracketo 		 {
+Line <28> exit 		 
 Line <28> number 		 1
-Line <28> seperator 		 ,
-Line <28> number 		 2
-Line <28> seperator 		 ,
-Line <28> number 		 3
-Line <28> cbracketc 		 }
-Line <28> parac 		 )
 Line <28> newline 		 
 Line <28> newline 		 
-Line <29> string 		 option 2
-Line <29> jump 		 
-Line <29> string 		 test
 Line <29> newline 		 
 Line <29> newline 		 
-Line <30> string 		 option 3
-Line <30> jump 		 
-Line <30> name 		 there
+Line <30> name 		 Bob
+Line <30> colon 		 :
+Line <30> cbracketo 		 {
 Line <30> newline 		 
 Line <30> newline 		 
-Line <31> string 		 option 4
-Line <31> gotoo 		 
-Line <31> string 		 o3
+Line <31> string 		 I am great thanks! I want to show you that I can count!
+
 Line <31> newline 		 
 Line <31> newline 		 
-Line <32> string 		 option 5
-Line <32> gotoo 		 
-Line <32> name 		 here
+Line <32> name 		 wait
+Line <32> number 		 1
 Line <32> newline 		 
 Line <32> newline 		 
-Line <33> string 		 option 6
-Line <33> name 		 test
-Line <33> parao 		 (
-Line <33> string 		 here
-Line <33> parac 		 )
+Line <33> string 		 1
+
 Line <33> newline 		 
 Line <33> newline 		 
-Line <34> cbracketc 		 }
+Line <34> name 		 wait
+Line <34> number 		 1
 Line <34> newline 		 
 Line <34> newline 		 
+Line <35> string 		 2
+
 Line <35> newline 		 
 Line <35> newline 		 
-Line <36> bracketo 		 [
-Line <36> name 		 test
-Line <36> bracketc 		 ]
+Line <36> name 		 wait
+Line <36> number 		 1
 Line <36> newline 		 
 Line <36> newline 		 
-Line <37> name 		 Ryan
-Line <37> colon 		 :
-Line <37> string 		 We are here now!
+Line <37> string 		 3
+
 Line <37> newline 		 
 Line <37> newline 		 
-Line <38> Line <1> newline 		 
+Line <38> name 		 wait
+Line <38> number 		 1
+Line <38> newline 		 
+Line <38> newline 		 
+Line <39> string 		 4
+
+Line <39> newline 		 
+Line <39> newline 		 
+Line <40> name 		 wait
+Line <40> number 		 1
+Line <40> newline 		 
+Line <40> newline 		 
+Line <41> string 		 5
+
+Line <41> newline 		 
+Line <41> newline 		 
+Line <42> cbracketc 		 }
+Line <42> newline 		 
+Line <42> newline 		 
+Line <43> newline 		 
+Line <43> newline 		 
+Line <44> control 		 
+Line <44> string 		 What do you want to do?
+Line <44> cbracketo 		 {
+Line <44> newline 		 
+Line <44> newline 		 
+Line <45> string 		 option 1
+Line <45> name 		 test2
+Line <45> parao 		 (
+Line <45> string 		 testing
+Line <45> seperator 		 ,
+Line <45> cbracketo 		 {
+Line <45> number 		 1
+Line <45> seperator 		 ,
+Line <45> number 		 2
+Line <45> seperator 		 ,
+Line <45> number 		 3
+Line <45> cbracketc 		 }
+Line <45> parac 		 )
+Line <45> newline 		 
+Line <45> newline 		 
+Line <46> string 		 option 2
+Line <46> jump 		 
+Line <46> string 		 test
+Line <46> newline 		 
+Line <46> newline 		 
+Line <47> string 		 option 3
+Line <47> jump 		 
+Line <47> name 		 there
+Line <47> newline 		 
+Line <47> newline 		 
+Line <48> string 		 option 4
+Line <48> gotoo 		 
+Line <48> string 		 o3
+Line <48> newline 		 
+Line <48> newline 		 
+Line <49> string 		 option 5
+Line <49> gotoo 		 
+Line <49> name 		 here
+Line <49> newline 		 
+Line <49> newline 		 
+Line <50> string 		 option 6
+Line <50> name 		 test
+Line <50> parao 		 (
+Line <50> string 		 here
+Line <50> parac 		 )
+Line <50> newline 		 
+Line <50> newline 		 
+Line <51> cbracketc 		 }
+Line <51> newline 		 
+Line <51> newline 		 
+Line <52> newline 		 
+Line <52> newline 		 
+Line <53> bracketo 		 [
+Line <53> name 		 test
+Line <53> bracketc 		 ]
+Line <53> newline 		 
+Line <53> newline 		 
+Line <54> name 		 Ryan
+Line <54> colon 		 :
+Line <54> string 		 We are here now!
+Line <54> newline 		 
+Line <54> newline 		 
+Line <55> pipe 		 |
+Line <55> string 		 This continues from the last message!
+Line <55> newline 		 
+Line <55> newline 		 
+Line <56> pipe 		 |
+Line <56> string 		 Keeps code readable. This does not cause a new line!
+Line <56> newline 		 
+Line <56> newline 		 
+Line <57> name 		 Ryan
+Line <57> colon 		 :
+Line <57> string 		 This does trigger a new line tho!
+Line <57> newline 		 
+Line <57> newline 		 
+Line <58> string 		 This also will cause a new line!
+Line <58> newline 		 
+Line <58> newline 		 
+Line <59> newline 		 
+Line <59> newline 		 
+Line <60> bracketo 		 [
+Line <60> name 		 Bob
+Line <60> colon 		 :
+Line <60> name 		 char
+Line <60> bracketc 		 ]
+Line <60> newline 		 
+Line <60> newline 		 
+Line <61> name 		 fname
+Line <61> equal 		 =
+Line <61> string 		 Bob
+Line <61> newline 		 
+Line <61> newline 		 
+Line <62> newline 		 
+Line <63> newline 		 
+Line <64> name 		 unknown
+Line <64> equal 		 =
+Line <64> string 		 Some Rando
+Line <64> newline 		 
+Line <64> newline 		 
+Line <65> name 		 age
+Line <65> equal 		 =
+Line <65> number 		 0.24
+Line <65> newline 		 
+Line <65> newline 		 
+Line <66> name 		 money
+Line <66> equal 		 =
+Line <66> number 		 100
+Line <66> newline 		 
+Line <66> newline 		 
+Line <67> name 		 excited
+Line <67> colon 		 :
+Line <67> string 		 path/to/file
+Line <67> newline 		 
+Line <67> newline 		 
+Line <68> newline 		 
+Line <68> newline 		 
+Line <69> bracketo 		 [
+Line <69> name 		 newblock
+Line <69> colon 		 :
+Line <69> name 		 function
+Line <69> parao 		 (
+Line <69> parac 		 )
+Line <69> bracketc 		 ]
+Line <69> newline 		 
+Line <69> newline 		 
+Line <70> string 		 Test #2
+Line <70> newline 		 
+Line <70> newline 		 
+Line <71> string 		 Does it parse this part properly?
+Line <71> newline 		 
+Line <71> newline 		 
+Line <72> string 		 huh
+Line <72> newline 		 
+Line <72> newline 		 
+Line <72> eof 		 
+Line <1> newline 		 
 Line <1> newline 		 
 Line <1> flag 		 
 Line <1> name 		 tests
@@ -276,42 +405,42 @@ Line <25> newline
 Line <25> newline 		 
 Line <26> name 		 slot1
 Line <26> equal 		 =
-Line <26> string 		 
+Line <26> string 		 S1
 Line <26> newline 		 
 Line <26> newline 		 
 Line <27> name 		 slot2
 Line <27> equal 		 =
-Line <27> string 		 
+Line <27> string 		 S2
 Line <27> newline 		 
 Line <27> newline 		 
 Line <28> name 		 slot3
 Line <28> equal 		 =
-Line <28> string 		 
+Line <28> string 		 S3
 Line <28> newline 		 
 Line <28> newline 		 
 Line <29> name 		 slot4
 Line <29> equal 		 =
-Line <29> string 		 
+Line <29> string 		 S4
 Line <29> newline 		 
 Line <29> newline 		 
 Line <30> name 		 slot5
 Line <30> equal 		 =
-Line <30> string 		 
+Line <30> string 		 S5
 Line <30> newline 		 
 Line <30> newline 		 
 Line <31> name 		 slot6
 Line <31> equal 		 =
-Line <31> string 		 
+Line <31> string 		 S6
 Line <31> newline 		 
 Line <31> newline 		 
 Line <32> name 		 slot7
 Line <32> equal 		 =
-Line <32> string 		 
+Line <32> string 		 S7
 Line <32> newline 		 
 Line <32> newline 		 
 Line <33> name 		 slot8
 Line <33> equal 		 =
-Line <33> string 		 
+Line <33> string 		 S8
 Line <33> newline 		 
 Line <33> newline 		 
 Line <33> eof 		 

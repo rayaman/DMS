@@ -20,22 +20,26 @@ namespace dms {
 	bool Handler::handleSpeaker(dms_state* state, character* speaker) const {
 		if (speaker == nullptr)
 			return false; // Something went wrong and we pushed the error!
-		if (speaker->seen) {
-			if (speaker->lname != "") {
-				utils::write(speaker->fname, " ", speaker->lname, ": ");
-			}
-			else {
-				utils::write(speaker->fname, ": ");
-			}
-		}
-		else {
-			utils::write(speaker->unknown, ": ");
-			speaker->seen = true;
-		}
+		utils::write(speaker->getName(), ": ");
+		return true;
+	}
+
+	bool Handler::handleMessageDisplay(dms_state* state, std::string msg) const {
+		utils::write(msg);
+		return true;
+	}
+
+	bool Handler::handleMessageAppend(dms_state* state, std::string msg) const {
+		utils::write(msg);
+		return true;
 	}
 
 	// Simple one conn event
 	bool Handler::OnSpeakerCreated(dms_state* state, character* chara) const {
+		return true;
+	}
+
+	bool Handler::OnStateInit(dms_state* state) const {
 		return true;
 	}
 }

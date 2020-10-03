@@ -13,16 +13,33 @@ using extendedDefine
 	"why"
 	Bob: {
 		speed 50
-		excited: "Hello `Ryan:fname`! "
-		wait 200
-		"How are you doing? I hear you have $`Ryan:money` in your account, nice!"
+		excited: "Hello Mr. `Ryan:lname`, "
+		"how are you doing?"
 	}
+	
+	//Ryan:setNickname(Bob,"Bobby") // Not yet implemeted!
 	
 	Ryan: {
-		"Hey Bob I'm good how are you?"
-	}
+		"Hey `Bob`, I'm good how are you?"
+	} // Should display Hey Bobby, I'm good how are you?
 	
-	Bob: "I am great thanks!"
+	"Waiting ..."
+	
+	exit 1
+	
+	Bob: {
+		"I am great thanks! I want to show you that I can count!\n"
+		wait 1
+		"1\n"
+		wait 1
+		"2\n"
+		wait 1
+		"3\n"
+		wait 1
+		"4\n"
+		wait 1
+		"5\n"
+	}
 
 	choice "What do you want to do?" {
 		"option 1" test2("testing",{1,2,3})
@@ -43,7 +60,7 @@ using extendedDefine
 [Bob:char]
 	fname = "Bob"
 	//known = true // defaults to false
-	lname = ""
+	//lname = "Johnson" // defaults to ""
 	unknown = "Some Rando"
 	age = .24
 	money = 100

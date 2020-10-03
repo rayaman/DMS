@@ -120,7 +120,8 @@ namespace dms::tokens {
 				"pound",
 				"dollar",
 				"ampersand",
-				"nil"
+				"nil",
+				"pipe"
 			};
 			out << "Line <" << c.line_num << "> " << tokenlist[c.type] << " \t\t " << c.name;
 			return out;

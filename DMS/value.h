@@ -10,7 +10,7 @@ namespace dms {
 	struct value;
 	struct dms_args;
 	extern const std::string datatype[];
-	enum datatypes { nil, number, boolean, env, string, custom, variable, block };
+	enum datatypes { escape, nil, number, boolean, env, string, custom, variable, block };
 	struct dms_number {
 		double val;
 		double getValue() { return val; }
