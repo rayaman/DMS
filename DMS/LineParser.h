@@ -74,6 +74,7 @@ namespace dms {
 		bool match_process_list(tokenstream* stream, value* v = nullptr);
 		bool match_process_wait(tokenstream* stream);
 		bool match_process_standard(tokenstream* stream, value* v = nullptr); // All types that are matchable are handled here!
+		bool match_process_index(tokenstream* stream,value* v = nullptr);
 
 
 		// Build

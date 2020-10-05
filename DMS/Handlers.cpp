@@ -35,10 +35,12 @@ namespace dms {
 	}
 
 	// Simple one conn event
+	bool Handler::OnEnviromentCreated(dms_state* state, enviroment* env) const {
+		return true;
+	}
 	bool Handler::OnSpeakerCreated(dms_state* state, character* chara) const {
 		return true;
 	}
-
 	bool Handler::OnStateInit(dms_state* state) const {
 		return true;
 	}

@@ -547,7 +547,15 @@ namespace dms {
 		}
 		return false;
 	}
+	bool LineParser::match_process_index(tokenstream* stream, value* v) {
+		if (stream->match(tokens::name,tokens::bracketo)) {
+			// Todo implement this
+		}
+		return false;
+	}
 	bool LineParser::match_process_jump(tokenstream* stream) {
+		if (current_chunk->type == blocktype::bt_character || current_chunk->type == blocktype::bt_env)
+			return false;
 		if (stream->match(tokens::jump, tokens::name) || stream->match(tokens::jump, tokens::string)) {
 			cmd* c = new cmd;
 			c->opcode = codes::JUMP;

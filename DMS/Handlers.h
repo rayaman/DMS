@@ -10,9 +10,9 @@ namespace dms {
 		virtual bool handleSpeaker(dms_state* state, character* chara) const;
 		virtual bool handleMessageDisplay(dms_state* state, std::string msg) const;
 		virtual bool handleMessageAppend(dms_state* state, std::string msg) const;
-		//virtual bool manageMessage(dms_state* state, value* msg) const;
 
 		// Simple Events: only one connector!
+		virtual bool OnEnviromentCreated(dms_state* state, enviroment* env) const;
 		virtual bool OnSpeakerCreated(dms_state* state, character* chara) const;
 		virtual bool OnStateInit(dms_state* state) const;
 	};

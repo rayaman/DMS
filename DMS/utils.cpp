@@ -1,5 +1,10 @@
 #include "utils.h"
 namespace dms::utils {
+	void sleep(unsigned int mseconds)
+	{
+		clock_t goal = mseconds + clock();
+		while (goal > clock());
+	}
 	bool isalphanum(std::string str) {
 		for (size_t i = 0; i < str.size(); i++) {
 			if (!isalnum(str[i]) && str[i]!='_')

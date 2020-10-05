@@ -81,6 +81,9 @@
     <ClCompile Include="enviroment.cpp">
       <Filter>Source Files\DMS\blocks</Filter>
     </ClCompile>
+    <ClCompile Include="dms_custom.cpp">
+      <Filter>Source Files\DMS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="value.h">

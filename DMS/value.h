@@ -10,7 +10,7 @@ namespace dms {
 	struct value;
 	struct dms_args;
 	extern const std::string datatype[];
-	enum datatypes { escape, nil, number, boolean, env, string, custom, variable, block };
+	enum datatypes { escape, nil, number, boolean, env, string, custom, variable, block, error };
 	struct dms_number {
 		double val;
 		double getValue() { return val; }
@@ -42,6 +42,10 @@ namespace dms {
 	};
 	// Custom data that you can work with by overriding this code
 	struct dms_custom {
+		void Init(dms_state* state);
+		void _set(value* v);
+		void _del();
+
 		virtual value* Index(value* data);
 		virtual bool NewIndex(value* var, value* val);
 		virtual value* Call(dms_args* args);
@@ -53,12 +57,16 @@ namespace dms {
 		virtual value* POW(value* left, value* right);
 		virtual value* EQUAL(value* left, value* right);
 		virtual value* LESS_THAN(value* left, value* right);
-		virtual value* GREATER_THAN(value* left, value* right);
+		virtual value* LESS_THAN_EQUAL(value* left, value* right);
+	private:
+		dms_state* state=nullptr;
+		value* self;
 	};
 	dms_string* buildString(std::string str);
 	dms_boolean* buildBool(bool b);
 	dms_number* buildNumber(double num);
 	struct value {
+	public:
 		datatypes type = nil;
 		dms_boolean* b = nullptr;
 		dms_number* n = nullptr;
@@ -72,6 +80,7 @@ namespace dms {
 		void set(dms_boolean* bo);
 		void set(dms_number* num);
 		void set(dms_env* en);
+		void set(dms_custom* cus);
 		void set();
 		bool typeMatch(const value* o) const;
 		std::string getPrintable() const;
@@ -108,6 +117,7 @@ namespace dms {
 		};
 	};
 	value* buildValue();
+	value* buildNil();
 	value* buildVariable(std::string str);
 	value* buildVariable();
 	value* buildValue(std::string str);

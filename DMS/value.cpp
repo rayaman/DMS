@@ -1,8 +1,7 @@
 #include "value.h"
-#include "utils.h"
-#include "string"
+#include "dms_state.h"
 namespace dms {
-	const std::string datatype[] = { "nil", "number", "boolean", "env", "string", "custom", "variable", "block" };
+	const std::string datatype[] = { "escape","nil", "number", "boolean", "env", "string", "custom", "variable", "block" };
 	std::vector<value*> _VALUES;
 	value::value() {
 		_VALUES.push_back(this); // Used for the interperter! In the end everything is a value
@@ -39,13 +38,22 @@ namespace dms {
 				if (state->memory.count(lookup)) {
 					value* v = state->memory[lookup];
 					if (v->type == datatypes::block) {
-						if (state->getCharacter(v->s->getValue())!=nullptr) {
+						if ((state->chunks.count(v->s->getValue()) && state->chunks[v->s->getValue()]->type == blocktype::bt_character) && state->getCharacter(v->s->getValue())!=nullptr) {
 							character* cha = state->getCharacter(v->s->getValue());
 							if (cha->values.count(index)) {
 								temp << cha->values[index]->getPrintable();
 							}
 							else {
 								temp << cha->getName();
+							}
+						}
+						else if ((state->chunks.count(v->s->getValue()) && state->chunks[v->s->getValue()]->type == blocktype::bt_env) && state->getEnviroment(v->s->getValue()) != nullptr) {
+							enviroment* env = state->getEnviroment(v->s->getValue());
+							if (env->values.count(index)) {
+								temp << env->values[index]->getPrintable();
+							}
+							else {
+								temp << env;
 							}
 						}
 						else {
@@ -175,10 +183,13 @@ namespace dms {
 	value* buildValue() {
 		return new value;
 	}
+	value* buildNil() {
+		return new value;
+	}
 	size_t count = 0;
 	value* buildVariable() {
 		count++;
-		std::string val = utils::concat("$",count);
+		std::string val = "$"+count;
 		return buildVariable(val);
 	}
 	value* buildBlock(std::string str) {
@@ -214,6 +225,8 @@ namespace dms {
 		return val;
 	}
 	void value::nuke() {
+		if (type == datatypes::custom)
+			c->_del();
 		delete[] s;
 		delete[] b;
 		delete[] n;
@@ -248,6 +261,12 @@ namespace dms {
 		nuke();
 		e = en;
 		type = env;
+	}
+	void dms::value::set(dms_custom* cus) {
+		nuke();
+		c = cus;
+		c->_set(this);
+		type = custom;
 	}
 	void value::set() {
 		nuke();

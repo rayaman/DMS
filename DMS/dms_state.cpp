@@ -7,7 +7,7 @@ namespace dms {
 		init_init = true;
 		cmd* c = new cmd;
 		for (const auto& [key, val] : chunks) {
-			if (val->type == blocktype::bt_character) {
+			if (val->type == blocktype::bt_character || val->type == blocktype::bt_env) {
 				value* v = buildVariable();
 				v->set(buildString(key));
 				v->type = datatypes::block;
@@ -36,6 +36,7 @@ namespace dms {
 		enables.insert_or_assign("warnings",false); //
 		enables.insert_or_assign("statesave",true); // Allows you to save state
 		enables.insert_or_assign("omniscient",false); // Allows you to know who's who when you first meet them
+		enables.insert_or_assign("fullname", true);
 		chunk* c = new chunk;
 		c->name = "$END";
 		c->type = blocktype::bt_block;
@@ -92,20 +93,20 @@ namespace dms {
 		return false;
 	}
 
-	bool dms_state::assign(value* var, value* val) {
-		if (memory.count(var->s->getValue()) == 0) {
-			memory.insert_or_assign(var->s->getValue(), val);
+	bool dms_state::assign(std::unordered_map<std::string, value*>* mem, value* var, value* val) {
+		if (mem->count(var->s->getValue()) == 0) {
+			mem->insert_or_assign(var->s->getValue(), val);
 			return true;
 		}
 		else {
-			value* temp = memory[var->s->getValue()];
+			value* temp = (*mem)[var->s->getValue()];
 			if (temp->type != datatypes::variable) {
 				temp->set(); // Set the removed value to nil
-				garbage.push_back(memory[var->s->getValue()]);
+				garbage.push_back((*mem)[var->s->getValue()]);
 			}
 			else
 				utils::print("> so we have a variable"); // This print should be a reminder for me to do something about this.
-			memory[var->s->getValue()] = val;
+			(*mem)[var->s->getValue()] = val;
 		}
 	}
 	void dms_state::dump(bool print) {

@@ -240,12 +240,12 @@ namespace dms {
 					return true;
 				}
 				else if (bk_name == "$END") {
-					cmd* c = new cmd;
+					/*cmd* c = new cmd;
 					c->opcode = codes::JUMP;
 					c->args.push(buildValue("$END"));
 					current_chunk->addCmd(c);
 					state->push_chunk(current_chunk->name, current_chunk);
-					current_chunk = state->chunks["$END"];
+					current_chunk = state->chunks["$END"];*/
 					return true;
 				}
 				else {

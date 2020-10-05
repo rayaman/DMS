@@ -2,17 +2,20 @@
 #include "utils.h"
 namespace dms {
 	std::string character::getName() {
-		if (values.count("nickname")) {
+		if (has("nickname")) {
 			return values["nickname"]->getPrintable();
 		}
-		if (seen && values.count("lname")) {
+		if (seen && has("fname") && has("lname")) {
 			return utils::concat(values["fname"]->getPrintable()," ", values["lname"]->getPrintable());
 		}
-		else if (seen) {
+		else if (seen && has("fname")) {
 			return utils::concat(values["fname"]->getPrintable());
 		}
-		else {
+		else if (!seen && has("unknown")) {
 			return values["unknown"]->getPrintable();
+		}
+		else {
+			return "unknown";
 		}
 	}
 }

@@ -3,6 +3,7 @@ entry main // Will either start the first block seen or the block supplied by yo
 disable omniscient
 enable forseelabels
 enable savestate
+disable fullname
 //enable leaking
 //enable debugging
 loadfile "loadtest.dms"
@@ -14,8 +15,10 @@ using extendedDefine
 	Bob: {
 		speed 50
 		excited: "Hello Mr. `Ryan:lname`, "
-		"how are you doing?"
+		"how are `inv:slot2` you doing?"
 	}
+	
+	//test = Bob[here]
 	
 	//Ryan:setNickname(Bob,"Bobby") // Not yet implemeted!
 	
@@ -25,19 +28,17 @@ using extendedDefine
 	
 	"Waiting ..."
 	
-	exit 1
-	
 	Bob: {
 		"I am great thanks! I want to show you that I can count!\n"
-		wait 1
+		wait .1
 		"1\n"
-		wait 1
+		wait .1
 		"2\n"
-		wait 1
+		wait .1
 		"3\n"
-		wait 1
+		wait .1
 		"4\n"
-		wait 1
+		wait .1
 		"5\n"
 	}
 
@@ -58,7 +59,7 @@ using extendedDefine
 		   "This also will cause a new line!"
 
 [Bob:char]
-	fname = "Bob"
+	//fname = "Bob"
 	//known = true // defaults to false
 	//lname = "Johnson" // defaults to ""
 	unknown = "Some Rando"

@@ -11,77 +11,68 @@ namespace dms {
 	void dms_state::setHandler(Handler* hand) {
 		this->handler = hand;
 	}
-	enviroment* dms_state::getEnviroment(std::string c) {
+	void checkCharacter(character* cc,std::string index, datatypes type) {
+		value* val = cc->get(index);
+		if (val==nullptr) {
+			if (type == datatypes::string)
+				cc->values[index] = buildValue("");
+			else if (type == datatypes::boolean) {
+				cc->values[index] = buildValue(false);
+			}
+		}
+		else if (val != nullptr) {
+			if (val->type != type) {
+				cc->values.erase(index);
+			}
+		}
+	}
+	enviroment* dms_state::getEnviroment(std::string env) {
+		if (enviroments.count(env)) {
+			return enviroments[env];
+		}
+		else {
+			if (blockExists(env)) {
+				enviroment* e = new enviroment;
+				if (!run(env, &e->values)) {
+					return nullptr;
+				}
+				enviroments.insert_or_assign(env, e);
+				handler->OnEnviromentCreated(this, e);
+				return e;
+			}
+			else {
+				push_error(errors::error{ errors::non_existing_block ,utils::concat("Attempted to index a non existing enviroment block!") });
+				return nullptr;
+			}
+		}
 		return nullptr;
 	}
 	character* dms_state::getCharacter(std::string cha) {
 		if (characters.count(cha)) {
+			characters[cha]->seen = true;
 			return characters[cha];
 		}
 		else {
 			if (blockExists(cha)) {
 				character* cc = new character;
-				cc->values.insert_or_assign("fname", buildValue(cha));
-				cc->values.insert_or_assign("lname", buildValue(""));
-				codes::op code;
-				cmd* c = nullptr;
-				bool halt = false;
-				size_t pos = 0;
-				size_t max = 0;
-				std::vector<cmd*> cmds;
-				init(chunks[cha], pos, max, cmds);
+				cc->set("fname", buildValue(cha));
+				cc->set("lname", buildValue(""));
+				cc->set("unknown", buildValue("Unknown"));
+				cc->set("known", buildValue(false));
 				if (isEnabled("omniscient")) {
 					cc->seen = true;
 				}
 				else {
 					cc->seen = false;
 				}
-				while (true) {
-					c = cmds[pos++];
-					code = c->opcode;
-
-					switch (code)
-					{
-						// Handle flags here
-					case STAT:
-						if(c->args.args[0]->type == datatypes::variable && c->args.args[1]->type == datatypes::string)
-							cc->paths.insert_or_assign(c->args.args[0]->s->getValue(), c->args.args[1]->s->getValue());
-						else
-							push_error(errors::error{ errors::invalid_type ,utils::concat("Expected variable: string! Got: ",datatype[c->args.args[0]->type],": ",datatype[c->args.args[1]->type]) });
-						break;
-					case ASGN:
-						if (c->args.args[0]->s->getValue() == "fname") {
-							if(!typeAssert(c->args.args[1],datatypes::string))
-								return nullptr;
-							cc->values.insert_or_assign("fname", c->args.args[1]);
-						}
-						else if (c->args.args[0]->s->getValue() == "lname") {
-							if (!typeAssert(c->args.args[1], datatypes::string))
-								return nullptr;
-							cc->values.insert_or_assign("lname", c->args.args[1]);
-						}
-						else if (c->args.args[0]->s->getValue() == "unknown") {
-							if (!typeAssert(c->args.args[1], datatypes::string))
-								return nullptr;
-							cc->values.insert_or_assign("unknown", c->args.args[1]);
-						}
-						else if (c->args.args[0]->s->getValue() == "known") {
-							if (!typeAssert(c->args.args[1], datatypes::boolean))
-								return nullptr;
-							cc->seen = c->args.args[1]->b->getValue();
-						}
-						else {
-							cc->values.insert_or_assign(c->args.args[0]->s->getValue(), c->args.args[1]);
-						}
-						break;
-					default:
-						break;
-					}
-
-					if (pos == max) {
-						// How did we get here? The end of a block?
-						break;
-					}
+				if (run(cha,&cc->values)) {
+					checkCharacter(cc, "fname",datatypes::string);
+					checkCharacter(cc, "lname", datatypes::string);
+					checkCharacter(cc, "unknown", datatypes::string);
+					checkCharacter(cc, "known", datatypes::boolean);
+				}
+				else {
+					return nullptr;
 				}
 				characters.insert_or_assign(cha, cc);
 				// Call Character event!
@@ -114,17 +105,20 @@ namespace dms {
 		return true;
 	}
 	bool dms_state::run() {
+		if (chunks[entry] == NULL) {
+			push_error(errors::error{ errors::non_existing_block ,utils::concat("Attempted to Jump to a non existing block [",entry,"]") });
+			return false;
+		}
+		return run("$INIT",&memory);
+	}
+	bool dms_state::run(std::string ent, std::unordered_map<std::string, value*>* mem) {
 		codes::op code;
 		cmd* c = nullptr;
 		bool halt = false;
 		size_t pos=0;
 		size_t max = 0;
 		std::vector<cmd*> cmds;
-		if (chunks[entry] == NULL) {
-			push_error(errors::error{errors::non_existing_block ,utils::concat("Attempted to Jump to a non existing block [",entry,"]")});
-			return false;
-		}
-		init(chunks["$INIT"],pos,max,cmds);
+		init(chunks[ent],pos,max,cmds);
 
 		//TODO: parse the cmds and do stuff
 		// If this is running in a thread then stop will force this loop to stop
@@ -182,22 +176,22 @@ namespace dms {
 						env->hpart.insert_or_assign("$size", c->args.args[1]);
 						value* val = new value;
 						val->set(env);
-						assign(c->args.args[0], val);
+						assign(mem,c->args.args[0], val);
 					}
 					break;
 				case INST:
 					{
-						value* list = memory[c->args.args[0]->s->getValue()];
+						value* list = (*mem)[c->args.args[0]->s->getValue()];
 						list->e->pushValue(c->args.args[1]);
 					}
 					break;
 				case HALT:
 					//wait();
-					std::this_thread::sleep_for(std::chrono::milliseconds(700));
+					sleep(700);
 					std::cout << std::endl;
 					break;
 				case WAIT:
-					std::this_thread::sleep_for(std::chrono::milliseconds((int)(c->args.args[0]->n->getValue()*1000)));
+					sleep((int)(c->args.args[0]->n->getValue()*1000));
 					break;
 				case DSPD:
 					if (speaker == nullptr) {
@@ -229,7 +223,7 @@ namespace dms {
 						return false;
 					break;
 				case ASGN:
-					assign(c->args.args[0], c->args.args[1]);
+					assign(mem,c->args.args[0], c->args.args[1]);
 					break;
 				case LINE:
 					cur_line = c->args.args[0]->n->getValue();
@@ -243,7 +237,7 @@ namespace dms {
 						std::string prompt = c->args.args[0]->s->getValue();
 						std::string fn = c->args.args[1]->s->getValue();
 						for (size_t i = 2; i < c->args.args.size(); i++)
-							args.push_back(c->args.args[i]->resolve(memory)->s->getValue());
+							args.push_back(c->args.args[i]->resolve(*mem)->s->getValue());
 						size_t npos = handler->handleChoice(this, prompt, args);
 						size_t nnpos = seek(concat("CHOI_", fn, "_", npos),cmds,LABL,npos);
 						if (!nnpos) {
@@ -257,8 +251,8 @@ namespace dms {
 					break;
 				case JUMP:
 					// Value assert resolves the data so a variable must eventually equal a string
-					if (utils::valueassert(c->args, memory, datatypes::string)) {
-						std::string block = c->args.args[0]->resolve(memory)->s->getValue();
+					if (utils::valueassert(c->args, *mem, datatypes::string)) {
+						std::string block = c->args.args[0]->resolve(*mem)->s->getValue();
 						if (chunks[block] == NULL) {
 							push_error(errors::error{ errors::non_existing_block ,utils::concat("Attempted to Jump to a non existing block [",block,"]") });
 							return false;
@@ -272,7 +266,7 @@ namespace dms {
 						}
 					}
 					else {
-						datatypes set = c->args.args[0]->resolve(memory)->type;
+						datatypes set = c->args.args[0]->resolve(*mem)->type;
 						push_error(errors::error{ errors::invalid_arguments, utils::concat("String expected got ",datatype[set]), true,ln });
 						return false;
 					}

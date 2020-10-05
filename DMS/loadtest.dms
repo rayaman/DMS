@@ -22,7 +22,7 @@ disable hello
 	g = false
 	return d
 
-[inventory:env]
+[inv:env]
 	slot1 = "S1"
 	slot2 = "S2"
 	slot3 = "S3"

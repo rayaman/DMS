@@ -1,16 +1,12 @@
 #pragma once
-#include "errors.h"
-#include "chunk.h"
-#include "dms_exceptions.h"
 #include <fstream>
 #include <string>
 #include <iostream>
-#include <map>
 #include <unordered_map>
-// Threading Stuff
-#include <thread>
-#include <mutex>
-#include <chrono>
+
+#include "errors.h"
+#include "chunk.h"
+#include "dms_exceptions.h"
 #include "Character.h"
 #include "enviroment.h"
 namespace dms {
@@ -21,12 +17,12 @@ namespace dms {
 		bool hasFirst = false;
 		std::unordered_map<std::string, value*> memory;
 		std::vector<value*> garbage;
-		std::map<std::string, chunk*> chunks;
-		std::map<std::string, character*> characters;
-		std::map<std::string, enviroment*> enviroments;
-		std::map<std::string, size_t> labels;
+		std::unordered_map<std::string, chunk*> chunks;
+		std::unordered_map<std::string, character*> characters;
+		std::unordered_map<std::string, enviroment*> enviroments;
+		std::unordered_map<std::string, size_t> labels;
 		std::string entry = "$undefined";
-		std::map<std::string, bool> enables;
+		std::unordered_map<std::string, bool> enables;
 		std::size_t cur_line=0;
 		int exitcode = 0;
 		const double Iversion = 1.0;
@@ -53,12 +49,13 @@ namespace dms {
 		character* getCharacter(std::string c);
 		enviroment* getEnviroment(std::string c);
 
-		bool assign(value* var, value* val);
+		bool assign(std::unordered_map<std::string, value*>* mem,value* var, value* val);
 		size_t seek(std::string label,std::vector<cmd*> cmds ,codes::op code, size_t pos);
 		bool characterExists(std::string bk_name);
 		bool blockExists(std::string bk_name);
 		bool typeAssert(value* val, datatypes type);
 		bool run();
+		bool run(std::string ent,std::unordered_map<std::string, value*>* mem);
 		// This is called once and once only. Dynamically loading code is not a thing!
 		void init();
 
