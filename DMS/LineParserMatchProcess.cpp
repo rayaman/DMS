@@ -4,13 +4,16 @@ using namespace dms::utils;
 // TODO: process if elseif else statements, for loops and while loops
 namespace dms {
 	bool LineParser::match_process_standard(tokenstream* stream, value* v) {
-		if (match_process_expression(stream,v)) {
+		if (match_process_expression(stream, v)) {
 			return true;
 		}
 		else if (match_process_function(stream, v)) {
 			return true;
 		}
 		else if (match_process_list(stream, v)) {
+			return true;
+		}
+		else if (match_process_index(stream, v)) {
 			return true;
 		}
 		else if (stream->match(tokens::True)) {
@@ -470,50 +473,7 @@ namespace dms {
 					tempstream.next(); // Consume it
 					cleanup(tempval); // We don't need it
 				} 
-				else if (match_process_list(&tempstream, tempval)) {
-					c->args.push(tempval);
-				}
-				else if (match_process_expression(&tempstream, tempval)) {
-					c->args.push(tempval);
-				}
-				else if (tempstream.match(tokens::string)) {
-					cleanup(tempval);
-					tempval = buildValue(tempstream.next().name); // Get the string
-					c->args.push(tempval); // add this argument to the function opcodes
-				}
-				else if (tempstream.match(tokens::number)) {
-					cleanup(tempval);
-					std::string str = tempstream.next().name;
-					tempval = buildValue(std::stod(str)); // Get the number and convert it to a double then build a value
-					c->args.push(tempval); // add this argument to the function opcodes
-				}
-				else if (tempstream.match(tokens::True)) {
-					cleanup(tempval);
-					tempval = buildValue(true);
-					c->args.push(tempval);
-					tempstream.next();
-				}
-				else if (tempstream.match(tokens::False)) {
-					cleanup(tempval);
-					tempval = buildValue(false);
-					c->args.push(tempval);
-					tempstream.next();
-				} else if (tempstream.match(tokens::nil)){
-					cleanup(tempval);
-					tempval = buildValue();
-					c->args.push(tempval);
-					tempstream.next();
-				}
-				// Final match this could be a function it might also be an expression
-				else if (match_process_function(&tempstream, tempval)) {
-					if (!nested) {
-						state->push_error(errors::error{ errors::nested_function,"Nested functions are not allowed in this context!",true, tempstream.peek().line_num });
-					}
-					c->args.push(tempval);
-				}
-				else if (tempstream.match(tokens::name)) {
-					cleanup(tempval);
-					tempval = buildVariable(tempstream.next().name);
+				else if (match_process_standard(&tempstream, tempval)) {
 					c->args.push(tempval);
 				}
 				else if (tempstream.match(tokens::newline)) {
@@ -549,7 +509,30 @@ namespace dms {
 	}
 	bool LineParser::match_process_index(tokenstream* stream, value* v) {
 		if (stream->match(tokens::name,tokens::bracketo)) {
-			// Todo implement this
+			std::string name = stream->next().name;
+			std::vector<token> tok = stream->next(tokens::bracketo, tokens::bracketc);
+			tok.pop_back(); // Remove the last element since its a ']'
+			tok.push_back(token{ tokens::newline,codes::NOOP,"",tok[0].line_num });
+			tokenstream tempstream; // As usual the tokens are balanced match to [...] where the contents of tok = ...
+			tempstream.init(&tok);
+			value* tempval = buildVariable();
+			cmd* c = new cmd;
+			c->opcode = codes::INDX;
+			while (tempstream.peek().type != tokens::none) { // Keep going until we hit the end
+				if (match_process_standard(&tempstream, tempval)) {
+					c->args.push(v);
+					c->args.push(buildBlock(name));
+					c->args.push(tempval);
+				}
+				else if (tempstream.match(tokens::newline)) {
+					tempstream.next();
+					//badSymbol(stream);
+					//return false;
+				}
+			}
+			
+			current_chunk->addCmd(c);
+			return true;
 		}
 		return false;
 	}
@@ -617,7 +600,7 @@ namespace dms {
 		stream->store(current_chunk);
 		cmd* lastcmd = nullptr;
 		// It has to start with one of these 3 to even be considered an expression
-		if (stream->match(tokens::number) || stream->match(tokens::name) || stream->match(tokens::parao)) {
+		if ((stream->match(tokens::number) || stream->match(tokens::name) || stream->match(tokens::parao)) && stream->tokens.size()>=3) {
 			// What do we know, math expressions can only be on a single line. We know where to stop looking if we have to
 			cmd* c = new cmd;
 			value* wv = nullptr;

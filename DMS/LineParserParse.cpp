@@ -105,6 +105,9 @@ namespace dms {
 			else if (isStr) {
 				buffer.push_back(data);
 			}
+			else if (data == '_') { // Can't believe I missed that haha
+				buffer.push_back(data);
+			}
 			else if (isdigit(data)) {
 				isNum = true;
 				buffer.push_back(data);

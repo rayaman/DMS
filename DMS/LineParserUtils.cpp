@@ -9,7 +9,7 @@ namespace dms {
 		return this->tokens[pos-1];
 	}
 	token tokenstream::next() {
-		if (pos > this->tokens.size())
+		if (pos > this->tokens.size()-1)
 			return token{ tokentype::none,codes::NOOP,"EOS",0 };
 		return this->tokens[pos++];
 	}
@@ -66,7 +66,7 @@ namespace dms {
 		return tok;
 	}
 	token tokenstream::peek() {
-		if (pos > this->tokens.size())
+		if (pos > this->tokens.size()-1)
 			return token{ tokentype::none,codes::NOOP,"EOS",0 };
 		return this->tokens[pos];
 	}

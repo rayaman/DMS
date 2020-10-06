@@ -189,7 +189,9 @@ namespace dms {
 	size_t count = 0;
 	value* buildVariable() {
 		count++;
-		std::string val = "$"+count;
+		std::stringstream str;
+		str << "$" << count;
+		std::string val = str.str();
 		return buildVariable(val);
 	}
 	value* buildBlock(std::string str) {

@@ -67,6 +67,25 @@ Line <19> newline
 Line <19> newline 		 
 Line <20> newline 		 
 Line <20> newline 		 
+Line <21> name 		 test
+Line <21> equal 		 =
+Line <21> name 		 Bob
+Line <21> bracketo 		 [
+Line <21> name 		 a_test
+Line <21> parao 		 (
+Line <21> cbracketo 		 {
+Line <21> number 		 4
+Line <21> seperator 		 ,
+Line <21> name 		 hi
+Line <21> bracketo 		 [
+Line <21> string 		 testing
+Line <21> bracketc 		 ]
+Line <21> seperator 		 ,
+Line <21> number 		 6
+Line <21> cbracketc 		 }
+Line <21> parac 		 )
+Line <21> bracketc 		 ]
+Line <21> newline 		 
 Line <21> newline 		 
 Line <22> newline 		 
 Line <22> newline 		 

@@ -18,7 +18,7 @@ using extendedDefine
 		"how are `inv:slot2` you doing?"
 	}
 	
-	//test = Bob[here]
+	test = Bob[a_test({4,hi["testing"],6})]
 	
 	//Ryan:setNickname(Bob,"Bobby") // Not yet implemeted!
 	
