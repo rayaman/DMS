@@ -11,7 +11,7 @@ namespace dms {
 		// At the end we actually delete them!
 	}
 	value* value::resolve(std::unordered_map<std::string, value*> memory) {
-		if (type == datatypes::variable) {
+		if (type == datatypes::variable && this!=memory[this->s->getValue()]) {
 			return memory[s->getValue()]->resolve(memory); // Variable types return the value
 		}
 		return this;
@@ -101,7 +101,7 @@ namespace dms {
 						}
 					}
 					else {
-						temp << v->getPrintable();
+						temp << v->resolve(state->memory)->getPrintable();
 					}
 				}
 				else {

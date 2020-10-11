@@ -526,8 +526,10 @@ namespace dms {
 				}
 				else if (tempstream.match(tokens::newline)) {
 					tempstream.next();
-					//badSymbol(stream);
-					//return false;
+				}
+				else {
+					badSymbol(&tempstream);
+					return false;
 				}
 			}
 			

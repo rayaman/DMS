@@ -19,7 +19,6 @@ namespace dms {
 			}
 		}
 
-
 		c->opcode = codes::JUMP;
 		if (entry != "$undefined")
 			c->args.push(buildValue(entry));
@@ -107,6 +106,7 @@ namespace dms {
 			else
 				utils::print("> so we have a variable"); // This print should be a reminder for me to do something about this.
 			(*mem)[var->s->getValue()] = val;
+			return true;
 		}
 	}
 	void dms_state::dump(bool print) {
@@ -124,7 +124,10 @@ namespace dms {
 		chunks.insert_or_assign(s, c);
 	}
 	void dms_state::push_error(errors::error err) {
-		if (isEnabled("debugging")) {
+		if (err.linenum != 0) {
+			std::cout << err.err_msg << " On Line <" << err.linenum << ">" << std::endl;
+		}
+		else if (isEnabled("debugging")) {
 			std::cout << err.err_msg << " On Line <" << cur_line << ">" << std::endl;
 		}
 		else {

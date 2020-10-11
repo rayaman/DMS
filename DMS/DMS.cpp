@@ -1,5 +1,5 @@
 #include "dms.h"
-#include <windows.h>
+//#include <windows.h>
 #include <iostream>
 using namespace dms;
 typedef void(*FNPTR)();

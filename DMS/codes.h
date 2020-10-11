@@ -48,7 +48,8 @@ namespace dms::codes {
 		LIST,
 		LINE,
 		HALT,
-		FILE
+		FILE,
+		GC
 	};
 	extern const std::string list[];
 	static bool isControl(const op code) {

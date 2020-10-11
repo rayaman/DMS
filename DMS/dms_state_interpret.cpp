@@ -55,6 +55,7 @@ namespace dms {
 		else {
 			if (blockExists(cha)) {
 				character* cc = new character;
+				cc->fullname = isEnabled("fullname");
 				cc->set("fname", buildValue(cha));
 				cc->set("lname", buildValue(""));
 				cc->set("unknown", buildValue("Unknown"));
@@ -112,6 +113,10 @@ namespace dms {
 		return run("$INIT",&memory);
 	}
 	bool dms_state::run(std::string ent, std::unordered_map<std::string, value*>* mem) {
+		if (stop) {
+			exitcode = 1;
+			return false;
+		}
 		codes::op code;
 		cmd* c = nullptr;
 		bool halt = false;
@@ -168,6 +173,36 @@ namespace dms {
 						exitcode = c->args.args[0]->n->getValue();
 					}
 					return true;
+					break;
+				case INDX:
+					{
+						value* assn = c->args.args[0];
+						value* env = c->args.args[1];
+						value* indx = c->args.args[2]->resolve(*mem);
+						if (env->type == datatypes::block && blockExists(env->getPrintable())) { // If this is a block let's handle this 
+							enviroment* e = nullptr;
+							if (enviroments.count(env->getPrintable())) {
+								e = enviroments[env->getPrintable()];
+							}
+							else if (characters.count(env->getPrintable())) {
+								e = characters[env->getPrintable()];
+							}
+							assign(mem, assn, e->values[indx->getPrintable()]);
+						}
+						else if (env->type == datatypes::env) {
+							if (indx->type == datatypes::number) {
+								assign(mem, assn, env->e->getValue(indx));
+							}
+							else {
+								push_error(errors::error{ errors::invalid_type ,concat("Expected a number value got ",datatype[indx->type]) });
+								return false;
+							}
+						}
+						else if (env->type == datatypes::custom) {
+							assign(mem, assn, env->c->Index(indx));
+							// Call the method within the custom data
+						}
+					}
 					break;
 				case LIST:
 					//We need to create an enviroment value then set that

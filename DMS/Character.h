@@ -7,6 +7,7 @@ namespace dms {
 	struct character : enviroment {
 		bool seen = false;
 		double spd = 100;
+		bool fullname = true;
 		std::unordered_map<std::string, std::string> paths;
 		std::string getName();
 	};

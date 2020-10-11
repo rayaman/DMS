@@ -18,8 +18,8 @@ using extendedDefine
 		"how are `inv:slot2` you doing?"
 	}
 	
-	test = Bob[a_test({4,hi["testing"],6})]
-	
+	test = Bob["fname"]
+	"`Bob`'s First Name is: `test`"
 	//Ryan:setNickname(Bob,"Bobby") // Not yet implemeted!
 	
 	Ryan: {
