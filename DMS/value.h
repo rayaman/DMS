@@ -117,6 +117,7 @@ namespace dms {
 		};
 	};
 	value* buildValue();
+	value* buildValue(char const* s);
 	value* buildNil();
 	value* buildVariable(std::string str);
 	value* buildVariable();
@@ -129,6 +130,7 @@ namespace dms {
 	struct dms_args {
 		std::vector<value*> args;
 		void push(value* val);
+		size_t size();
 		friend std::ostream& operator << (std::ostream& out, const dms_args& c) {
 			for (size_t i=0; i < c.args.size(); i++) {
 				if(i==c.args.size()-1)

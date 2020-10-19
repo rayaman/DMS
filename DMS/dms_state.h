@@ -4,6 +4,7 @@
 #include <iostream>
 #include <unordered_map>
 
+#include "Invoker.h"
 #include "errors.h"
 #include "chunk.h"
 #include "dms_exceptions.h"
@@ -15,6 +16,7 @@ namespace dms {
 	{
 		Handler* handler = nullptr;
 		bool hasFirst = false;
+		Invoker invoker;
 		std::unordered_map<std::string, value*> memory;
 		std::vector<value*> garbage;
 		std::unordered_map<std::string, chunk*> chunks;

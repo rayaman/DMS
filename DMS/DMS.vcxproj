@@ -156,6 +156,7 @@
     <ClCompile Include="DMS.cpp" />
     <ClCompile Include="dms_state.cpp" />
     <ClCompile Include="dms_state_interpret.cpp" />
+    <ClCompile Include="Invoker.cpp" />
     <ClCompile Include="LineParserBuilds.cpp" />
     <ClCompile Include="LineParserMatchProcess.cpp" />
     <ClCompile Include="LineParserParse.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="cmd.h" />
     <ClInclude Include="codes.h" />
     <ClInclude Include="dms_state.h" />
+    <ClInclude Include="Invoker.h" />
     <ClInclude Include="string_utils.h" />
     <ClInclude Include="dms_exceptions.h" />
     <ClInclude Include="errors.h" />

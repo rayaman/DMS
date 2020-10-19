@@ -42,247 +42,97 @@ Line <13> name 		 main
 Line <13> bracketc 		 ]
 Line <13> newline 		 
 Line <13> newline 		 
-Line <14> string 		 why
 Line <14> newline 		 
 Line <14> newline 		 
-Line <15> name 		 Bob
-Line <15> colon 		 :
+Line <15> name 		 list
+Line <15> equal 		 =
 Line <15> cbracketo 		 {
+Line <15> string 		 Hello
+Line <15> seperator 		 ,
+Line <15> number 		 2
+Line <15> seperator 		 ,
+Line <15> number 		 3
+Line <15> cbracketc 		 }
 Line <15> newline 		 
 Line <15> newline 		 
-Line <16> name 		 speed
-Line <16> number 		 50
 Line <16> newline 		 
 Line <16> newline 		 
-Line <17> name 		 excited
-Line <17> colon 		 :
-Line <17> string 		 Hello Mr. `Ryan:lname`, 
+Line <17> string 		 Contents of list {`list:1`, `list:2`, `list:3`}
 Line <17> newline 		 
 Line <17> newline 		 
-Line <18> string 		 how are `inv:slot2` you doing?
 Line <18> newline 		 
 Line <18> newline 		 
-Line <19> cbracketc 		 }
-Line <19> newline 		 
 Line <19> newline 		 
 Line <20> newline 		 
 Line <20> newline 		 
-Line <21> name 		 test
+Line <21> name 		 hmm
 Line <21> equal 		 =
-Line <21> name 		 Bob
-Line <21> bracketo 		 [
-Line <21> string 		 fname
-Line <21> bracketc 		 ]
+Line <21> name 		 invokeTest
+Line <21> parao 		 (
+Line <21> string 		 Do I work?
+Line <21> parac 		 )
 Line <21> newline 		 
 Line <21> newline 		 
-Line <22> string 		 `Bob`'s First Name is: `test`
 Line <22> newline 		 
 Line <22> newline 		 
+Line <23> string 		 The return of hmm is "`hmm`"
+Line <23> newline 		 
 Line <23> newline 		 
 Line <24> newline 		 
 Line <24> newline 		 
-Line <25> name 		 Ryan
-Line <25> colon 		 :
-Line <25> cbracketo 		 {
 Line <25> newline 		 
 Line <25> newline 		 
-Line <26> string 		 Hey `Bob`, I'm good how are you?
+Line <26> bracketo 		 [
+Line <26> name 		 Bob
+Line <26> colon 		 :
+Line <26> name 		 char
+Line <26> bracketc 		 ]
 Line <26> newline 		 
 Line <26> newline 		 
-Line <27> cbracketc 		 }
 Line <27> newline 		 
 Line <28> newline 		 
-Line <28> newline 		 
-Line <29> string 		 Waiting ...
 Line <29> newline 		 
-Line <29> newline 		 
+Line <30> name 		 unknown
+Line <30> equal 		 =
+Line <30> string 		 Ya boi
 Line <30> newline 		 
 Line <30> newline 		 
-Line <31> name 		 Bob
-Line <31> colon 		 :
-Line <31> cbracketo 		 {
+Line <31> name 		 age
+Line <31> equal 		 =
+Line <31> number 		 0.24
 Line <31> newline 		 
 Line <31> newline 		 
-Line <32> string 		 I am great thanks! I want to show you that I can count!
-
+Line <32> name 		 money
+Line <32> equal 		 =
+Line <32> number 		 100
 Line <32> newline 		 
 Line <32> newline 		 
-Line <33> name 		 wait
-Line <33> number 		 0.1
+Line <33> name 		 excited
+Line <33> colon 		 :
+Line <33> string 		 path/to/file
 Line <33> newline 		 
 Line <33> newline 		 
-Line <34> string 		 1
-
 Line <34> newline 		 
 Line <34> newline 		 
-Line <35> name 		 wait
-Line <35> number 		 0.1
+Line <35> bracketo 		 [
+Line <35> name 		 newblock
+Line <35> colon 		 :
+Line <35> name 		 function
+Line <35> parao 		 (
+Line <35> parac 		 )
+Line <35> bracketc 		 ]
 Line <35> newline 		 
 Line <35> newline 		 
-Line <36> string 		 2
-
+Line <36> string 		 Test #2
 Line <36> newline 		 
 Line <36> newline 		 
-Line <37> name 		 wait
-Line <37> number 		 0.1
+Line <37> string 		 Does it parse this part properly?
 Line <37> newline 		 
 Line <37> newline 		 
-Line <38> string 		 3
-
+Line <38> string 		 huh
 Line <38> newline 		 
 Line <38> newline 		 
-Line <39> name 		 wait
-Line <39> number 		 0.1
-Line <39> newline 		 
-Line <39> newline 		 
-Line <40> string 		 4
-
-Line <40> newline 		 
-Line <40> newline 		 
-Line <41> name 		 wait
-Line <41> number 		 0.1
-Line <41> newline 		 
-Line <41> newline 		 
-Line <42> string 		 5
-
-Line <42> newline 		 
-Line <42> newline 		 
-Line <43> cbracketc 		 }
-Line <43> newline 		 
-Line <43> newline 		 
-Line <44> newline 		 
-Line <44> newline 		 
-Line <45> control 		 
-Line <45> string 		 What do you want to do?
-Line <45> cbracketo 		 {
-Line <45> newline 		 
-Line <45> newline 		 
-Line <46> string 		 option 1
-Line <46> name 		 test2
-Line <46> parao 		 (
-Line <46> string 		 testing
-Line <46> seperator 		 ,
-Line <46> cbracketo 		 {
-Line <46> number 		 1
-Line <46> seperator 		 ,
-Line <46> number 		 2
-Line <46> seperator 		 ,
-Line <46> number 		 3
-Line <46> cbracketc 		 }
-Line <46> parac 		 )
-Line <46> newline 		 
-Line <46> newline 		 
-Line <47> string 		 option 2
-Line <47> jump 		 
-Line <47> string 		 test
-Line <47> newline 		 
-Line <47> newline 		 
-Line <48> string 		 option 3
-Line <48> jump 		 
-Line <48> name 		 there
-Line <48> newline 		 
-Line <48> newline 		 
-Line <49> string 		 option 4
-Line <49> gotoo 		 
-Line <49> string 		 o3
-Line <49> newline 		 
-Line <49> newline 		 
-Line <50> string 		 option 5
-Line <50> gotoo 		 
-Line <50> name 		 here
-Line <50> newline 		 
-Line <50> newline 		 
-Line <51> string 		 option 6
-Line <51> name 		 test
-Line <51> parao 		 (
-Line <51> string 		 here
-Line <51> parac 		 )
-Line <51> newline 		 
-Line <51> newline 		 
-Line <52> cbracketc 		 }
-Line <52> newline 		 
-Line <52> newline 		 
-Line <53> newline 		 
-Line <53> newline 		 
-Line <54> bracketo 		 [
-Line <54> name 		 test
-Line <54> bracketc 		 ]
-Line <54> newline 		 
-Line <54> newline 		 
-Line <55> name 		 Ryan
-Line <55> colon 		 :
-Line <55> string 		 We are here now!
-Line <55> newline 		 
-Line <55> newline 		 
-Line <56> pipe 		 |
-Line <56> string 		 This continues from the last message!
-Line <56> newline 		 
-Line <56> newline 		 
-Line <57> pipe 		 |
-Line <57> string 		 Keeps code readable. This does not cause a new line!
-Line <57> newline 		 
-Line <57> newline 		 
-Line <58> name 		 Ryan
-Line <58> colon 		 :
-Line <58> string 		 This does trigger a new line tho!
-Line <58> newline 		 
-Line <58> newline 		 
-Line <59> string 		 This also will cause a new line!
-Line <59> newline 		 
-Line <59> newline 		 
-Line <60> newline 		 
-Line <60> newline 		 
-Line <61> bracketo 		 [
-Line <61> name 		 Bob
-Line <61> colon 		 :
-Line <61> name 		 char
-Line <61> bracketc 		 ]
-Line <61> newline 		 
-Line <61> newline 		 
-Line <62> newline 		 
-Line <63> newline 		 
-Line <64> newline 		 
-Line <65> name 		 unknown
-Line <65> equal 		 =
-Line <65> string 		 Some Rando
-Line <65> newline 		 
-Line <65> newline 		 
-Line <66> name 		 age
-Line <66> equal 		 =
-Line <66> number 		 0.24
-Line <66> newline 		 
-Line <66> newline 		 
-Line <67> name 		 money
-Line <67> equal 		 =
-Line <67> number 		 100
-Line <67> newline 		 
-Line <67> newline 		 
-Line <68> name 		 excited
-Line <68> colon 		 :
-Line <68> string 		 path/to/file
-Line <68> newline 		 
-Line <68> newline 		 
-Line <69> newline 		 
-Line <69> newline 		 
-Line <70> bracketo 		 [
-Line <70> name 		 newblock
-Line <70> colon 		 :
-Line <70> name 		 function
-Line <70> parao 		 (
-Line <70> parac 		 )
-Line <70> bracketc 		 ]
-Line <70> newline 		 
-Line <70> newline 		 
-Line <71> string 		 Test #2
-Line <71> newline 		 
-Line <71> newline 		 
-Line <72> string 		 Does it parse this part properly?
-Line <72> newline 		 
-Line <72> newline 		 
-Line <73> string 		 huh
-Line <73> newline 		 
-Line <73> newline 		 
-Line <73> eof 		 
+Line <38> eof 		 
 Line <1> newline 		 
 Line <1> newline 		 
 Line <1> flag 		 

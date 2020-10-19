@@ -134,6 +134,15 @@ namespace dms {
 				}
 			}
 			length->set(buildNumber(count)); // the second argument is the length of the list! This should be modified if lists are changed at runtime!
+			c = new cmd;
+			c->opcode = codes::INST;
+			c->args.push(v);
+			c->args.push(buildNil());
+			if (dict != nullptr) {
+				c->args.push(dict);
+				dict = nullptr;
+			}
+			current_chunk->addCmd(c);
 			return true;
 		}
 		return false;
@@ -265,7 +274,27 @@ namespace dms {
 		return false;
 	}
 	bool LineParser::match_process_assignment(tokenstream* stream) {
-		if (stream->match(tokens::name,tokens::equal)) {
+		value* v = buildVariable();
+		v->set();
+		if (match_process_index(stream, v, true)) {
+			cmd* c = current_chunk->cmds.back();
+			value* ref = buildVariable();
+			if (stream->peek().type == tokens::equal) {
+				stream->next();
+			}
+			else {
+				badSymbol(stream);
+				return false;
+			}
+			if (match_process_standard(stream, ref)) {
+				c->args.push(ref);
+				return true;
+			}
+			else if (stream->match(tokens::newline)) {
+				stream->next();
+			}
+		}
+		else if (stream->match(tokens::name,tokens::equal)) {
 			value* var = buildVariable(stream->next().name); // The variable that we will be setting stuff to
 			stream->next(); // Consume the equal
 			cmd* c = new cmd;
@@ -275,11 +304,16 @@ namespace dms {
 			if (match_process_standard(stream,ref)) {
 				c->args.push(ref);
 				current_chunk->addCmd(c);
+				delete[] v;
 				return true;
 			}
 			else if (stream->match(tokens::newline)) {
 				stream->next();
 			}
+		}
+		else {
+			// We should clean up this
+			delete[] v;
 		}
 		return false;
 	}
@@ -507,7 +541,7 @@ namespace dms {
 		}
 		return false;
 	}
-	bool LineParser::match_process_index(tokenstream* stream, value* v) {
+	bool LineParser::match_process_index(tokenstream* stream, value* v, bool leftside) {
 		if (stream->match(tokens::name,tokens::bracketo)) {
 			std::string name = stream->next().name;
 			std::vector<token> tok = stream->next(tokens::bracketo, tokens::bracketc);
@@ -517,14 +551,25 @@ namespace dms {
 			tempstream.init(&tok);
 			value* tempval = buildVariable();
 			cmd* c = new cmd;
-			c->opcode = codes::INDX;
+			if (leftside) {
+				c->opcode = codes::ASID;
+			}
+			else {
+				c->opcode = codes::INDX;
+			}
+			int nlcount = 0;
 			while (tempstream.peek().type != tokens::none) { // Keep going until we hit the end
 				if (match_process_standard(&tempstream, tempval)) {
 					c->args.push(v);
 					c->args.push(buildBlock(name));
 					c->args.push(tempval);
 				}
+				else if (nlcount) {
+					state->push_error(errors::error{ errors::badtoken,concat("Unexpected symbol '",tempstream.last().toString(),"' Expected ']' to close list (line: ",tempstream.last().line_num,") Indexing must be done on one line?"),true,tempstream.last().line_num,current_chunk });
+					return false;
+				}
 				else if (tempstream.match(tokens::newline)) {
+					nlcount++;
 					tempstream.next();
 				}
 				else {

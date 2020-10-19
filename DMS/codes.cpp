@@ -47,5 +47,6 @@ const std::string dms::codes::list[] = {
 	"LINE",
 	"HALT",
 	"FILE",
-	"GC"
+	"GC",
+	"ASID"
 };

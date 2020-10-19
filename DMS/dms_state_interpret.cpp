@@ -133,7 +133,7 @@ namespace dms {
 		while (!stop || !halt) {
 			c = cmds[pos++];
 			code = c->opcode;
-			//print("\n(",pos,")> ",*c);
+			//print("(",pos,")> ",*c);
 			//wait();
 			switch (code)
 			{
@@ -174,6 +174,51 @@ namespace dms {
 					}
 					return true;
 					break;
+				case FUNC:
+					{
+						std::string funcname = c->args.args[0]->getPrintable();
+						value* assn = c->args.args[1];
+						dms_args args;
+						for (int i = 2; i < c->args.args.size(); i++) {
+							args.push(c->args.args[i]);
+						}
+						value* ret = invoker.Invoke(funcname, this, &args);
+						if (assn->type != datatypes::nil) {
+							assign(mem, assn, ret);
+						}
+					}
+					break;
+				case ASID:
+				{
+					value* env = c->args.args[1];
+					value* indx = c->args.args[2]->resolve(*mem);
+					value* assn = c->args.args[3]->resolve(*mem);
+					if (env->type == datatypes::block && blockExists(env->getPrintable())) { // If this is a block let's handle this 
+						enviroment* e = nullptr;
+						if (enviroments.count(env->getPrintable())) {
+							e = enviroments[env->getPrintable()];
+						}
+						else if (characters.count(env->getPrintable())) {
+							e = characters[env->getPrintable()];
+						}
+						e->values[indx->getPrintable()] = assn;
+					}
+					else if (env->type == datatypes::env) {
+						if (indx->type == datatypes::number) {
+							env->e->pushValue(assn);
+						}
+						else {
+							push_error(errors::error{ errors::invalid_type ,concat("Expected a number value got ",datatype[indx->type]) });
+							return false;
+						}
+					}
+					else if (env->type == datatypes::custom) {
+						env->c->NewIndex(indx, assn);
+						//assign(mem, assn, env->c->Index(indx));
+						// Call the method within the custom data
+					}
+					break;
+				}
 				case INDX:
 					{
 						value* assn = c->args.args[0];

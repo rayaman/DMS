@@ -1,5 +1,6 @@
 #include "value.h"
 #include "dms_state.h"
+#include "utils.h"
 namespace dms {
 	const std::string datatype[] = { "escape","nil", "number", "boolean", "env", "string", "custom", "variable", "block" };
 	std::vector<value*> _VALUES;
@@ -18,6 +19,9 @@ namespace dms {
 	}
 	void dms_args::push(value* val) {
 		args.push_back(val);
+	}
+	size_t dms_args::size() {
+		return args.size();
 	}
 	std::string dms_string::getValue(dms_state* state) {
 		std::stringstream temp;
@@ -60,8 +64,14 @@ namespace dms {
 							temp << "nil";
 						}
 					}
+					else if (v->resolve(state->memory)->type == datatypes::env) {
+						if(v->resolve(state->memory)->e->ipart.size()> std::stoi(index))
+							temp << v->resolve(state->memory)->e->ipart[std::stoi(index)-1]->getPrintable();
+						else
+							temp << "nil";
+					}
 					else {
-						temp << v->getPrintable();
+						temp << v->resolve(state->memory)->getPrintable();
 					}
 				}
 				else {
@@ -204,6 +214,11 @@ namespace dms {
 		value* val = new value{};
 		val->set(buildString(str));
 		val->type = variable;
+		return val;
+	}
+	value* buildValue(char const* s) {
+		value* val = new value{};
+		val->set(buildString(s));
 		return val;
 	}
 	value* buildValue(std::string str) {

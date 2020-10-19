@@ -14,7 +14,8 @@ namespace dms::errors {
 		nested_function,
 		disp_unknown,
 		non_existing_block,
-		incompatible_version
+		incompatible_version,
+		non_existing_function
 	};
 	struct error {
 		errortype code=unknown;

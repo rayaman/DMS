@@ -11,58 +11,23 @@ version 0.2
 using extendedDefine
 
 [main]
-	"why"
-	Bob: {
-		speed 50
-		excited: "Hello Mr. `Ryan:lname`, "
-		"how are `inv:slot2` you doing?"
-	}
 	
-	test = Bob["fname"]
-	"`Bob`'s First Name is: `test`"
+	list = {"Hello",2,3}
+	
+	"Contents of list {`list:1`, `list:2`, `list:3`}"
+	
 	//Ryan:setNickname(Bob,"Bobby") // Not yet implemeted!
 	
-	Ryan: {
-		"Hey `Bob`, I'm good how are you?"
-	} // Should display Hey Bobby, I'm good how are you?
+	hmm = invokeTest("Do I work?")
 	
-	"Waiting ..."
-	
-	Bob: {
-		"I am great thanks! I want to show you that I can count!\n"
-		wait .1
-		"1\n"
-		wait .1
-		"2\n"
-		wait .1
-		"3\n"
-		wait .1
-		"4\n"
-		wait .1
-		"5\n"
-	}
+	"The return of hmm is \"`hmm`\""
 
-	choice "What do you want to do?" {
-		"option 1" test2("testing",{1,2,3})
-		"option 2" jump "test"
-		"option 3" jump there
-		"option 4" goto "o3"
-		"option 5" goto here
-		"option 6" test("here")
-	}
-
-[test]
-	Ryan: "We are here now!"
-		   |"This continues from the last message!"
-		   |"Keeps code readable. This does not cause a new line!"
-	Ryan: "This does trigger a new line tho!"
-		   "This also will cause a new line!"
 
 [Bob:char]
 	//fname = "Bob"
 	//known = true // defaults to false
 	//lname = "Johnson" // defaults to ""
-	unknown = "Some Rando"
+	unknown = "Ya boi"
 	age = .24
 	money = 100
 	excited: "path/to/file"
