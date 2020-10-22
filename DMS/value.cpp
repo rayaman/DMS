@@ -51,8 +51,8 @@ namespace dms {
 								temp << cha->getName();
 							}
 						}
-						else if ((state->chunks.count(v->s->getValue()) && state->chunks[v->s->getValue()]->type == blocktype::bt_env) && state->getEnviroment(v->s->getValue()) != nullptr) {
-							enviroment* env = state->getEnviroment(v->s->getValue());
+						else if ((state->chunks.count(v->s->getValue()) && state->chunks[v->s->getValue()]->type == blocktype::bt_env) && state->getEnvironment(v->s->getValue()) != nullptr) {
+							enviroment* env = state->getEnvironment(v->s->getValue());
 							if (env->values.count(index)) {
 								temp << env->values[index]->getPrintable();
 							}

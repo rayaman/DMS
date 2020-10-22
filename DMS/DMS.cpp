@@ -4,7 +4,7 @@
 using namespace dms;
 //typedef void(*FNPTR)();
 
-value* invokeTest(dms_state* state, dms_args* args) {
+value* invokeTest(void* self, dms_state* state, dms_args* args) {
     utils::print(args->args[0]->getPrintable());
     return buildValue("I work!");
 }

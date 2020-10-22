@@ -526,6 +526,67 @@ namespace dms {
 				}
 			}
 		}
+		else if (stream->match(tokens::name,tokens::dot,tokens::name,tokens::parao)) {
+			cmd* c = new cmd;
+			c->opcode = codes::OFUN;
+			// OFUN obj fname target args
+			c->args.push(buildVariable(stream->next().name)); // push the obj
+			stream->next(); // consume the dot
+			c->args.push(buildVariable(stream->next().name)); // push the fname
+			// Let's set the target
+			if (v != nullptr) {
+				c->args.push(v); // Push the supplied variable
+			}
+			else {
+				c->args.push(buildValue()); // Creates a nil value 
+			}
+			// Already we have built: FUNC name val
+			// Next we add arguments this is where things get interesting
+			tokenstream tempstream;
+			// This is a balanced consuming method (()(()))
+			std::vector<token> t = stream->next(tokens::parao, tokens::parac); // Consume and get tokens
+			if (t.size() == 1) { // No arg function!
+				current_chunk->addCmd(c);
+				return true;
+			}
+			token end = t.back();
+			t.pop_back();
+			t.push_back(token{ tokens::seperator,codes::NOOP,"",t[0].line_num });
+			t.push_back(token{ tokens::nil,codes::NOOP,"",t[0].line_num });
+			t.push_back(end);
+			tempstream.init(&t); // Turn tokens we consumed into a tokenstream
+			value* tempval;
+			token tok;
+			value* ref = buildVariable();
+			// This part we add values to the opcodes for the bytecode FUNC val a1 a2 a3 ... an
+			while (tempstream.peek().type != tokens::none) { // End of stream
+				debugInvoker(stream);
+				tempval = buildVariable();
+				tok = tempstream.peek();
+				if (tempstream.match(tokens::seperator)) {
+					// We have a seperator for function arguments
+					tempstream.next(); // Consume it
+					cleanup(tempval); // We don't need it
+				}
+				else if (match_process_standard(&tempstream, tempval)) {
+					c->args.push(tempval);
+				}
+				else if (tempstream.match(tokens::newline)) {
+					tempstream.next();
+				}
+				else if (tempstream.match(tokens::parac)) {
+					cleanup(tempval);
+					tempstream.next();
+					current_chunk->addCmd(c); // We push this onto the chunk after all dependants if any have been handled
+					//lastCall.pop();
+					return true;
+				}
+				else {
+					cleanup(tempval); // Cleanup
+					badSymbol(&tempstream);
+				}
+			}
+		}
 		return false;
 	}
 	bool LineParser::match_process_goto(tokenstream* stream) {

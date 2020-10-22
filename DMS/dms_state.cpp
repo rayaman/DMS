@@ -56,6 +56,9 @@ namespace dms {
 	bool dms_state::characterExists(std::string bk_name) {
 		return (chunks.count(bk_name) && chunks[bk_name]->type == blocktype::bt_character);
 	}
+	bool dms_state::environmentExists(std::string bk_name) {
+		return (chunks.count(bk_name) && chunks[bk_name]->type == blocktype::bt_env);
+	}
 	bool dms_state::blockExists(std::string bk_name) {
 		return (chunks.count(bk_name));
 	}

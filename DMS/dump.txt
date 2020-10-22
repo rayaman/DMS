@@ -62,77 +62,93 @@ Line <17> newline
 Line <17> newline 		 
 Line <18> newline 		 
 Line <18> newline 		 
+Line <19> string 		 Ryan's name is `Ryan`
 Line <19> newline 		 
+Line <19> newline 		 
+Line <20> name 		 Ryan
+Line <20> dot 		 .
+Line <20> name 		 setName
+Line <20> parao 		 (
+Line <20> string 		 Bryan
+Line <20> parac 		 )
 Line <20> newline 		 
 Line <20> newline 		 
-Line <21> name 		 hmm
-Line <21> equal 		 =
-Line <21> name 		 invokeTest
-Line <21> parao 		 (
-Line <21> string 		 Do I work?
-Line <21> parac 		 )
+Line <21> string 		 Ryan's name is `Ryan`
 Line <21> newline 		 
 Line <21> newline 		 
 Line <22> newline 		 
 Line <22> newline 		 
-Line <23> string 		 The return of hmm is "`hmm`"
-Line <23> newline 		 
 Line <23> newline 		 
 Line <24> newline 		 
 Line <24> newline 		 
+Line <25> name 		 hmm
+Line <25> equal 		 =
+Line <25> name 		 invokeTest
+Line <25> parao 		 (
+Line <25> string 		 Do I work?
+Line <25> parac 		 )
 Line <25> newline 		 
 Line <25> newline 		 
-Line <26> bracketo 		 [
-Line <26> name 		 Bob
-Line <26> colon 		 :
-Line <26> name 		 char
-Line <26> bracketc 		 ]
 Line <26> newline 		 
 Line <26> newline 		 
+Line <27> string 		 The return of hmm is "`hmm`"
+Line <27> newline 		 
 Line <27> newline 		 
 Line <28> newline 		 
+Line <28> newline 		 
 Line <29> newline 		 
-Line <30> name 		 unknown
-Line <30> equal 		 =
-Line <30> string 		 Ya boi
+Line <29> newline 		 
+Line <30> bracketo 		 [
+Line <30> name 		 Bob
+Line <30> colon 		 :
+Line <30> name 		 char
+Line <30> bracketc 		 ]
 Line <30> newline 		 
 Line <30> newline 		 
-Line <31> name 		 age
-Line <31> equal 		 =
-Line <31> number 		 0.24
 Line <31> newline 		 
-Line <31> newline 		 
-Line <32> name 		 money
-Line <32> equal 		 =
-Line <32> number 		 100
 Line <32> newline 		 
-Line <32> newline 		 
-Line <33> name 		 excited
-Line <33> colon 		 :
-Line <33> string 		 path/to/file
 Line <33> newline 		 
-Line <33> newline 		 
+Line <34> name 		 unknown
+Line <34> equal 		 =
+Line <34> string 		 Ya boi
 Line <34> newline 		 
 Line <34> newline 		 
-Line <35> bracketo 		 [
-Line <35> name 		 newblock
-Line <35> colon 		 :
-Line <35> name 		 function
-Line <35> parao 		 (
-Line <35> parac 		 )
-Line <35> bracketc 		 ]
+Line <35> name 		 age
+Line <35> equal 		 =
+Line <35> number 		 0.24
 Line <35> newline 		 
 Line <35> newline 		 
-Line <36> string 		 Test #2
+Line <36> name 		 money
+Line <36> equal 		 =
+Line <36> number 		 100
 Line <36> newline 		 
 Line <36> newline 		 
-Line <37> string 		 Does it parse this part properly?
+Line <37> name 		 excited
+Line <37> colon 		 :
+Line <37> string 		 path/to/file
 Line <37> newline 		 
 Line <37> newline 		 
-Line <38> string 		 huh
 Line <38> newline 		 
 Line <38> newline 		 
-Line <38> eof 		 
+Line <39> bracketo 		 [
+Line <39> name 		 newblock
+Line <39> colon 		 :
+Line <39> name 		 function
+Line <39> parao 		 (
+Line <39> parac 		 )
+Line <39> bracketc 		 ]
+Line <39> newline 		 
+Line <39> newline 		 
+Line <40> string 		 Test #2
+Line <40> newline 		 
+Line <40> newline 		 
+Line <41> string 		 Does it parse this part properly?
+Line <41> newline 		 
+Line <41> newline 		 
+Line <42> string 		 huh
+Line <42> newline 		 
+Line <42> newline 		 
+Line <42> eof 		 
 Line <1> newline 		 
 Line <1> newline 		 
 Line <1> flag 		 

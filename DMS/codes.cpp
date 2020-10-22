@@ -48,5 +48,6 @@ const std::string dms::codes::list[] = {
 	"HALT",
 	"FILE",
 	"GC",
-	"ASID"
+	"ASID",
+	"OFUN"
 };

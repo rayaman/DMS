@@ -16,7 +16,11 @@ using extendedDefine
 	
 	"Contents of list {`list:1`, `list:2`, `list:3`}"
 	
-	//Ryan:setNickname(Bob,"Bobby") // Not yet implemeted!
+	"Ryan's name is `Ryan`"
+	Ryan.setName("Bryan")
+	"Ryan's name is `Ryan`"
+	
+	//Ryan.setNickname(Bob,"Bobby") // Not yet implemeted!
 	
 	hmm = invokeTest("Do I work?")
 	

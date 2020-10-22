@@ -5,6 +5,7 @@
 #include "enviroment.h"
 namespace dms {
 	struct character : enviroment {
+		character();
 		bool seen = false;
 		double spd = 100;
 		bool fullname = true;

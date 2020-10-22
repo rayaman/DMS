@@ -26,9 +26,9 @@ namespace dms {
 			}
 		}
 	}
-	enviroment* dms_state::getEnviroment(std::string env) {
-		if (enviroments.count(env)) {
-			return enviroments[env];
+	enviroment* dms_state::getEnvironment(std::string env) {
+		if (environments.count(env)) {
+			return environments[env];
 		}
 		else {
 			if (blockExists(env)) {
@@ -36,7 +36,7 @@ namespace dms {
 				if (!run(env, &e->values)) {
 					return nullptr;
 				}
-				enviroments.insert_or_assign(env, e);
+				environments.insert_or_assign(env, e);
 				handler->OnEnviromentCreated(this, e);
 				return e;
 			}
@@ -71,6 +71,9 @@ namespace dms {
 					checkCharacter(cc, "lname", datatypes::string);
 					checkCharacter(cc, "unknown", datatypes::string);
 					checkCharacter(cc, "known", datatypes::boolean);
+					if (cc->get("known")->b->getValue() == true) {
+						cc->seen = true;
+					}
 				}
 				else {
 					return nullptr;
@@ -174,6 +177,31 @@ namespace dms {
 					}
 					return true;
 					break;
+				case OFUN:
+					{
+						std::string obj = c->args.args[0]->getPrintable();
+						std::string funcname = c->args.args[1]->getPrintable();
+						value* assn = c->args.args[2];
+						dms_args args;
+						for (int i = 3; i < c->args.args.size(); i++) {
+							args.push(c->args.args[i]);
+						}
+						
+						value* ret = nullptr;
+						if (characterExists(obj)) {
+							ret = getCharacter(obj)->Invoke(funcname, this, &args);
+						}
+						else if (environmentExists(obj)) {
+							ret = getEnvironment(obj)->Invoke(funcname, this, &args);
+						}
+						//value* ret = invoker.Invoke(funcname, nullptr, this, &args);
+						if (ret == nullptr)
+							return false;
+						if (assn->type != datatypes::nil) {
+							assign(mem, assn, ret);
+						}
+					}
+					break;
 				case FUNC:
 					{
 						std::string funcname = c->args.args[0]->getPrintable();
@@ -183,6 +211,8 @@ namespace dms {
 							args.push(c->args.args[i]);
 						}
 						value* ret = invoker.Invoke(funcname, this, &args);
+						if (ret == nullptr)
+							return false;
 						if (assn->type != datatypes::nil) {
 							assign(mem, assn, ret);
 						}
@@ -195,8 +225,8 @@ namespace dms {
 					value* assn = c->args.args[3]->resolve(*mem);
 					if (env->type == datatypes::block && blockExists(env->getPrintable())) { // If this is a block let's handle this 
 						enviroment* e = nullptr;
-						if (enviroments.count(env->getPrintable())) {
-							e = enviroments[env->getPrintable()];
+						if (environments.count(env->getPrintable())) {
+							e = environments[env->getPrintable()];
 						}
 						else if (characters.count(env->getPrintable())) {
 							e = characters[env->getPrintable()];
@@ -226,8 +256,8 @@ namespace dms {
 						value* indx = c->args.args[2]->resolve(*mem);
 						if (env->type == datatypes::block && blockExists(env->getPrintable())) { // If this is a block let's handle this 
 							enviroment* e = nullptr;
-							if (enviroments.count(env->getPrintable())) {
-								e = enviroments[env->getPrintable()];
+							if (environments.count(env->getPrintable())) {
+								e = environments[env->getPrintable()];
 							}
 							else if (characters.count(env->getPrintable())) {
 								e = characters[env->getPrintable()];

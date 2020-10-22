@@ -2,14 +2,15 @@
 #include <string>
 #include <unordered_map>
 #include "value.h"
+#include "Invoker.h"
 namespace dms {
 	enum class env_type {
 		env,
 		character,
 		function
 	};
-	struct enviroment {
-		std::string name="";
+	struct enviroment : Invoker {
+		std::string name = "";
 		std::unordered_map<std::string, value*> values;
 		env_type type = env_type::env;
 		bool has(std::string index);

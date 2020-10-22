@@ -21,7 +21,7 @@ namespace dms {
 		std::vector<value*> garbage;
 		std::unordered_map<std::string, chunk*> chunks;
 		std::unordered_map<std::string, character*> characters;
-		std::unordered_map<std::string, enviroment*> enviroments;
+		std::unordered_map<std::string, enviroment*> environments;
 		std::unordered_map<std::string, size_t> labels;
 		std::string entry = "$undefined";
 		std::unordered_map<std::string, bool> enables;
@@ -49,11 +49,12 @@ namespace dms {
 
 		// Gets or creates a character
 		character* getCharacter(std::string c);
-		enviroment* getEnviroment(std::string c);
+		enviroment* getEnvironment(std::string c);
 
 		bool assign(std::unordered_map<std::string, value*>* mem,value* var, value* val);
 		size_t seek(std::string label,std::vector<cmd*> cmds ,codes::op code, size_t pos);
 		bool characterExists(std::string bk_name);
+		bool environmentExists(std::string bk_name);
 		bool blockExists(std::string bk_name);
 		bool typeAssert(value* val, datatypes type);
 		bool run();

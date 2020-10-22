@@ -50,7 +50,8 @@ namespace dms::codes {
 		HALT,
 		FILE,
 		GC,
-		ASID
+		ASID,
+		OFUN
 	};
 	extern const std::string list[];
 	static bool isControl(const op code) {
