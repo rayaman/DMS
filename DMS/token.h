@@ -49,7 +49,7 @@ namespace dms::tokens {
 		dollar,
 		ampersand,
 		nil,
-		pipe
+		pipe,
 	};//stream, t_vec, line, isNum, buffer
 	struct token {
 		tokentype type = noop;

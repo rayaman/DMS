@@ -17,6 +17,12 @@ namespace dms {
 				chunks["$INIT"]->addCmd(c);
 				c = new cmd;
 			}
+			else if (val->type == blocktype::bt_method) {
+				c->opcode = codes::RETN;
+				c->args.push(buildNil());
+				val->addCmd(c);
+				c = new cmd;
+			}
 		}
 
 		c->opcode = codes::JUMP;
@@ -28,13 +34,44 @@ namespace dms {
 		if (!handler->OnStateInit(this))
 			stop = true;
 	}
+	std::unordered_map<std::string, value*>* dms_state::getMem() {
+		return mem_stack.top();
+	}
+	void dms_state::pushMem() {
+		mem_stack.push(new std::unordered_map<std::string, value*>);
+	}
+	void dms_state::popMem() {
+		mem_stack.pop();
+	}
+	value* dms::blockInvoke(void* self, dms_state* state, dms_args* args) {
+		std::string func = state->call_stack.top();
+		if (state->functionExists(func)) {
+			state->call_stack.pop();
+			value* ret = nullptr;
+			state->pushMem();
+			std::unordered_map<std::string, value*>* Fmem = state->getMem();
+			for (int i = 0; i < state->chunks[func]->params.args.size(); i++) {
+				Fmem->insert_or_assign(state->chunks[func]->params.args[i]->getPrintable(), args->args[i]->resolve(state)->copy());
+			}
+			state->run(func, Fmem);
+			ret = state->return_stack.top();
+			state->return_stack.pop();
+			state->popMem();
+			return ret;
+		}
+		return buildNil();
+	}
+	void dms_state::pushMem(std::unordered_map<std::string, value*>* m) {
+		mem_stack.push(m);
+	}
 	dms_state::dms_state() {
 		// We should define the defaults for the enables
-		enables.insert_or_assign("leaking",false);
-		enables.insert_or_assign("debugging",false);
-		enables.insert_or_assign("warnings",false); //
-		enables.insert_or_assign("statesave",true); // Allows you to save state
-		enables.insert_or_assign("omniscient",false); // Allows you to know who's who when you first meet them
+		pushMem(&memory);
+		enables.insert_or_assign("leaking", false);
+		enables.insert_or_assign("debugging", false);
+		enables.insert_or_assign("warnings", false); //
+		enables.insert_or_assign("statesave", true); // Allows you to save state
+		enables.insert_or_assign("omniscient", false); // Allows you to know who's who when you first meet them
 		enables.insert_or_assign("fullname", true);
 		chunk* c = new chunk;
 		c->name = "$END";
@@ -45,6 +82,7 @@ namespace dms {
 		c->addCmd(cc);
 		push_chunk("$END", c);
 		setHandler(new Handler); // Use the default implementation
+		invoker.registerFunction("$BlockInvoke$", blockInvoke);
 	}
 	bool dms_state::typeAssert(value* val, datatypes type) {
 		if (val->type != type) {
@@ -58,6 +96,9 @@ namespace dms {
 	}
 	bool dms_state::environmentExists(std::string bk_name) {
 		return (chunks.count(bk_name) && chunks[bk_name]->type == blocktype::bt_env);
+	}
+	bool dms_state::functionExists(std::string bk_name) {
+		return (chunks.count(bk_name) && chunks[bk_name]->type == blocktype::bt_method);
 	}
 	bool dms_state::blockExists(std::string bk_name) {
 		return (chunks.count(bk_name));

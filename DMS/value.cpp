@@ -11,9 +11,29 @@ namespace dms {
 		// Values at runtime aren't "Deleted, they are set to nil"
 		// At the end we actually delete them!
 	}
-	value* value::resolve(std::unordered_map<std::string, value*> memory) {
-		if (type == datatypes::variable && this!=memory[this->s->getValue()]) {
-			return memory[s->getValue()]->resolve(memory); // Variable types return the value
+	value* value::copy() {
+		value* newVal = new value;
+		newVal->type = type;
+		newVal->c = c;
+		newVal->e = e;
+		if (type == datatypes::block || type == datatypes::string || type == datatypes::variable) {
+			newVal->s = buildString(s->getValue());
+		}
+		else if (type == datatypes::boolean) {
+			newVal->b = buildBool(b->getValue());
+		}
+		else if (type == datatypes::number) {
+			newVal->n = buildNumber(n->getValue());
+		}
+		else if (type == datatypes::nil) {
+			delete newVal;
+			return buildNil();
+		}
+		return newVal;
+	}
+	value* value::resolve(dms_state* state) {
+		if (type == datatypes::variable && this!=(*state->getMem())[this->s->getValue()]) {
+			return (*state->getMem())[s->getValue()]->resolve(state); // Variable types return the value
 		}
 		return this;
 	}
@@ -39,8 +59,8 @@ namespace dms {
 				ind.clear();
 				varStart = false;
 				indStart = false;
-				if (state->memory.count(lookup)) {
-					value* v = state->memory[lookup];
+				if (state->getMem()->count(lookup)) {
+					value* v = (*state->getMem())[lookup];
 					if (v->type == datatypes::block) {
 						if ((state->chunks.count(v->s->getValue()) && state->chunks[v->s->getValue()]->type == blocktype::bt_character) && state->getCharacter(v->s->getValue())!=nullptr) {
 							character* cha = state->getCharacter(v->s->getValue());
@@ -64,14 +84,14 @@ namespace dms {
 							temp << "nil";
 						}
 					}
-					else if (v->resolve(state->memory)->type == datatypes::env) {
-						if(v->resolve(state->memory)->e->ipart.size()> std::stoi(index))
-							temp << v->resolve(state->memory)->e->ipart[std::stoi(index)-1]->getPrintable();
+					else if (v->resolve(state)->type == datatypes::env) {
+						if(v->resolve(state)->e->ipart.size()> std::stoi(index))
+							temp << v->resolve(state)->e->ipart[std::stoi(index)-1]->getPrintable();
 						else
 							temp << "nil";
 					}
 					else {
-						temp << v->resolve(state->memory)->getPrintable();
+						temp << v->resolve(state)->getPrintable();
 					}
 				}
 				else {
@@ -100,8 +120,8 @@ namespace dms {
 				var.str("");
 				var.clear();
 				varStart = false;
-				if (state->memory.count(lookup)) {
-					value* v = state->memory[lookup];
+				if (state->getMem()->count(lookup)) {
+					value* v = (*state->getMem())[lookup];
 					if (v->type == datatypes::block) {
 						if (state->getCharacter(v->s->getValue())) {
 							temp << state->characters[v->s->getValue()]->getName();
@@ -111,7 +131,7 @@ namespace dms {
 						}
 					}
 					else {
-						temp << v->resolve(state->memory)->getPrintable();
+						temp << v->resolve(state)->getPrintable();
 					}
 				}
 				else {

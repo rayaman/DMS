@@ -74,7 +74,8 @@ namespace dms {
 		dms_env* e = nullptr;
 		dms_custom* c = nullptr;
 		value();
-		value* resolve(std::unordered_map<std::string,value*> map);
+		value* resolve(dms_state*);
+		value* copy();
 		void nuke();
 		void set(dms_string* str);
 		void set(dms_boolean* bo);

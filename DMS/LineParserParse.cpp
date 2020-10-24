@@ -489,9 +489,9 @@ namespace dms {
 					// This will probably be the toughest one of them all
 				}
 			}
-			// Display cmd must be first!!!
+			// Let's handle function stuff!
+			match_process_return(stream);
 			match_process_disp(stream); // Match and process dialogue
-
 			if (stream->match(tokens::newline,tokens::label)) { // Match and process labels
 				stream->next();
 				buildLabel(stream->next().name);

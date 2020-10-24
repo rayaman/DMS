@@ -1,5 +1,6 @@
 #include "Invoker.h"
 #include "dms_state.h"
+#include "utils.h"
 namespace dms {
     bool Invoker::registerFunction(std::string str, value* (*f)(void*, dms_state*, dms_args*)) {
         if (preventOverwriting && funcs.count(str)) {
@@ -18,11 +19,11 @@ namespace dms {
     value* Invoker::Invoke(std::string str, dms_state* state, dms_args* args) {
         if (funcs.count(str)) {
             for (int i = 0; i < args->args.size() - 1; i++) {
-                args->args[i] = args->args[i]->resolve(state->memory);
+                args->args[i] = args->args[i]->resolve(state);
             }
             return funcs[str](self, state, args);
         }
-        state->push_error(errors::error{ errors::non_existing_function, "Attempt to call a nil value!" });
+        state->push_error(errors::error{ errors::non_existing_function, utils::concat("Attempt to call '",str,"' a nil value!") });
         return nullptr;
     }
     std::unordered_map<std::string, value* (*)(void*, dms_state*, dms_args*)> Invoker::Export() {

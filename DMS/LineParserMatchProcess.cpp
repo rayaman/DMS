@@ -273,6 +273,31 @@ namespace dms {
 		}
 		return false;
 	}
+	bool LineParser::match_process_return(tokenstream* stream) {
+		// Only handle this inside of a function block!
+		if (current_chunk->type == blocktype::bt_method) {
+			if (stream->match(tokens::ret)) {
+				cmd* c = new cmd;
+				c->opcode = codes::RETN;
+				value* ref = buildVariable();
+				stream->next();
+				if (match_process_standard(stream, ref)) {
+					c->args.push(ref);
+					current_chunk->addCmd(c);
+					return true;
+				}
+				else {
+					badSymbol();
+					return false;
+				}
+			}
+		}
+		else if(stream->match(tokens::ret)) {
+			stream->next();
+			badSymbol();
+		}
+		return false;
+	}
 	bool LineParser::match_process_assignment(tokenstream* stream) {
 		value* v = buildVariable();
 		v->set();

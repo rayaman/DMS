@@ -3,55 +3,55 @@
 #include <string>
 namespace dms::codes {
 	enum op {
-		NOOP,
-		ENTR,
-		ENAB,
-		DISA,
-		LOAD,
-		VERN,
-		USIN,
+		NOOP, // Done
+		ENTR, // Done
+		ENAB, // Done
+		DISA, // Done
+		LOAD, // Done
+		VERN, // Done
+		USIN, // TODO
 		STAT,
-		DISP,
-		ASGN,
+		DISP, // Done
+		ASGN, // Done
 		LABL,
-		CHOI,
+		CHOI, // Done
 		OPTN,
 		FORE,
 		WHLE,
-		FUNC,
+		FUNC, // Done
 		IFFF,
 		ELIF,
 		ELSE,
 		DEFN,
 		SKIP,
 		COMP,
-		INDX,
+		INDX, // Done
 		JMPZ,
-		INST,
+		INST, // Done
 		ERRO,
 		GOTO,
-		JUMP,
+		JUMP, // Done
 		RETN,
-		EXIT,
+		EXIT, // Done
 		DEBG,
-		DSPD,
+		DSPD, // Todo
 		DACT,
-		WAIT,
-		APND,
-		SSPK,
-		ADD,
-		SUB,
-		MUL,
-		DIV,
-		POW,
-		MOD,
-		LIST,
-		LINE,
-		HALT,
+		WAIT, // Done
+		APND, // Done
+		SSPK, // Done
+		ADD, // Done
+		SUB, // Done
+		MUL, // Done
+		DIV, // Done
+		POW, // Done
+		MOD, // Done
+		LIST, // Done
+		LINE, // Done
+		HALT, // Todo
 		FILE,
 		GC,
-		ASID,
-		OFUN
+		ASID, // Done
+		OFUN // Done
 	};
 	extern const std::string list[];
 	static bool isControl(const op code) {

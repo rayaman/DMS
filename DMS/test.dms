@@ -5,38 +5,26 @@ enable forseelabels
 enable savestate
 disable fullname
 //enable leaking
-//enable debugging
+enable debugging
 loadfile "loadtest.dms"
 version 0.2
 using extendedDefine
 
 [main]
-	
-	list = {"Hello",2,3}
-	
-	"Contents of list {`list:1`, `list:2`, `list:3`}"
-	
-	"Ryan's name is `Ryan`"
-	Ryan.setName("Bryan")
-	"Ryan's name is `Ryan`"
-	
-	//Ryan.setNickname(Bob,"Bobby") // Not yet implemeted!
-	
-	hmm = invokeTest("Do I work?")
-	
-	"The return of hmm is \"`hmm`\""
-
+	"Time to test function calls!"
+	val = newblock(1,2,3)
+	"val = `val`"
 
 [Bob:char]
 	//fname = "Bob"
 	//known = true // defaults to false
 	//lname = "Johnson" // defaults to ""
-	unknown = "Ya boi"
+	unknown = "Some Random Guy"
 	age = .24
 	money = 100
 	excited: "path/to/file"
 
-[newblock:function()]
-	"Test #2"
-	"Does it parse this part properly?"
-	"huh"
+[newblock:function(a,b,c)]
+	"Func Arguments: a = `a`, b = `b`, c = `c`"
+	"Time to return"
+	return a+b+c
