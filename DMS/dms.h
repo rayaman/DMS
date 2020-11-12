@@ -14,4 +14,6 @@
 #include "utils.h"
 #include "value.h"
 #include "Invoker.h"
+#include "memory.h"
+#include "dms_list.h"
 

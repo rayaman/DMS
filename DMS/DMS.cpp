@@ -1,22 +1,25 @@
 #include "dms.h"
+//#include "memory.h"
 //#include <windows.h>
+//#include "utils.h"
 #include <iostream>
+#include "value.h"
 using namespace dms;
+using namespace utils;
 //typedef void(*FNPTR)();
 
-value* invokeTest(void* self, dms_state* state, dms_args* args) {
-    utils::print(args->args[0]->getPrintable());
-    return buildValue("I work!");
+value invokeTest(void* self, dms_state* state, dms_args* args) {
+    utils::print(args->args[0].getPrintable());
+    return "I work!";
 }
 int main()
 {
+
     LineParser parser = LineParser("test.dms");
     dms_state* state = parser.Parse();
     state->invoker.registerFunction("invokeTest", invokeTest);
     state->dump();
     state->run();
-    utils::print("Exitcode: ",state->exitcode);
-
 
     /*HINSTANCE hInst = LoadLibrary(L"C:\\Users\\rayam\\Desktop\\test.dll");
     if (!hInst) {

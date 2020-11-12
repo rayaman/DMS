@@ -3,7 +3,7 @@ using namespace dms::tokens;
 using namespace dms::utils;
 // TODO: process if elseif else statements, for loops and while loops
 namespace dms {
-	bool LineParser::match_process_standard(tokenstream* stream, value* v) {
+	bool LineParser::match_process_standard(tokenstream* stream, value& v) {
 		if (match_process_expression(stream, v)) {
 			return true;
 		}
@@ -17,38 +17,38 @@ namespace dms {
 			return true;
 		}
 		else if (stream->match(tokens::True)) {
-			v->set(buildBool(true));
+			v.set(buildBool(true));
 			stream->next();
 			return true;
 		}
 		else if (stream->match(tokens::False)) {
-			v->set(buildBool(false));
+			v.set(buildBool(false));
 			stream->next();
 			return true;
 		}
 		else if (stream->match(tokens::number)) {
-			v->set(buildNumber(std::stod(stream->next().name)));
+			v.set(std::stod(stream->next().name));
 			return true;
 		}
 		else if (stream->match(tokens::string)) {
-			v->set(buildString(stream->next().name));
+			v.set(buildString(stream->next().name));
 			return true;
 		}
 		else if (stream->match(tokens::name)) {
-			v->set(buildString(stream->next().name));
-			v->type = datatypes::variable;
+			v.set(buildString(stream->next().name));
+			v.type = datatypes::variable;
 			return true;
 		}
 		else if (stream->match(tokens::nil)) {
 			stream->next();
-			v->set();
+			v.set();
 			return true;
 		}
 		else if (stream->match(tokens::bracketo, tokens::name, tokens::bracketc)) {
 			// We are assigning a block as a variable
 			stream->next();
-			v->set(buildString(stream->next().name));
-			v->type = datatypes::block;
+			v.set(buildString(stream->next().name));
+			v.type = datatypes::block;
 			stream->next();
 			return true;
 		}
@@ -57,16 +57,16 @@ namespace dms {
 		}
 		return false;
 	}
-	bool LineParser::match_process_list(tokenstream* stream, value* v) {
+	bool LineParser::match_process_list(tokenstream* stream, value& v) {
 		if (stream->match(tokens::cbracketo)) {
 			token start = stream->peek();
 			token ancor = start;
 			std::vector<token> t = stream->next(tokens::cbracketo, tokens::cbracketc);
 			tokenstream tempstream;
 			tempstream.init(&t);
-			value* ref = buildVariable();
-			value* length = new value;
-			value* dict = nullptr;
+			value ref = value(datatypes::variable);
+			value length = value();
+			value dict = value();
 			size_t count = 0;
 			cmd* c = new cmd;
 			c->opcode = codes::LIST;
@@ -91,7 +91,7 @@ namespace dms {
 				}
 				// Match Dict
 				else if (tempstream.match(tokens::name,tokens::colon)) {
-					dict = buildVariable(tempstream.next().name);
+					dict = value(tempstream.next().name,datatypes::variable);
 					tempstream.next();
 					if (!match_process_standard(&tempstream,ref)) {
 						badSymbol();
@@ -123,7 +123,7 @@ namespace dms {
 					}
 					current_chunk->addCmd(c);
 					// Build new value
-					ref = buildVariable();
+					ref = value(datatypes::variable);
 					tempstream.next();
 				}
 				else if (tempstream.match(tokens::cbracketo)) {
@@ -133,11 +133,11 @@ namespace dms {
 					badSymbol(&tempstream);
 				}
 			}
-			length->set(buildNumber(count)); // the second argument is the length of the list! This should be modified if lists are changed at runtime!
+			length.set((double)count); // the second argument is the length of the list! This should be modified if lists are changed at runtime!
 			c = new cmd;
 			c->opcode = codes::INST;
 			c->args.push(v);
-			c->args.push(buildNil());
+			c->args.push(value());
 			if (dict != nullptr) {
 				c->args.push(dict);
 				dict = nullptr;
@@ -150,10 +150,9 @@ namespace dms {
 	bool LineParser::match_process_disp(tokenstream* stream) {
 		if ((isBlock(bt_block) || isBlock(bt_method)) && stream->match(tokens::newline, tokens::string, tokens::newline)) {
 			stream->next(); // Standard consumption
-			std::string msg = stream->next().name;
 			cmd* c = new cmd;
 			c->opcode = codes::DISP;
-			c->args.push(buildValue(msg));
+			c->args.push(value(stream->next().name));
 			current_chunk->addCmd(c); // Add the cmd to the current chunk
 			current_chunk->addCmd(new cmd{ codes::HALT });
 			return true;
@@ -167,7 +166,7 @@ namespace dms {
 			std::string msg = stream->next().name;
 			cmd* c = new cmd;
 			c->opcode = codes::APND;
-			c->args.push(buildValue(concat(" ", msg)));
+			c->args.push(value(concat(" ", msg)));
 			current_chunk->addCmd(c); // Add the cmd to the current chunk
 			current_chunk->addCmd(new cmd{ codes::HALT });
 			return true;
@@ -179,8 +178,8 @@ namespace dms {
 			std::string msg = stream->next().name;
 			cmd* c = new cmd;
 			c->opcode = codes::STAT;
-			c->args.push(buildVariable(name));
-			c->args.push(buildValue(msg));
+			c->args.push(value(name,datatypes::variable));
+			c->args.push(value(msg));
 			current_chunk->addCmd(c); // Add the cmd to the current chunk
 		}
 		else if ((isBlock(bt_block) || isBlock(bt_method)) && stream->match(tokens::newline, tokens::name, tokens::colon, tokens::string, tokens::newline)) {
@@ -192,11 +191,11 @@ namespace dms {
 			std::string msg = stream->next().name;
 			cmd* c = new cmd;
 			c->opcode = codes::SSPK;
-			c->args.push(buildVariable(name));
+			c->args.push(value(name, datatypes::variable));
 			current_chunk->addCmd(c);
 			c = new cmd;
 			c->opcode = codes::DISP;
-			c->args.push(buildValue(msg));
+			c->args.push(value(msg));
 			current_chunk->addCmd(c); // Add the cmd to the current chunk
 			current_chunk->addCmd(new cmd{ codes::HALT });
 			return true;
@@ -206,7 +205,7 @@ namespace dms {
 			// Command to set the speaker
 			cmd* c = new cmd;
 			c->opcode = codes::SSPK;
-			c->args.push(buildVariable(name));
+			c->args.push(value(name,datatypes::variable));
 			current_chunk->addCmd(c);
 			stream->next();
 			stream->next();
@@ -239,12 +238,12 @@ namespace dms {
 							}
 							cmd* c = new cmd;
 							c->opcode = codes::DACT;
-							c->args.push(buildValue(mode));
+							c->args.push(value(mode));
 							current_chunk->addCmd(c);
 							// Now build the apnd msg cmd
 							c = new cmd;
 							c->opcode = codes::APND;
-							c->args.push(buildValue(stream->next().name));
+							c->args.push(value(stream->next().name));
 							current_chunk->addCmd(c);
 						}
 						else {
@@ -256,7 +255,7 @@ namespace dms {
 				else if (stream->match(tokens::string)) {
 					cmd* c = new cmd;
 					c->opcode = codes::APND;
-					c->args.push(buildValue(stream->next().name));
+					c->args.push(value(stream->next().name));
 					current_chunk->addCmd(c);
 				}
 				else if (stream->match(tokens::newline)) {
@@ -279,7 +278,7 @@ namespace dms {
 			if (stream->match(tokens::ret)) {
 				cmd* c = new cmd;
 				c->opcode = codes::RETN;
-				value* ref = buildVariable();
+				value ref = value(datatypes::variable);
 				stream->next();
 				if (match_process_standard(stream, ref)) {
 					c->args.push(ref);
@@ -299,11 +298,10 @@ namespace dms {
 		return false;
 	}
 	bool LineParser::match_process_assignment(tokenstream* stream) {
-		value* v = buildVariable();
-		v->set();
+		value v = value();
 		if (match_process_index(stream, v, true)) {
 			cmd* c = current_chunk->cmds.back();
-			value* ref = buildVariable();
+			value ref = value(datatypes::variable);
 			if (stream->peek().type == tokens::equal) {
 				stream->next();
 			}
@@ -320,25 +318,20 @@ namespace dms {
 			}
 		}
 		else if (stream->match(tokens::name,tokens::equal)) {
-			value* var = buildVariable(stream->next().name); // The variable that we will be setting stuff to
+			value var = value(stream->next().name,datatypes::variable); // The variable that we will be setting stuff to
 			stream->next(); // Consume the equal
 			cmd* c = new cmd;
 			c->opcode = codes::ASGN;
 			c->args.push(var);
-			value* ref = buildVariable();
+			value ref = value(datatypes::variable);
 			if (match_process_standard(stream,ref)) {
 				c->args.push(ref);
 				current_chunk->addCmd(c);
-				delete[] v;
 				return true;
 			}
 			else if (stream->match(tokens::newline)) {
 				stream->next();
 			}
-		}
-		else {
-			// We should clean up this
-			delete[] v;
 		}
 		return false;
 	}
@@ -350,10 +343,10 @@ namespace dms {
 				cmd* c = new cmd;
 				c->opcode = codes::DEBG;
 				if (stream->match(tokens::string)) {
-					c->args.push(buildValue(stream->next().name));
+					c->args.push(value(stream->next().name));
 				}
 				else {
-					c->args.push(buildVariable(stream->next().name));
+					c->args.push(value(stream->next().name,datatypes::variable));
 				}
 				current_chunk->addCmd(c);
 				return true;
@@ -379,8 +372,8 @@ namespace dms {
 			std::string choi_str = concat("CHOI_", fn);
 			std::string choicelabel = concat("$CHOI_END_", choi_str,"_", stream->peek().line_num);
 			c->opcode = codes::CHOI;
-			c->args.push(buildValue(prompt));
-			c->args.push(buildValue(fn));
+			c->args.push(prompt);
+			c->args.push(fn);
 			current_chunk->addCmd(c); // We will keep a reference to this and add to it as we go through the list
 			bool start = false;
 			bool hasfunc = false;
@@ -416,10 +409,10 @@ namespace dms {
 				}
 				else if (stream->match(tokens::string)) {
 					std::string name = stream->next().name;
-					c->args.push(buildValue(name)); // We append the choice to the first part of the CHOI cmd
+					c->args.push(value(name)); // We append the choice to the first part of the CHOI cmd
 
-					// We consumed the option now lets do some matching, note that all of these are one liners in the bytecode!
-					if (match_process_function(stream,nullptr,false)) { // No returns and also no nesting of functions!
+					value val = value();
+					if (match_process_function(stream,val,false)) { // No returns and also no nesting of functions!
 						// We cannot have a nested function here, but if we dont have that then we add our goto
 						hasfunc = true;
 						buildGoto(choicelabel);
@@ -436,6 +429,7 @@ namespace dms {
 					badSymbol(stream);
 				}
 			}
+			buildGoto(choicelabel);
 			cmd* cc = current_chunk->cmds.back(); // Delete last element
 			current_chunk->cmds.pop_back();
 			delete cc;
@@ -448,9 +442,9 @@ namespace dms {
 
 	void cleanup(value* v) {
 		v->nuke(); // Make sure we clean up the data
-		delete[] v; // We didn't need it, lets clean it up!
+		delete v; // We didn't need it, lets clean it up!
 	}
-	bool LineParser::match_process_function(tokenstream* stream, value* v, bool nested) {
+	bool LineParser::match_process_function(tokenstream* stream, value& v, bool nested) {
 		/*
 			Functions should be able to handle function calls as arguments, 
 			HOWEVER functions cannot be passed as values since they aren't values like they are in other languages!
@@ -496,13 +490,13 @@ namespace dms {
 			cmd* c = new cmd;
 			c->opcode = codes::FUNC;
 			std::string n = stream->next().name;
-			c->args.push(buildVariable(n)); // Set the func identifier as the first variable
+			c->args.push(value(n,datatypes::variable)); // Set the func identifier as the first variable
 			// Let's set the target
-			if (v != nullptr) {
+			if (!v.isNil()) {
 				c->args.push(v); // Push the supplied variable
 			}
 			else {
-				c->args.push(buildValue()); // Creates a nil value 
+				c->args.push(value()); // Creates a nil value 
 			}
 			// Already we have built: FUNC name val
 			// Next we add arguments this is where things get interesting
@@ -519,18 +513,17 @@ namespace dms {
 			t.push_back(token{ tokens::nil,codes::NOOP,"",t[0].line_num });
 			t.push_back(end);
 			tempstream.init(&t); // Turn tokens we consumed into a tokenstream
-			value* tempval;
+			value tempval;
 			token tok;
-			value* ref = buildVariable();
+			value ref = value(datatypes::variable);
 			// This part we add values to the opcodes for the bytecode FUNC val a1 a2 a3 ... an
 			while (tempstream.peek().type != tokens::none) { // End of stream
 				debugInvoker(stream);
-				tempval = buildVariable();
+				tempval = value(datatypes::variable);
 				tok = tempstream.peek();
 				if (tempstream.match(tokens::seperator)) {
 					// We have a seperator for function arguments
 					tempstream.next(); // Consume it
-					cleanup(tempval); // We don't need it
 				} 
 				else if (match_process_standard(&tempstream, tempval)) {
 					c->args.push(tempval);
@@ -539,14 +532,11 @@ namespace dms {
 					tempstream.next();
 				}
 				else if (tempstream.match(tokens::parac)) {
-					cleanup(tempval);
 					tempstream.next();
 					current_chunk->addCmd(c); // We push this onto the chunk after all dependants if any have been handled
-					//lastCall.pop();
 					return true;
 				}
 				else {
-					cleanup(tempval); // Cleanup
 					badSymbol(&tempstream);
 				}
 			}
@@ -555,15 +545,15 @@ namespace dms {
 			cmd* c = new cmd;
 			c->opcode = codes::OFUN;
 			// OFUN obj fname target args
-			c->args.push(buildVariable(stream->next().name)); // push the obj
+			c->args.push(value(stream->next().name,datatypes::variable)); // push the obj
 			stream->next(); // consume the dot
-			c->args.push(buildVariable(stream->next().name)); // push the fname
+			c->args.push(value(stream->next().name,datatypes::variable)); // push the fname
 			// Let's set the target
-			if (v != nullptr) {
+			if (!v.isNil()) {
 				c->args.push(v); // Push the supplied variable
 			}
 			else {
-				c->args.push(buildValue()); // Creates a nil value 
+				c->args.push(value()); // Creates a nil value 
 			}
 			// Already we have built: FUNC name val
 			// Next we add arguments this is where things get interesting
@@ -580,18 +570,17 @@ namespace dms {
 			t.push_back(token{ tokens::nil,codes::NOOP,"",t[0].line_num });
 			t.push_back(end);
 			tempstream.init(&t); // Turn tokens we consumed into a tokenstream
-			value* tempval;
+			value tempval;
 			token tok;
-			value* ref = buildVariable();
+			value ref = value(datatypes::variable);
 			// This part we add values to the opcodes for the bytecode FUNC val a1 a2 a3 ... an
 			while (tempstream.peek().type != tokens::none) { // End of stream
 				debugInvoker(stream);
-				tempval = buildVariable();
+				tempval = value(datatypes::variable);
 				tok = tempstream.peek();
 				if (tempstream.match(tokens::seperator)) {
 					// We have a seperator for function arguments
 					tempstream.next(); // Consume it
-					cleanup(tempval); // We don't need it
 				}
 				else if (match_process_standard(&tempstream, tempval)) {
 					c->args.push(tempval);
@@ -600,14 +589,12 @@ namespace dms {
 					tempstream.next();
 				}
 				else if (tempstream.match(tokens::parac)) {
-					cleanup(tempval);
 					tempstream.next();
 					current_chunk->addCmd(c); // We push this onto the chunk after all dependants if any have been handled
 					//lastCall.pop();
 					return true;
 				}
 				else {
-					cleanup(tempval); // Cleanup
 					badSymbol(&tempstream);
 				}
 			}
@@ -627,7 +614,7 @@ namespace dms {
 		}
 		return false;
 	}
-	bool LineParser::match_process_index(tokenstream* stream, value* v, bool leftside) {
+	bool LineParser::match_process_index(tokenstream* stream, value& v, bool leftside) {
 		if (stream->match(tokens::name,tokens::bracketo)) {
 			std::string name = stream->next().name;
 			std::vector<token> tok = stream->next(tokens::bracketo, tokens::bracketc);
@@ -635,7 +622,7 @@ namespace dms {
 			tok.push_back(token{ tokens::newline,codes::NOOP,"",tok[0].line_num });
 			tokenstream tempstream; // As usual the tokens are balanced match to [...] where the contents of tok = ...
 			tempstream.init(&tok);
-			value* tempval = buildVariable();
+			value tempval = value(datatypes::variable);
 			cmd* c = new cmd;
 			if (leftside) {
 				c->opcode = codes::ASID;
@@ -647,7 +634,7 @@ namespace dms {
 			while (tempstream.peek().type != tokens::none) { // Keep going until we hit the end
 				if (match_process_standard(&tempstream, tempval)) {
 					c->args.push(v);
-					c->args.push(buildBlock(name));
+					c->args.push(value(name,datatypes::block));
 					c->args.push(tempval);
 				}
 				else if (nlcount) {
@@ -677,10 +664,10 @@ namespace dms {
 			c->opcode = codes::JUMP;
 			stream->next(); // consume jump
 			if (stream->match(tokens::name)) {
-				c->args.push(buildVariable(stream->next().name));
+				c->args.push(value(stream->next().name,datatypes::variable));
 			}
 			else {
-				c->args.push(buildValue(stream->next().name));
+				c->args.push(value(stream->next().name));
 			}
 			current_chunk->addCmd(c);
 			return true;
@@ -694,10 +681,10 @@ namespace dms {
 			c->opcode = codes::EXIT;
 			if (stream->match(tokens::number) || stream->match(tokens::name)) {
 				if(stream->match(tokens::number)){
-					c->args.push(buildValue(std::stod(stream->next().name)));
+					c->args.push(value(std::stod(stream->next().name)));
 				}
 				else {
-					c->args.push(buildVariable(stream->next().name));
+					c->args.push(value(stream->next().name,datatypes::variable));
 				}
 			}
 			current_chunk->addCmd(c);
@@ -722,13 +709,13 @@ namespace dms {
 		return false;
 	}
 
-	void reset(value*& l, codes::op& op, value*& r) {
-		l = nullptr;
+	void reset(value& l, codes::op& op, value& r) {
+		l = value();
 		op = codes::NOOP;
-		r = nullptr;
+		r = value();
 	}
 
-	bool LineParser::match_process_expression(tokenstream* stream, value* v) {
+	bool LineParser::match_process_expression(tokenstream* stream, value& v) {
 		// I will have to consume for this to work so we need to keep track of what was incase we return false!
 		stream->store(current_chunk);
 		cmd* lastcmd = nullptr;
@@ -736,10 +723,10 @@ namespace dms {
 		if ((stream->match(tokens::number) || stream->match(tokens::name) || stream->match(tokens::parao)) && stream->tokens.size()>=3) {
 			// What do we know, math expressions can only be on a single line. We know where to stop looking if we have to
 			cmd* c = new cmd;
-			value* wv = nullptr;
-			value* left; // lefthand
+			value wv;
+			value left; // lefthand
 			codes::op op; // opperator
-			value* right; // righthand
+			value right; // righthand
 			reset(left, op, right);
 			size_t loops = 0;
 			bool hasOP = false;
@@ -748,11 +735,11 @@ namespace dms {
 				if (stream->match(tokens::parao)) {
 					tokenstream temp;
 					temp.init(&(stream->next(tokens::parao, tokens::parac))); // Balanced match!
-					value* tmpvalue = buildVariable();
+					value tmpvalue = value(datatypes::variable);
 					if (match_process_expression(&temp, tmpvalue)) {
-						if (left == nullptr)
+						if (left.isNil())
 							left = tmpvalue;
-						else if (right == nullptr)
+						else if (right.isNil())
 							right = tmpvalue;
 						else
 							badSymbol(stream);
@@ -772,8 +759,8 @@ namespace dms {
 				}
 				else if (stream->match(tokens::minus)) {
 					hasOP = true;
-					if (left == nullptr) {
-						left = buildValue(0); // -5 is the same as 0-5 right? Also -(5+5) is the same as 0-(5+5) So we good
+					if (left.isNil()) {
+						left = value(0); // -5 is the same as 0-5 right? Also -(5+5) is the same as 0-(5+5) So we good
 					}
 					if (op == codes::NOOP)
 						op = codes::SUB;
@@ -815,11 +802,11 @@ namespace dms {
 				}
 				else if (stream->match(tokens::name,tokens::parao)) {
 					//Function template ^^^ If we encounter an issue the method should push an error, incase it misses something we will!
-					value* tmpvalue = buildVariable();
+					value tmpvalue = value(datatypes::variable);
 					if (match_process_function(stream,tmpvalue)) {
-						if (left == nullptr)
+						if (left.isNil())
 							left = tmpvalue;
-						else if (right == nullptr)
+						else if (right.isNil())
 							right = tmpvalue;
 						else
 							badSymbol(stream);
@@ -830,24 +817,24 @@ namespace dms {
 				}
 				else if (stream->match(tokens::number)) {
 					double num = std::stod(stream->next().name);
-					if (left == nullptr)
-						left = buildValue(num);
-					else if (right == nullptr)
-						right = buildValue(num);
+					if (left.isNil())
+						left = value(num);
+					else if (right.isNil())
+						right = value(num);
 					else
 						badSymbol(stream);
 				}
 				else if (stream->match(tokens::name)) {
 					// We tested functions already! So if that fails and we have a name then... we have a variable lets handle this!
-					if (left == nullptr)
-						left = buildVariable(stream->next().name);
-					else if (right == nullptr)
-						right = buildVariable(stream->next().name);
+					if (left.isNil())
+						left = value(stream->next().name,datatypes::variable);
+					else if (right.isNil())
+						right = value(stream->next().name,datatypes::variable);
 					else
 						badSymbol(stream);
 				}
 				else if (stream->match(tokens::newline) || stream->match(tokens::parac) || stream->match(tokens::seperator)) {
-					if (wv == nullptr)
+					if (wv.isNil())
 						return stream->restore(lastcmd, current_chunk); // Always return false and restores the position in stream!
 					cmd* cc = new cmd;
 					cc->opcode = codes::ASGN;
@@ -866,16 +853,16 @@ namespace dms {
 				else {
 					return stream->restore(lastcmd, current_chunk);
 				}
-				if (left != nullptr && right != nullptr && op != codes::NOOP) {
+				if (!left.isNil() && !right.isNil() && op != codes::NOOP) {
 					cmd* c = new cmd;
 					c->opcode = op;
-					if (wv == nullptr) {
-						value* temp = buildVariable();
+					if (wv.isNil()) {
+						value temp = value(datatypes::variable);
 						c->args.push(temp);
 						wv = temp;
 					}
 					else {
-						wv = buildVariable();
+						wv = value(datatypes::variable);
 						c->args.push(wv);
 					}
 					c->args.push(left);

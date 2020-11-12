@@ -64,17 +64,17 @@ namespace dms {
 		bool match_process_debug(tokenstream* stream);
 		bool match_process_disp(tokenstream* stream);
 		bool match_process_choice(tokenstream* stream);
-		bool match_process_function(tokenstream* stream, value* v=nullptr, bool nested = true);
+		bool match_process_function(tokenstream* stream, value& v, bool nested = true);
 		bool match_process_goto(tokenstream* stream);
 		bool match_process_jump(tokenstream* stream);
 		bool match_process_exit(tokenstream* stream);
-		bool match_process_expression(tokenstream* stream, value* v);
+		bool match_process_expression(tokenstream* stream, value& v);
 		bool match_process_IFFF(tokenstream* stream);
 		bool match_process_assignment(tokenstream* stream);
-		bool match_process_list(tokenstream* stream, value* v = nullptr);
+		bool match_process_list(tokenstream* stream, value& v);
 		bool match_process_wait(tokenstream* stream);
-		bool match_process_standard(tokenstream* stream, value* v = nullptr); // All types that are matchable are handled here!
-		bool match_process_index(tokenstream* stream,value* v = nullptr, bool leftside = false);
+		bool match_process_standard(tokenstream* stream, value& v); // All types that are matchable are handled here!
+		bool match_process_index(tokenstream* stream,value& v, bool leftside = false);
 		bool match_process_return(tokenstream* stream);
 
 		// Build

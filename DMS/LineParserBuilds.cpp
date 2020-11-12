@@ -4,10 +4,10 @@ namespace dms {
 		cmd* c = new cmd;
 		c->opcode = codes::GOTO;
 		if (v) {
-			c->args.push(buildVariable(g));
+			c->args.push(value(g,datatypes::variable));
 		}
 		else {
-			c->args.push(buildValue(g));
+			c->args.push(value(g));
 		}
 		current_chunk->addCmd(c);
 	}
@@ -19,8 +19,20 @@ namespace dms {
 	void LineParser::buildLabel(std::string l) {
 		cmd* c = new cmd;
 		c->opcode = codes::LABL;
-		c->args.push(buildValue(l));
+		c->args.push(value(l));
 		current_chunk->addCmd(c);
 		current_chunk->addLabel(l);
+	}
+	void LineParser::buildSpeed(double s) {
+		cmd* c = new cmd;
+		c->opcode = codes::DSPD;
+		c->args.push(value(s));
+		current_chunk->addCmd(c);
+	}
+	void LineParser::buildWait(double w) {
+		cmd* c = new cmd;
+		c->opcode = codes::WAIT;
+		c->args.push(value(w));
+		current_chunk->addCmd(c);
 	}
 }

@@ -1,12 +1,12 @@
 #include "character.h"
 #include "utils.h"
 namespace dms {
-	value* character_setName(void* self, dms_state* state, dms_args* args) {
+	value character_setName(void* self, dms_state* state, dms_args* args) {
 		if(utils::typeassert(*args, datatypes::string)) {
 			character* me = (character*)self;
-			me->set("fname", buildValue(args->args[0]->getPrintable()));
+			me->set("fname", args->args[0]);
 		}
-		return buildNil();
+		return value();
 	}
 	character::character() {
 		// Set the self so the registered function can access themselves
@@ -16,16 +16,16 @@ namespace dms {
 	}
 	std::string character::getName() {
 		if (has("nickname")) {
-			return values["nickname"]->getPrintable();
+			return values["nickname"].getPrintable();
 		}
 		if (seen && has("fname") && has("lname")) {
-			return utils::concat(values["fname"]->getPrintable()," ", values["lname"]->getPrintable());
+			return utils::concat(values["fname"].getPrintable()," ", values["lname"].getPrintable());
 		}
 		else if (seen && has("fname")) {
-			return utils::concat(values["fname"]->getPrintable());
+			return utils::concat(values["fname"].getPrintable());
 		}
 		else if (!seen && has("unknown")) {
-			return values["unknown"]->getPrintable();
+			return values["unknown"].getPrintable();
 		}
 		else {
 			return "unknown";

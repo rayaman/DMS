@@ -10,11 +10,11 @@
 #include <time.h>
 namespace dms::utils {
 	template<class... Args>
-	void print(Args... args) {
+	void print(const Args... args) {
 		(std::cout << ... << args) << std::endl;
 	}
 	template<class... Args>
-	void write(Args... args) {
+	void write(const Args... args) {
 		(std::cout << ... << args);
 	}
 	template<class... Args>

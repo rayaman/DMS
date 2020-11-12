@@ -7,8 +7,8 @@ namespace dms {
 		std::cout << prompt << " ";
 		std::cin >> pos;
 		try {
-			if (std::stoi(pos) > 0 && std::stoi(pos) < args.size())
-				return std::stoi(pos) - 1;
+			if (std::stoi(pos)-1 >= 0 && std::stoi(pos)-1 < args.size())
+				return std::stoi(pos)-1;
 			else
 				throw exceptions::InvalidChoice();
 		}

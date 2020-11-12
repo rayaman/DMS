@@ -22,9 +22,6 @@ Line <6> name 		 fullname
 Line <6> newline 		 
 Line <6> newline 		 
 Line <7> newline 		 
-Line <8> flag 		 
-Line <8> name 		 debugging
-Line <8> newline 		 
 Line <8> newline 		 
 Line <9> flag 		 
 Line <9> string 		 loadtest.dms
@@ -45,250 +42,336 @@ Line <13> name 		 main
 Line <13> bracketc 		 ]
 Line <13> newline 		 
 Line <13> newline 		 
-Line <14> string 		 Time to test function calls!
-Line <14> newline 		 
-Line <14> newline 		 
-Line <15> name 		 val
-Line <15> equal 		 =
-Line <15> name 		 newblock
-Line <15> parao 		 (
-Line <15> number 		 1
-Line <15> seperator 		 ,
-Line <15> number 		 2
-Line <15> seperator 		 ,
-Line <15> number 		 3
-Line <15> parac 		 )
-Line <15> newline 		 
-Line <15> newline 		 
-Line <16> string 		 val = `val`
-Line <16> newline 		 
-Line <16> newline 		 
-Line <17> newline 		 
-Line <17> newline 		 
-Line <18> bracketo 		 [
-Line <18> name 		 Bob
-Line <18> colon 		 :
-Line <18> name 		 char
-Line <18> bracketc 		 ]
-Line <18> newline 		 
-Line <18> newline 		 
-Line <19> newline 		 
-Line <20> newline 		 
-Line <21> newline 		 
-Line <22> name 		 unknown
-Line <22> equal 		 =
-Line <22> string 		 Some Random Guy
-Line <22> newline 		 
-Line <22> newline 		 
-Line <23> name 		 age
-Line <23> equal 		 =
-Line <23> number 		 0.24
-Line <23> newline 		 
-Line <23> newline 		 
-Line <24> name 		 money
-Line <24> equal 		 =
-Line <24> number 		 100
-Line <24> newline 		 
-Line <24> newline 		 
-Line <25> name 		 excited
-Line <25> colon 		 :
-Line <25> string 		 path/to/file
-Line <25> newline 		 
-Line <25> newline 		 
-Line <26> newline 		 
-Line <26> newline 		 
-Line <27> bracketo 		 [
-Line <27> name 		 newblock
-Line <27> colon 		 :
-Line <27> name 		 function
-Line <27> parao 		 (
-Line <27> name 		 a
-Line <27> seperator 		 ,
-Line <27> name 		 b
-Line <27> seperator 		 ,
-Line <27> name 		 c
-Line <27> parac 		 )
-Line <27> bracketc 		 ]
-Line <27> newline 		 
-Line <27> newline 		 
-Line <28> string 		 Func Arguments: a = `a`, b = `b`, c = `c`
-Line <28> newline 		 
-Line <28> newline 		 
-Line <29> string 		 Time to return
-Line <29> newline 		 
-Line <29> newline 		 
-Line <30> ret 		 
-Line <30> name 		 a
-Line <30> plus 		 +
-Line <30> name 		 b
-Line <30> plus 		 +
-Line <30> name 		 c
-Line <30> newline 		 
-Line <30> newline 		 
-Line <30> eof 		 
-Line <1> newline 		 
-Line <1> newline 		 
-Line <1> flag 		 
-Line <1> name 		 tests
-Line <1> newline 		 
-Line <1> newline 		 
-Line <2> flag 		 
-Line <2> name 		 hello
-Line <2> newline 		 
-Line <2> newline 		 
-Line <3> bracketo 		 [
-Line <3> name 		 default
-Line <3> colon 		 :
-Line <3> name 		 char
-Line <3> bracketc 		 ]
-Line <3> newline 		 
-Line <3> newline 		 
-Line <4> newline 		 
-Line <5> name 		 money
-Line <5> equal 		 =
-Line <5> number 		 0
-Line <5> newline 		 
-Line <5> newline 		 
-Line <6> name 		 test
-Line <6> equal 		 =
-Line <6> nil 		 nil
-Line <6> newline 		 
-Line <6> newline 		 
-Line <7> newline 		 
-Line <7> newline 		 
-Line <8> bracketo 		 [
-Line <8> name 		 Ryan
-Line <8> colon 		 :
-Line <8> name 		 char
-Line <8> bracketc 		 ]
-Line <8> newline 		 
-Line <8> newline 		 
-Line <9> name 		 age
-Line <9> equal 		 =
-Line <9> number 		 21
-Line <9> newline 		 
-Line <9> newline 		 
-Line <10> name 		 money
-Line <10> equal 		 =
-Line <10> number 		 1000
-Line <10> newline 		 
-Line <10> newline 		 
-Line <11> name 		 lname
-Line <11> equal 		 =
-Line <11> string 		 Ward
-Line <11> newline 		 
-Line <11> newline 		 
-Line <12> name 		 known
-Line <12> equal 		 =
-Line <12> true 		 true
-Line <12> newline 		 
-Line <12> newline 		 
-Line <13> newline 		 
-Line <14> name 		 calm
+Line <14> name 		 Ryan
 Line <14> colon 		 :
-Line <14> string 		 ./path/to/file
+Line <14> string 		 Hello `Bob`, how are you doing?
 Line <14> newline 		 
 Line <14> newline 		 
-Line <15> name 		 excited
+Line <15> name 		 Bob
 Line <15> colon 		 :
-Line <15> string 		 ./path/to/file
+Line <15> string 		 Hi `Ryan`, I'm good.
 Line <15> newline 		 
 Line <15> newline 		 
+Line <16> name 		 a
+Line <16> equal 		 =
+Line <16> number 		 1000
 Line <16> newline 		 
 Line <16> newline 		 
-Line <17> bracketo 		 [
-Line <17> name 		 step
-Line <17> colon 		 :
-Line <17> name 		 function
+Line <17> name 		 test
+Line <17> equal 		 =
+Line <17> name 		 invokeTest
 Line <17> parao 		 (
-Line <17> name 		 a
-Line <17> seperator 		 ,
-Line <17> name 		 b
-Line <17> seperator 		 ,
-Line <17> name 		 c
+Line <17> string 		 Running external code!
 Line <17> parac 		 )
-Line <17> bracketc 		 ]
 Line <17> newline 		 
 Line <17> newline 		 
-Line <18> string 		 Testing...
+Line <17> newline 		 
+Line <18> string 		 Loop Test... `test`
 Line <18> newline 		 
-Line <19> name 		 d
-Line <19> equal 		 =
-Line <19> parao 		 (
-Line <19> number 		 100
-Line <19> plus 		 +
-Line <19> name 		 b
-Line <19> parac 		 )
-Line <19> divide 		 /
-Line <19> name 		 c
+Line <18> newline 		 
+Line <19> control 		 
+Line <19> string 		 Pick one
+Line <19> cbracketo 		 {
 Line <19> newline 		 
 Line <19> newline 		 
-Line <20> name 		 e
-Line <20> equal 		 =
-Line <20> string 		 somestring
+Line <20> string 		 this
+Line <20> gotoo 		 
+Line <20> string 		 this
 Line <20> newline 		 
 Line <20> newline 		 
-Line <21> name 		 e
-Line <21> equal 		 =
-Line <21> nil 		 nil
+Line <21> string 		 test2
+Line <21> name 		 tryme
+Line <21> parao 		 (
+Line <21> true 		 true
+Line <21> parac 		 )
 Line <21> newline 		 
 Line <21> newline 		 
-Line <22> name 		 g
-Line <22> equal 		 =
-Line <22> false 		 false
+Line <22> string 		 that
+Line <22> gotoo 		 
+Line <22> string 		 that
 Line <22> newline 		 
 Line <22> newline 		 
-Line <23> ret 		 
-Line <23> name 		 d
+Line <23> string 		 test
+Line <23> name 		 test
+Line <23> parao 		 (
+Line <23> number 		 1
+Line <23> seperator 		 ,
+Line <23> number 		 2
+Line <23> seperator 		 ,
+Line <23> number 		 3
+Line <23> parac 		 )
 Line <23> newline 		 
 Line <23> newline 		 
+Line <24> cbracketc 		 }
 Line <24> newline 		 
 Line <24> newline 		 
-Line <25> bracketo 		 [
-Line <25> name 		 inv
-Line <25> colon 		 :
-Line <25> name 		 env
-Line <25> bracketc 		 ]
+Line <25> label 		 this
 Line <25> newline 		 
 Line <25> newline 		 
-Line <26> name 		 slot1
-Line <26> equal 		 =
-Line <26> string 		 S1
+Line <26> string 		 At "this"
 Line <26> newline 		 
 Line <26> newline 		 
-Line <27> name 		 slot2
-Line <27> equal 		 =
-Line <27> string 		 S2
+Line <27> gotoo 		 
+Line <27> string 		 loop
 Line <27> newline 		 
 Line <27> newline 		 
-Line <28> name 		 slot3
-Line <28> equal 		 =
-Line <28> string 		 S3
+Line <28> label 		 that
 Line <28> newline 		 
 Line <28> newline 		 
-Line <29> name 		 slot4
-Line <29> equal 		 =
-Line <29> string 		 S4
+Line <29> string 		 At "that"
 Line <29> newline 		 
 Line <29> newline 		 
-Line <30> name 		 slot5
-Line <30> equal 		 =
-Line <30> string 		 S5
+Line <30> label 		 loop
 Line <30> newline 		 
 Line <30> newline 		 
-Line <31> name 		 slot6
+Line <31> name 		 a
 Line <31> equal 		 =
-Line <31> string 		 S6
+Line <31> name 		 a
+Line <31> plus 		 +
+Line <31> number 		 1
 Line <31> newline 		 
 Line <31> newline 		 
-Line <32> name 		 slot7
-Line <32> equal 		 =
-Line <32> string 		 S7
+Line <32> string 		 a = `a`
 Line <32> newline 		 
 Line <32> newline 		 
-Line <33> name 		 slot8
-Line <33> equal 		 =
-Line <33> string 		 S8
+Line <33> gotoo 		 
+Line <33> string 		 loop
 Line <33> newline 		 
 Line <33> newline 		 
-Line <33> eof 		 
+Line <34> newline 		 
+Line <34> newline 		 
+Line <35> bracketo 		 [
+Line <35> name 		 Bob
+Line <35> colon 		 :
+Line <35> name 		 char
+Line <35> bracketc 		 ]
+Line <35> newline 		 
+Line <35> newline 		 
+Line <36> newline 		 
+Line <37> newline 		 
+Line <38> newline 		 
+Line <39> name 		 unknown
+Line <39> equal 		 =
+Line <39> string 		 Some Random Guy
+Line <39> newline 		 
+Line <39> newline 		 
+Line <40> name 		 age
+Line <40> equal 		 =
+Line <40> number 		 0.24
+Line <40> newline 		 
+Line <40> newline 		 
+Line <41> name 		 money
+Line <41> equal 		 =
+Line <41> number 		 100
+Line <41> newline 		 
+Line <41> newline 		 
+Line <42> name 		 excited
+Line <42> colon 		 :
+Line <42> string 		 path/to/file
+Line <42> newline 		 
+Line <42> newline 		 
+Line <43> newline 		 
+Line <43> newline 		 
+Line <44> bracketo 		 [
+Line <44> name 		 test1
+Line <44> colon 		 :
+Line <44> name 		 function
+Line <44> parao 		 (
+Line <44> parac 		 )
+Line <44> bracketc 		 ]
+Line <44> newline 		 
+Line <44> newline 		 
+Line <45> string 		 Inside a function!
+Line <45> newline 		 
+Line <45> newline 		 
+Line <46> newline 		 
+Line <47> newline 		 
+Line <48> newline 		 
+Line <48> newline 		 
+Line <49> bracketo 		 [
+Line <49> name 		 newblock
+Line <49> colon 		 :
+Line <49> name 		 function
+Line <49> parao 		 (
+Line <49> name 		 a
+Line <49> seperator 		 ,
+Line <49> name 		 b
+Line <49> seperator 		 ,
+Line <49> name 		 c
+Line <49> parac 		 )
+Line <49> bracketc 		 ]
+Line <49> newline 		 
+Line <49> newline 		 
+Line <50> string 		 Func Arguments: a = `a`, b = `b`, c = `c`
+Line <50> newline 		 
+Line <50> newline 		 
+Line <51> string 		 Time to return
+Line <51> newline 		 
+Line <51> newline 		 
+Line <52> ret 		 
+Line <52> name 		 a
+Line <52> plus 		 +
+Line <52> name 		 b
+Line <52> plus 		 +
+Line <52> name 		 c
+Line <52> newline 		 
+Line <52> newline 		 
+Line <52> eof 		 
+Line <1> newline 		 
+Line <1> newline 		 
+Line <1> bracketo 		 [
+Line <1> name 		 default
+Line <1> colon 		 :
+Line <1> name 		 char
+Line <1> bracketc 		 ]
+Line <1> newline 		 
+Line <1> newline 		 
+Line <2> newline 		 
+Line <3> name 		 money
+Line <3> equal 		 =
+Line <3> number 		 0
+Line <3> newline 		 
+Line <3> newline 		 
+Line <4> name 		 test
+Line <4> equal 		 =
+Line <4> nil 		 nil
+Line <4> newline 		 
+Line <4> newline 		 
+Line <5> newline 		 
+Line <5> newline 		 
+Line <6> bracketo 		 [
+Line <6> name 		 Ryan
+Line <6> colon 		 :
+Line <6> name 		 char
+Line <6> bracketc 		 ]
+Line <6> newline 		 
+Line <6> newline 		 
+Line <7> name 		 age
+Line <7> equal 		 =
+Line <7> number 		 21
+Line <7> newline 		 
+Line <7> newline 		 
+Line <8> name 		 money
+Line <8> equal 		 =
+Line <8> number 		 1000
+Line <8> newline 		 
+Line <8> newline 		 
+Line <9> name 		 lname
+Line <9> equal 		 =
+Line <9> string 		 Ward
+Line <9> newline 		 
+Line <9> newline 		 
+Line <10> name 		 known
+Line <10> equal 		 =
+Line <10> true 		 true
+Line <10> newline 		 
+Line <10> newline 		 
+Line <11> newline 		 
+Line <12> name 		 calm
+Line <12> colon 		 :
+Line <12> string 		 ./path/to/file
+Line <12> newline 		 
+Line <12> newline 		 
+Line <13> name 		 excited
+Line <13> colon 		 :
+Line <13> string 		 ./path/to/file
+Line <13> newline 		 
+Line <13> newline 		 
+Line <14> newline 		 
+Line <14> newline 		 
+Line <15> bracketo 		 [
+Line <15> name 		 step
+Line <15> colon 		 :
+Line <15> name 		 function
+Line <15> parao 		 (
+Line <15> name 		 a
+Line <15> seperator 		 ,
+Line <15> name 		 b
+Line <15> seperator 		 ,
+Line <15> name 		 c
+Line <15> parac 		 )
+Line <15> bracketc 		 ]
+Line <15> newline 		 
+Line <15> newline 		 
+Line <16> string 		 Testing...
+Line <16> newline 		 
+Line <17> name 		 d
+Line <17> equal 		 =
+Line <17> parao 		 (
+Line <17> number 		 100
+Line <17> plus 		 +
+Line <17> name 		 b
+Line <17> parac 		 )
+Line <17> divide 		 /
+Line <17> name 		 c
+Line <17> newline 		 
+Line <17> newline 		 
+Line <18> name 		 e
+Line <18> equal 		 =
+Line <18> string 		 somestring
+Line <18> newline 		 
+Line <18> newline 		 
+Line <19> name 		 e
+Line <19> equal 		 =
+Line <19> nil 		 nil
+Line <19> newline 		 
+Line <19> newline 		 
+Line <20> name 		 g
+Line <20> equal 		 =
+Line <20> false 		 false
+Line <20> newline 		 
+Line <20> newline 		 
+Line <21> ret 		 
+Line <21> name 		 d
+Line <21> newline 		 
+Line <21> newline 		 
+Line <22> newline 		 
+Line <22> newline 		 
+Line <23> bracketo 		 [
+Line <23> name 		 inv
+Line <23> colon 		 :
+Line <23> name 		 env
+Line <23> bracketc 		 ]
+Line <23> newline 		 
+Line <23> newline 		 
+Line <24> name 		 slot1
+Line <24> equal 		 =
+Line <24> string 		 S1
+Line <24> newline 		 
+Line <24> newline 		 
+Line <25> name 		 slot2
+Line <25> equal 		 =
+Line <25> string 		 S2
+Line <25> newline 		 
+Line <25> newline 		 
+Line <26> name 		 slot3
+Line <26> equal 		 =
+Line <26> string 		 S3
+Line <26> newline 		 
+Line <26> newline 		 
+Line <27> name 		 slot4
+Line <27> equal 		 =
+Line <27> string 		 S4
+Line <27> newline 		 
+Line <27> newline 		 
+Line <28> name 		 slot5
+Line <28> equal 		 =
+Line <28> string 		 S5
+Line <28> newline 		 
+Line <28> newline 		 
+Line <29> name 		 slot6
+Line <29> equal 		 =
+Line <29> string 		 S6
+Line <29> newline 		 
+Line <29> newline 		 
+Line <30> name 		 slot7
+Line <30> equal 		 =
+Line <30> string 		 S7
+Line <30> newline 		 
+Line <30> newline 		 
+Line <31> name 		 slot8
+Line <31> equal 		 =
+Line <31> string 		 S8
+Line <31> newline 		 
+Line <31> newline 		 
+Line <31> eof 		 

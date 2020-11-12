@@ -353,11 +353,13 @@ namespace dms {
 		if (state->isEnabled("debugging")) {
 			cmd* c = new cmd;
 			c->opcode = codes::FILE;
-			c->args.push(buildValue(fn));
+			c->args.push(value(fn));
 			current_chunk->addCmd(c);
 		}
 		while (stream->peek().type != tokens::eof) {
 			debugInvoker(stream);
+			//utils::print(current);
+			//utils::print("[flags]");
 			if (current.type == tokens::flag) {
 				temp = stream->next(tokens::newline);
 				stream->prev(); // Unconsume the newline piece
@@ -370,14 +372,14 @@ namespace dms {
 					tolower(temp[0].name);
 					state->enable(temp[0].name);
 					flagcmd->opcode = code;
-					flagcmd->args.push(buildValue(temp[0].name));
+					flagcmd->args.push(value(temp[0].name));
 					current_chunk->addCmd(flagcmd);
 					flagcmd = new cmd;
 				}
 				else if (code == codes::ENTR && tok == tokens::name) {
 					state->entry = temp[0].name;
 					flagcmd->opcode = code;
-					flagcmd->args.push(buildValue(temp[0].name));
+					flagcmd->args.push(value(temp[0].name));
 					current_chunk->addCmd(flagcmd);
 					flagcmd = new cmd;
 				}
@@ -385,14 +387,14 @@ namespace dms {
 					tolower(temp[0].name);
 					state->disable(temp[0].name);
 					flagcmd->opcode = code;
-					flagcmd->args.push(buildValue(temp[0].name));
+					flagcmd->args.push(value(temp[0].name));
 					current_chunk->addCmd(flagcmd);
 					flagcmd = new cmd;
 				}
 				else if (code == codes::VERN && tok == tokens::number) {
 					state->version = std::stod(temp[0].name);
 					flagcmd->opcode = code;
-					flagcmd->args.push(buildValue(std::stod(temp[0].name)));
+					flagcmd->args.push(value(std::stod(temp[0].name)));
 					current_chunk->addCmd(flagcmd);
 					flagcmd = new cmd;
 				}
@@ -456,9 +458,9 @@ namespace dms {
 					for (size_t i = 0; i < tokens.size() - 1; i++) {//The lase symbol is parac since that was the consume condition
 						if (tokens[i].type == tokens::name) {
 							// We got a name which is refering to a variable so lets build one
-							value* v = new value{};
-							v->type = datatypes::variable; // Special type, it writes data to the string portion, but is interperted as a lookup
-							v->s = buildString(tokens[i].name);
+							value v;
+							v.type = datatypes::variable; // Special type, it writes data to the string portion, but is interperted as a lookup
+							v.s = buildString(tokens[i].name);
 							args.push(v);
 						}
 						else if (tokens[i].type == tokens::seperator) {
@@ -490,19 +492,29 @@ namespace dms {
 				}
 			}
 			// Let's handle function stuff!
+			//utils::print("[return]");
 			match_process_return(stream);
+			//utils::print("[disp]");
 			match_process_disp(stream); // Match and process dialogue
+			//utils::print("[label]");
 			if (stream->match(tokens::newline,tokens::label)) { // Match and process labels
 				stream->next();
 				buildLabel(stream->next().name);
 			}
-			match_process_function(stream); // Naked Function
+			//utils::print("[func]");
+			value nil;
+			match_process_function(stream, nil); // Naked Function
+			//utils::print("[assn]");
 			match_process_assignment(stream);
+			//utils::print("[debug]");
 			match_process_debug(stream);
+			//utils::print("[goto]");
 			match_process_goto(stream);
-
+			//utils::print("[exit]");
 			match_process_exit(stream);
+			//utils::print("[wait]");
 			match_process_wait(stream);
+			//utils::print("[jump]");
 			match_process_jump(stream);
 			current = stream->next();
 		}

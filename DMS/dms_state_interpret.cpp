@@ -12,17 +12,16 @@ namespace dms {
 		this->handler = hand;
 	}
 	void checkCharacter(character* cc,std::string index, datatypes type) {
-		value* val = cc->get(index);
-		if (val==nullptr) {
+		value val = cc->get(index);
+		// If a type mismatch is present, overwrite them with the defaults
+		if (val.type!=type) {
 			if (type == datatypes::string)
-				cc->values[index] = buildValue("");
+				cc->values[index] = value("");
 			else if (type == datatypes::boolean) {
-				cc->values[index] = buildValue(false);
+				cc->values[index] = value(false);
 			}
-		}
-		else if (val != nullptr) {
-			if (val->type != type) {
-				cc->values.erase(index);
+			else if (type == datatypes::number) {
+				cc->values[index] = value(0);
 			}
 		}
 	}
@@ -56,10 +55,10 @@ namespace dms {
 			if (blockExists(cha)) {
 				character* cc = new character;
 				cc->fullname = isEnabled("fullname");
-				cc->set("fname", buildValue(cha));
-				cc->set("lname", buildValue(""));
-				cc->set("unknown", buildValue("Unknown"));
-				cc->set("known", buildValue(false));
+				cc->set("fname", cha);
+				cc->set("lname", "");
+				cc->set("unknown", "Unknown");
+				cc->set("known", false);
 				if (isEnabled("omniscient")) {
 					cc->seen = true;
 				}
@@ -71,7 +70,7 @@ namespace dms {
 					checkCharacter(cc, "lname", datatypes::string);
 					checkCharacter(cc, "unknown", datatypes::string);
 					checkCharacter(cc, "known", datatypes::boolean);
-					if (cc->get("known")->b->getValue() == true) {
+					if (cc->get("known").b == true) {
 						cc->seen = true;
 					}
 				}
@@ -92,7 +91,7 @@ namespace dms {
 	}
 	size_t dms_state::seek(std::string label, std::vector<cmd*> cmds, codes::op code, size_t pos) {
 		for (size_t i = pos; i < cmds.size(); i++) {
-			if (cmds[i]->opcode == code && cmds[i]->args.args[0]->s->getValue() == label)
+			if (cmds[i]->opcode == code && cmds[i]->args.args[0].getPrintable() == label)
 				return i;
 		}
 		return 0;
@@ -113,9 +112,9 @@ namespace dms {
 			push_error(errors::error{ errors::non_existing_block ,utils::concat("Attempted to Jump to a non existing block [",entry,"]") });
 			return false;
 		}
-		return run("$INIT",&memory);
+		return run("$INIT",getMem());
 	}
-	bool dms_state::run(std::string ent, std::unordered_map<std::string, value*>* mem) {
+	bool dms_state::run(std::string ent, memory* mem) {
 		if (stop) {
 			exitcode = 1;
 			return false;
@@ -143,19 +142,19 @@ namespace dms {
 				// Handle flags here
 				case ENTR:
 					// When reading code from a file the flags are compiled and we need to load them
-					entry = c->args.args[0]->s->getValue();
+					entry = c->args.args[0].getPrintable();
 					break;
 				case ENAB:
-					enable(c->args.args[0]->s->getValue());
+					enable(c->args.args[0].getPrintable());
 					break;
 				case DISA:
-					disable(c->args.args[0]->s->getValue());
+					disable(c->args.args[0].getPrintable());
 					break;
 				case LOAD:
 					// Nothing needs to be done here
 					break;
 				case VERN:
-					Sversion = c->args.args[0]->n->getValue();
+					Sversion = c->args.args[0].n;
 					// Version X.xx
 					// X: Will not guarantee compatibality. Code breaking changes should be expected especially on lower versions
 					// xx: Will not break compatibality. They may add features as it goes up the ranks, but those changes do not break older code. If they do they will increase the X part and not the xx part
@@ -173,13 +172,26 @@ namespace dms {
 				// Flags handled
 				case EXIT:
 					if (c->args.args.size()) {
-						exitcode = c->args.args[0]->n->getValue();
+						exitcode = c->args.args[0].n;
 					}
 					return true;
 					break;
+				case GOTO:
+					{
+						value labl = c->args.args[0];
+						size_t nnpos = seek(labl.getPrintable(),cmds, LABL, 0);
+						if (!nnpos) {
+							push_error(errors::error{ errors::choice_unknown ,utils::concat("Unknown choice!") });
+							return false;
+						}
+						else {
+							pos = nnpos;
+						}
+					}
+					break;
 				case RETN:
 					{
-						value* ret = c->args.args[0]->resolve(this)->copy();
+						value ret = c->args.args[0].resolve(this);
 						//c->args.args[0]->nuke(); // Lets clean this up
 						return_stack.push(ret);
 						return true; // We did it, let's return this
@@ -187,35 +199,32 @@ namespace dms {
 					break;
 				case OFUN:
 					{
-						std::string obj = c->args.args[0]->getPrintable();
-						std::string funcname = c->args.args[1]->getPrintable();
-						value* assn = c->args.args[2];
+						std::string obj = c->args.args[0].getPrintable();
+						std::string funcname = c->args.args[1].getPrintable();
+						value assn = c->args.args[2];
 						dms_args args;
 						for (int i = 3; i < c->args.args.size(); i++) {
 							args.push(c->args.args[i]);
 						}
 						
-						value* ret = nullptr;
+						value ret;
 						if (characterExists(obj)) {
 							ret = getCharacter(obj)->Invoke(funcname, this, &args);
 						}
 						else if (environmentExists(obj)) {
 							ret = getEnvironment(obj)->Invoke(funcname, this, &args);
 						}
-						//value* ret = invoker.Invoke(funcname, nullptr, this, &args);
-						if (ret == nullptr)
-							return false;
-						if (assn->type != datatypes::nil) {
-							assign(mem, assn, ret);
+						if (assn.type != datatypes::nil) {
+							assign(assn, ret);
 						}
 					}
 					break;
 				case FUNC:
 					{
-						std::string funcname = c->args.args[0]->getPrintable();
-						value* assn = c->args.args[1];
+						std::string funcname = c->args.args[0].getPrintable();
+						value assn = c->args.args[1];
 						dms_args args;
-						value* ret = nullptr;
+						value ret;
 						for (int i = 2; i < c->args.args.size(); i++) {
 							args.push(c->args.args[i]);
 						}
@@ -225,126 +234,124 @@ namespace dms {
 							ret = invoker.Invoke("$BlockInvoke$", this, &args);
 						}
 						else {
-							value* ret = invoker.Invoke(funcname, this, &args);
+							ret = invoker.Invoke(funcname, this, &args);
 						}
-						if (ret == nullptr)
-							return false;
-						if (assn->type != datatypes::nil) {
-							assign(getMem(), assn, ret);
+						if (assn.type != datatypes::nil) {
+							assign(assn, ret);
 						}
 					}
 					break;
 				case ASID:
 				{
-					value* env = c->args.args[1];
-					value* indx = c->args.args[2]->resolve(this);
-					value* assn = c->args.args[3]->resolve(this);
-					if (env->type == datatypes::block && blockExists(env->getPrintable())) { // If this is a block let's handle this 
+					value env = c->args.args[1];
+					value indx = c->args.args[2].resolve(this);
+					value assn = c->args.args[3].resolve(this);
+					if (env.type == datatypes::block && blockExists(env.getPrintable())) { // If this is a block let's handle this 
 						enviroment* e = nullptr;
-						if (environments.count(env->getPrintable())) {
-							e = environments[env->getPrintable()];
+						if (environments.count(env.getPrintable())) {
+							e = environments[env.getPrintable()];
 						}
-						else if (characters.count(env->getPrintable())) {
-							e = characters[env->getPrintable()];
+						else if (characters.count(env.getPrintable())) {
+							e = characters[env.getPrintable()];
 						}
-						e->values[indx->getPrintable()] = assn;
+						e->values[indx.getPrintable()] = assn;
 					}
-					else if (env->type == datatypes::env) {
-						if (indx->type == datatypes::number) {
-							env->e->pushValue(assn);
+					else if (env.type == datatypes::env) {
+						if (indx.type == datatypes::number) {
+							env.e->pushValue(assn);
 						}
 						else {
-							push_error(errors::error{ errors::invalid_type ,concat("Expected a number value got ",datatype[indx->type]) });
+							push_error(errors::error{ errors::invalid_type ,concat("Expected a number value got ",datatype[indx.type]) });
 							return false;
 						}
 					}
-					else if (env->type == datatypes::custom) {
-						env->c->NewIndex(indx, assn);
-						//assign(mem, assn, env->c->Index(indx));
+					else if (env.type == datatypes::custom) {
+						env.c->NewIndex(indx, assn);
+						//assign( assn, env->c->Index(indx));
 						// Call the method within the custom data
 					}
 					break;
 				}
 				case ADD:
 					{
-						value* assn = c->args.args[0];
-						value* o1 = c->args.args[1];
-						value* o2 = c->args.args[2];
-						value* ret = buildValue(o1->resolve(this)->n->getValue()+o2->resolve(this)->n->getValue());
-						assign(getMem(), assn, ret);
+						value assn = c->args.args[0];
+						value o1 = c->args.args[1];
+						value o2 = c->args.args[2];
+						value ret = value(o1.resolve(this).n+o2.resolve(this).n);
+						assign(assn, ret);
 					}
 					break;
 				case SUB:
 				{
-					value* assn = c->args.args[0];
-					value* o1 = c->args.args[1];
-					value* o2 = c->args.args[2];
-					value* ret = buildValue(o1->resolve(this)->n->getValue() - o2->resolve(this)->n->getValue());
-					assign(getMem(), assn, ret);
+					value assn = c->args.args[0];
+					value o1 = c->args.args[1];
+					value o2 = c->args.args[2];
+					value ret = value(o1.resolve(this).n - o2.resolve(this).n);
+					assign(assn, ret);
 				}
 				break;
 				case MUL:
 				{
-					value* assn = c->args.args[0];
-					value* o1 = c->args.args[1];
-					value* o2 = c->args.args[2];
-					value* ret = buildValue(o1->resolve(this)->n->getValue() * o2->resolve(this)->n->getValue());
-					assign(getMem(), assn, ret);
+					value assn = c->args.args[0];
+					value o1 = c->args.args[1];
+					value o2 = c->args.args[2];
+					value ret = value(o1.resolve(this).n * o2.resolve(this).n);
+					assign(assn, ret);
 				}
 				break;
 				case DIV:
 				{
-					value* assn = c->args.args[0];
-					value* o1 = c->args.args[1];
-					value* o2 = c->args.args[2];
-					value* ret = buildValue(o1->resolve(this)->n->getValue() / o2->resolve(this)->n->getValue());
-					assign(getMem(), assn, ret);
+					value assn = c->args.args[0];
+					value o1 = c->args.args[1];
+					value o2 = c->args.args[2];
+					value ret = value(o1.resolve(this).n / o2.resolve(this).n);
+					assign(assn, ret);
 				}
 				break;
 				case POW:
 				{
-					value* assn = c->args.args[0];
-					value* o1 = c->args.args[1];
-					value* o2 = c->args.args[2];
-					value* ret = buildValue(pow(o1->resolve(this)->n->getValue(), o2->resolve(this)->n->getValue()));
-					assign(getMem(), assn, ret);
+					value assn = c->args.args[0];
+					value o1 = c->args.args[1];
+					value o2 = c->args.args[2];
+					value ret = value(pow(o1.resolve(this).n, o2.resolve(this).n));
+					assign(assn, ret);
 				}
 				break;
 				case MOD:
 				{
-					value* assn = c->args.args[0];
-					value* o1 = c->args.args[1];
-					value* o2 = c->args.args[2];
-					value* ret = buildValue(std::fmod(o1->resolve(this)->n->getValue(),o2->resolve(this)->n->getValue()));
-					assign(getMem(), assn, ret);
+					value assn = c->args.args[0];
+					value o1 = c->args.args[1];
+					value o2 = c->args.args[2];
+					value ret = value(std::fmod(o1.resolve(this).n,o2.resolve(this).n));
+					assign(assn, ret);
 				}
 				break;
 				case INDX:
 					{
-						value* assn = c->args.args[0];
-						value* env = c->args.args[1];
-						value* indx = c->args.args[2]->resolve(this);
-						if (env->type == datatypes::block && blockExists(env->getPrintable())) { // If this is a block let's handle this 
+						value assn = c->args.args[0];
+						value env = c->args.args[1];
+						value indx = c->args.args[2].resolve(this);
+						if (env.type == datatypes::block && blockExists(env.getPrintable())) { // If this is a block let's handle this 
 							enviroment* e = nullptr;
-							if (environments.count(env->getPrintable())) {
-								e = environments[env->getPrintable()];
+							if (environments.count(env.getPrintable())) {
+								e = environments[env.getPrintable()];
 							}
-							else if (characters.count(env->getPrintable())) {
-								e = characters[env->getPrintable()];
+							else if (characters.count(env.getPrintable())) {
+								e = characters[env.getPrintable()];
 							}
-							assign(mem, assn, e->values[indx->getPrintable()]);
+							assign( assn, e->values[indx.getPrintable()]);
 						}
-						else if (env->type == datatypes::env) {
-							if (indx->type == datatypes::number) {
-								assign(mem, assn, env->e->getValue(indx));
+						else if (env.type == datatypes::env) {
+							if (indx.type == datatypes::number) {
+								assign( assn, env.e->getValue(indx));
 							}
 							else {
-								push_error(errors::error{ errors::invalid_type ,concat("Expected a number value got ",datatype[indx->type]) });
+								push_error(errors::error{ errors::invalid_type ,concat("Expected a number value got ",datatype[indx.type]) });
 								return false;
 							}
 						}
-						else if (env->type == datatypes::custom) {
-							assign(mem, assn, env->c->Index(indx));
+						else if (env.type == datatypes::custom) {
+							assign( assn, env.c->Index(indx));
 							// Call the method within the custom data
 						}
 					}
@@ -352,17 +359,18 @@ namespace dms {
 				case LIST:
 					//We need to create an enviroment value then set that
 					{
-						dms_env* env = new dms_env;
-						env->hpart.insert_or_assign("$size", c->args.args[1]);
-						value* val = new value;
-						val->set(env);
-						assign(mem,c->args.args[0], val);
+						dms_list* env = new dms_list;
+						// Inject the size of the list
+						env->hpart["$size"] = c->args.args[1];
+						value val = new value;
+						val.set(env);
+						assign(c->args.args[0], val);
 					}
 					break;
 				case INST:
 					{
-						value* list = (*mem)[c->args.args[0]->s->getValue()];
-						list->e->pushValue(c->args.args[1]);
+						value list = (*mem)[c->args.args[0].getPrintable()];
+						list.e->pushValue(c->args.args[1]);
 					}
 					break;
 				case HALT:
@@ -371,7 +379,7 @@ namespace dms {
 					std::cout << std::endl;
 					break;
 				case WAIT:
-					sleep((int)(c->args.args[0]->n->getValue()*1000));
+					sleep((int)(c->args.args[0].n*1000));
 					break;
 				case DSPD:
 					if (speaker == nullptr) {
@@ -379,34 +387,34 @@ namespace dms {
 						return false;
 					}
 					else {
-						speaker->spd = c->args.args[0]->n->getValue();
+						speaker->spd = c->args.args[0].n;
 					}
 					break;
 				case SSPK:
 					//Because we are using void* we must cast our pointers
-					if (characterExists(c->args.args[0]->s->getValue())){
-						speaker = getCharacter(c->args.args[0]->s->getValue());
+					if (characterExists(c->args.args[0].s->getValue())){
+						speaker = getCharacter(c->args.args[0].s->getValue());
 						if (!handler->handleSpeaker(this, speaker))
 							return false;
 					}
 					else {
-						push_error(errors::error{ errors::disp_unknown,concat("Unknown character '",c->args.args[0]->s->getValue(),"'!")});
+						push_error(errors::error{ errors::disp_unknown,concat("Unknown character '",c->args.args[0].s->getValue(),"'!")});
 						return false;
 					}
 					break;
 				case APND:
-					if (!handler->handleMessageAppend(this, c->args.args[0]->s->getValue(this)))
+					if (!handler->handleMessageAppend(this, c->args.args[0].s->getValue(this)))
 						return false;
 					break;
 				case DISP:
-					if (!handler->handleMessageDisplay(this, c->args.args[0]->s->getValue(this)))
+					if (!handler->handleMessageDisplay(this, c->args.args[0].s->getValue(this)))
 						return false;
 					break;
 				case ASGN:
-					assign(mem,c->args.args[0], c->args.args[1]);
+					assign(c->args.args[0], c->args.args[1]);
 					break;
 				case LINE:
-					cur_line = c->args.args[0]->n->getValue();
+					cur_line = c->args.args[0].n;
 					break;
 				case NOOP:
 					break;
@@ -414,12 +422,12 @@ namespace dms {
 					//Because we are using void* we must cast our pointers
 					{
 						std::vector<std::string> args;
-						std::string prompt = c->args.args[0]->s->getValue();
-						std::string fn = c->args.args[1]->s->getValue();
+						std::string prompt = c->args.args[0].s->getValue();
+						std::string fn = c->args.args[1].s->getValue();
 						for (size_t i = 2; i < c->args.args.size(); i++)
-							args.push_back(c->args.args[i]->resolve(this)->s->getValue());
+							args.push_back(c->args.args[i].resolve(this).s->getValue());
 						size_t npos = handler->handleChoice(this, prompt, args);
-						size_t nnpos = seek(concat("CHOI_", fn, "_", npos),cmds,LABL,npos);
+						size_t nnpos = seek(concat("CHOI_", fn, "_", npos),cmds,LABL,pos);
 						if (!nnpos) {
 							push_error(errors::error{ errors::choice_unknown ,utils::concat("Unknown choice!") });
 							return false;
@@ -432,7 +440,7 @@ namespace dms {
 				case JUMP:
 					// Value assert resolves the data so a variable must eventually equal a string
 					if (utils::valueassert(c->args, this, datatypes::string)) {
-						std::string block = c->args.args[0]->resolve(this)->s->getValue();
+						std::string block = c->args.args[0].resolve(this).s->getValue();
 						if (chunks[block] == NULL) {
 							push_error(errors::error{ errors::non_existing_block ,utils::concat("Attempted to Jump to a non existing block [",block,"]") });
 							return false;
@@ -446,7 +454,9 @@ namespace dms {
 						}
 					}
 					else {
-						datatypes set = c->args.args[0]->resolve(this)->type;
+						//utils::print(c->args.args[0].type);
+						datatypes set = c->args.args[0].resolve(this).type;
+						//utils::print("> ",set);
 						push_error(errors::error{ errors::invalid_arguments, utils::concat("String expected got ",datatype[set]), true,ln });
 						return false;
 					}

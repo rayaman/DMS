@@ -8,18 +8,15 @@ namespace dms {
 		cmd* c = new cmd;
 		for (const auto& [key, val] : chunks) {
 			if (val->type == blocktype::bt_character || val->type == blocktype::bt_env) {
-				value* v = buildVariable();
-				v->set(buildString(key));
-				v->type = datatypes::block;
 				c->opcode = codes::ASGN;
-				c->args.push(buildVariable(key));
-				c->args.push(v);
+				c->args.push(value(key, datatypes::variable));
+				c->args.push(value(key, datatypes::block));
 				chunks["$INIT"]->addCmd(c);
 				c = new cmd;
 			}
 			else if (val->type == blocktype::bt_method) {
 				c->opcode = codes::RETN;
-				c->args.push(buildNil());
+				c->args.push(value());
 				val->addCmd(c);
 				c = new cmd;
 			}
@@ -27,31 +24,31 @@ namespace dms {
 
 		c->opcode = codes::JUMP;
 		if (entry != "$undefined")
-			c->args.push(buildValue(entry));
+			c->args.push(value(entry));
 		else
-			c->args.push(buildValue(chunks.begin()->first));
+			c->args.push(value(chunks.begin()->first));
 		chunks["$INIT"]->addCmd(c);
 		if (!handler->OnStateInit(this))
 			stop = true;
 	}
-	std::unordered_map<std::string, value*>* dms_state::getMem() {
-		return mem_stack.top();
+	memory* dms_state::getMem() {
+		return &mem_stack.top();
 	}
 	void dms_state::pushMem() {
-		mem_stack.push(new std::unordered_map<std::string, value*>);
+		mem_stack.push(memory());
 	}
 	void dms_state::popMem() {
 		mem_stack.pop();
 	}
-	value* dms::blockInvoke(void* self, dms_state* state, dms_args* args) {
+	value dms::blockInvoke(void* self, dms_state* state, dms_args* args) {
 		std::string func = state->call_stack.top();
 		if (state->functionExists(func)) {
 			state->call_stack.pop();
-			value* ret = nullptr;
+			value ret;
 			state->pushMem();
-			std::unordered_map<std::string, value*>* Fmem = state->getMem();
+			memory* Fmem = state->getMem();
 			for (int i = 0; i < state->chunks[func]->params.args.size(); i++) {
-				Fmem->insert_or_assign(state->chunks[func]->params.args[i]->getPrintable(), args->args[i]->resolve(state)->copy());
+				(*Fmem)[state->chunks[func]->params.args[i].getPrintable()] = args->args[i].resolve(state);
 			}
 			state->run(func, Fmem);
 			ret = state->return_stack.top();
@@ -59,14 +56,11 @@ namespace dms {
 			state->popMem();
 			return ret;
 		}
-		return buildNil();
-	}
-	void dms_state::pushMem(std::unordered_map<std::string, value*>* m) {
-		mem_stack.push(m);
+		return value();
 	}
 	dms_state::dms_state() {
 		// We should define the defaults for the enables
-		pushMem(&memory);
+		pushMem(); // Main memory
 		enables.insert_or_assign("leaking", false);
 		enables.insert_or_assign("debugging", false);
 		enables.insert_or_assign("warnings", false); //
@@ -78,15 +72,15 @@ namespace dms {
 		c->type = blocktype::bt_block;
 		cmd* cc = new cmd;
 		cc->opcode = codes::EXIT;
-		cc->args.push(buildValue(0));
+		cc->args.push(value(0));
 		c->addCmd(cc);
 		push_chunk("$END", c);
 		setHandler(new Handler); // Use the default implementation
 		invoker.registerFunction("$BlockInvoke$", blockInvoke);
 	}
-	bool dms_state::typeAssert(value* val, datatypes type) {
-		if (val->type != type) {
-			push_error(errors::error{ errors::invalid_type ,utils::concat("Expected a ",datatype[type]," got a ",datatype[val->type],"!") });
+	bool dms_state::typeAssert(value val, datatypes type) {
+		if (val.type != type) {
+			push_error(errors::error{ errors::invalid_type ,utils::concat("Expected a ",datatype[type]," got a ",datatype[val.type],"!") });
 			return false;
 		}
 		return true;
@@ -136,22 +130,9 @@ namespace dms {
 		return false;
 	}
 
-	bool dms_state::assign(std::unordered_map<std::string, value*>* mem, value* var, value* val) {
-		if (mem->count(var->s->getValue()) == 0) {
-			mem->insert_or_assign(var->s->getValue(), val);
-			return true;
-		}
-		else {
-			value* temp = (*mem)[var->s->getValue()];
-			if (temp->type != datatypes::variable) {
-				temp->set(); // Set the removed value to nil
-				garbage.push_back((*mem)[var->s->getValue()]);
-			}
-			else
-				utils::print("> so we have a variable"); // This print should be a reminder for me to do something about this.
-			(*mem)[var->s->getValue()] = val;
-			return true;
-		}
+	bool dms_state::assign(value var, value val) {
+		(*getMem())[var.getPrintable()] = val;
+		return true;
 	}
 	void dms_state::dump(bool print) {
 		if (print)

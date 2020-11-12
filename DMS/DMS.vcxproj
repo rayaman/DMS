@@ -160,7 +160,7 @@
     <ClCompile Include="LineParserBuilds.cpp" />
     <ClCompile Include="LineParserMatchProcess.cpp" />
     <ClCompile Include="LineParserParse.cpp" />
-    <ClCompile Include="string_utils.cpp" />
+    <ClCompile Include="memory.cpp" />
     <ClCompile Include="dms_exceptions.cpp" />
     <ClCompile Include="LineParserUtils.cpp" />
     <ClCompile Include="number_utils.cpp" />
@@ -169,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="character.h" />
+    <ClInclude Include="dms_list.h" />
     <ClInclude Include="enviroment.h" />
     <ClInclude Include="Handlers.h" />
     <ClInclude Include="chunk.h" />
@@ -176,6 +177,7 @@
     <ClInclude Include="codes.h" />
     <ClInclude Include="dms_state.h" />
     <ClInclude Include="Invoker.h" />
+    <ClInclude Include="memory.h" />
     <ClInclude Include="string_utils.h" />
     <ClInclude Include="dms_exceptions.h" />
     <ClInclude Include="errors.h" />

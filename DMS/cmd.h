@@ -11,7 +11,7 @@ namespace dms {
 		friend std::ostream& operator << (std::ostream& out, const cmd& c) {
 			out << codes::list[c.opcode] << " ";
 			for (size_t i = 0; i < c.args.args.size(); i++) {
-				out << *c.args.args[i] << " ";
+				out << c.args.args[i] << " ";
 			}
 			return out;
 		}

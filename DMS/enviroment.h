@@ -2,6 +2,7 @@
 #include <string>
 #include <unordered_map>
 #include "value.h"
+#include "memory.h"
 #include "Invoker.h"
 namespace dms {
 	enum class env_type {
@@ -11,10 +12,10 @@ namespace dms {
 	};
 	struct enviroment : Invoker {
 		std::string name = "";
-		std::unordered_map<std::string, value*> values;
+		memory values;
 		env_type type = env_type::env;
 		bool has(std::string index);
-		void set(std::string index, value* val);
-		value* get(std::string index);
+		void set(std::string index, value val);
+		value get(std::string index);
 	};
 }

@@ -9,18 +9,20 @@
 #include "dms_exceptions.h"
 #include "Character.h"
 #include "enviroment.h"
+#include "memory.h"
 #include <stack>
+#include "dms_list.h"
 namespace dms {
 	struct Handler;
-	value* blockInvoke(void*, dms_state*, dms_args*);
+	value blockInvoke(void*, dms_state*, dms_args*);
 	struct dms_state
 	{
 		Handler* handler = nullptr;
 		bool hasFirst = false;
 		Invoker invoker;
 		std::stack<std::string> call_stack;
-		std::stack<value*> return_stack;
-		std::stack<std::unordered_map<std::string, value*>*> mem_stack;
+		std::stack<value> return_stack;
+		std::stack<memory> mem_stack;
 		std::vector<value*> garbage;
 		std::unordered_map<std::string, chunk*> chunks;
 		std::unordered_map<std::string, character*> characters;
@@ -53,19 +55,18 @@ namespace dms {
 		character* getCharacter(std::string c);
 		enviroment* getEnvironment(std::string c);
 
-		bool assign(std::unordered_map<std::string, value*>* mem,value* var, value* val);
+		bool assign(value var, value val);
 		size_t seek(std::string label,std::vector<cmd*> cmds ,codes::op code, size_t pos);
 		bool characterExists(std::string bk_name);
 		bool environmentExists(std::string bk_name);
 		bool functionExists(std::string bk_name);
 		bool blockExists(std::string bk_name);
-		bool typeAssert(value* val, datatypes type);
-		std::unordered_map<std::string, value*>* getMem();
+		bool typeAssert(value val, datatypes type);
+		memory* getMem();
 		void pushMem();
 		void popMem();
-		value* func();
 		bool run();
-		bool run(std::string ent,std::unordered_map<std::string, value*>* mem);
+		bool run(std::string ent,memory* mem);
 		bool run(std::string instance);
 		// This is called once and once only. Dynamically loading code is not a thing!
 		void init();
@@ -73,8 +74,6 @@ namespace dms {
 	private:
 		// From what I gathered
 		//std::mutex memory_mutex;
-		std::unordered_map<std::string, value*> memory;
-		void pushMem(std::unordered_map<std::string, value*>*);
 		bool stop = false;
 		bool init_init = false;
 		void init(chunk* chunk, size_t &pos,size_t &max, std::vector<cmd*>& cmds);

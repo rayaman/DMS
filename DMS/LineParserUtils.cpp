@@ -203,29 +203,17 @@ namespace dms {
 	void LineParser::badSymbol() {
 		state->push_error(errors::error{ errors::unknown,concat("Unexpected symbol '",_stream->peek().toString(),"'"),true,_stream->next().line_num,current_chunk });
 	}
-	void LineParser::buildSpeed(double s) {
-		cmd* c = new cmd;
-		c->opcode = codes::DSPD;
-		c->args.push(buildValue(s));
-		current_chunk->addCmd(c);
-	}
-	void LineParser::buildWait(double w) {
-		cmd* c = new cmd;
-		c->opcode = codes::WAIT;
-		c->args.push(buildValue(w));
-		current_chunk->addCmd(c);
-	}
 	void LineParser::debugInvoker(tokenstream* stream) {
 		if (state->isEnabled("debugging") && stream->peek().type != tokens::newline) {
 			// A very nasty if statement, I won't hide it, this could be made much more readable
 			// This checks if the last cmd is a LINE cmd and if its the same line number as the current one we simply skip it
-			if (current_chunk->cmds.size() >= 2 && current_chunk->cmds[current_chunk->cmds.size() - 1]!=nullptr && current_chunk->cmds[current_chunk->cmds.size() - 1]->opcode==codes::LINE && (size_t)current_chunk->cmds[current_chunk->cmds.size()-1]->args.args[0]->n->getValue()== (size_t)stream->peek().line_num) {
+			if (current_chunk->cmds.size() >= 2 && current_chunk->cmds[current_chunk->cmds.size() - 1]!=nullptr && current_chunk->cmds[current_chunk->cmds.size() - 1]->opcode==codes::LINE && (size_t)current_chunk->cmds[current_chunk->cmds.size()-1]->args.args[0].n== (size_t)stream->peek().line_num) {
 				return;
 			}
 			int current_line = stream->peek().line_num;
 			cmd* ln = new cmd;
 			ln->opcode = codes::LINE;
-			ln->args.push(buildValue(current_line));
+			ln->args.push(value(current_line));
 			current_chunk->addCmd(ln);
 		}
 	}
@@ -259,16 +247,16 @@ namespace dms {
 		if (state->isEnabled("leaking") && (current_chunk != nullptr && current_chunk->name != "$INIT")) {
 			cmd* c = new cmd;
 			c->opcode = codes::JUMP;
-			c->args.push(buildValue(bk_name));
+			c->args.push(value(bk_name));
 			current_chunk->addCmd(c);
 		}
 		if (current_chunk != nullptr && current_chunk->name == "$END") {
 			cmd* c = new cmd;
 			c->opcode = codes::EXIT;
 			if (state->entry != "$undefined")
-				c->args.push(buildValue(0));
+				c->args.push(value(0));
 			else
-				c->args.push(buildValue(bk_name));
+				c->args.push(value(bk_name));
 			current_chunk->addCmd(c);
 		}
 		current_chunk = new chunk;

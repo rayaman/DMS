@@ -5,15 +5,32 @@ enable forseelabels
 enable savestate
 disable fullname
 //enable leaking
-enable debugging
+//enable debugging
 loadfile "loadtest.dms"
 version 0.2
 using extendedDefine
 
 [main]
-	"Time to test function calls!"
-	val = newblock(1,2,3)
-	"val = `val`"
+	Ryan: "Hello `Bob`, how are you doing?"
+	Bob: "Hi `Ryan`, I'm good."
+	a = 1000
+	test = invokeTest("Running external code!");
+	"Loop Test... `test`"
+	choice "Pick one" {
+		"this" goto "this"
+		"test2" tryme(true)
+		"that" goto "that"
+		"test" test(1,2,3)
+	}
+	::this::
+		"At \"this\""
+		goto "loop"
+	::that::
+		"At \"that\""
+	::loop::
+		a = a + 1
+		"a = `a`"
+		goto "loop"
 
 [Bob:char]
 	//fname = "Bob"
@@ -23,6 +40,11 @@ using extendedDefine
 	age = .24
 	money = 100
 	excited: "path/to/file"
+
+[test1:function()]
+	"Inside a function!"
+	//val = newblock(1,2,3)
+	//"val = `val`"
 
 [newblock:function(a,b,c)]
 	"Func Arguments: a = `a`, b = `b`, c = `c`"

@@ -2,42 +2,211 @@
 #include "dms_state.h"
 #include "utils.h"
 namespace dms {
-	const std::string datatype[] = { "escape","nil", "number", "boolean", "env", "string", "custom", "variable", "block" };
-	std::vector<value*> _VALUES;
+	const std::string datatype[] = { "escape", "nil", "number", "boolean", "env", "string", "custom", "variable", "block" };
 	value::value() {
-		_VALUES.push_back(this); // Used for the interperter! In the end everything is a value
-		// We need to clean up this stuff when it all comes crashing.
-		// We also might clean things while the code is running.
-		// Values at runtime aren't "Deleted, they are set to nil"
-		// At the end we actually delete them!
+		// Nothing to do here yet!
 	}
-	value* value::copy() {
-		value* newVal = new value;
-		newVal->type = type;
-		newVal->c = c;
-		newVal->e = e;
-		if (type == datatypes::block || type == datatypes::string || type == datatypes::variable) {
-			newVal->s = buildString(s->getValue());
-		}
-		else if (type == datatypes::boolean) {
-			newVal->b = buildBool(b->getValue());
-		}
-		else if (type == datatypes::number) {
-			newVal->n = buildNumber(n->getValue());
-		}
-		else if (type == datatypes::nil) {
-			delete newVal;
-			return buildNil();
-		}
-		return newVal;
+	value::value(char const* str, datatypes t) {
+		type = t;
+		s = buildString(str);
 	}
-	value* value::resolve(dms_state* state) {
-		if (type == datatypes::variable && this!=(*state->getMem())[this->s->getValue()]) {
-			return (*state->getMem())[s->getValue()]->resolve(state); // Variable types return the value
-		}
-		return this;
+	value::value(char const* str) {
+		type = datatypes::string;
+		s = buildString(str);
 	}
-	void dms_args::push(value* val) {
+	value::value(std::string str) {
+		type = datatypes::string;
+		s = buildString(str);
+	}
+	value::value(std::string str,datatypes t) {
+		type = t;
+		s = buildString(str);
+	}
+	value::value(double d) {
+		type = datatypes::number;
+		n = d;
+	}
+	value::value(int d) {
+		type = datatypes::number;
+		n = d;
+	}
+	value::value(bool bo) {
+		type = datatypes::boolean;
+		b = bo;
+	}
+	value::~value() {
+		nuke();
+	}
+	size_t count = 0;
+	value::value(datatypes t) : value() {
+		if (t == datatypes::variable) {
+			set(buildString(utils::concat("$",++count)));
+		}
+		type = t;
+	}
+	value::value(const value& other) {
+		if (this != &other) {
+			type = other.type;
+			switch (other.type) {
+			case datatypes::block:
+				s = buildString(other.s->val);
+				break;
+			case datatypes::boolean:
+				b = buildBool(other.b);
+				break;
+			case datatypes::custom:
+				// Handle this later
+				break;
+			case datatypes::env:
+				// Handle this later
+				break;
+			case datatypes::escape:
+				s = buildString(other.s->val);
+				break;
+			case datatypes::nil:
+				// No need to do anything
+				break;
+			case datatypes::number:
+				n = other.n;
+				break;
+			case datatypes::string:
+				s = buildString(other.s->val);
+				break;
+			case datatypes::variable:
+				s = buildString(other.s->val);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	value& value::operator=(value& other) {
+		if (this != &other) {
+			nuke(); // Delete it all
+			type = other.type;
+			switch (other.type) {
+			case datatypes::block:
+				s = buildString(other.s->val);
+				break;
+			case datatypes::boolean:
+				b = other.b;
+				break;
+			case datatypes::custom:
+				// Handle this later
+				break;
+			case datatypes::env:
+				// Handle this later
+				break;
+			case datatypes::escape:
+				s = buildString(other.s->val);
+				break;
+			case datatypes::nil:
+				// No need to do anything
+				break;
+			case datatypes::number:
+				n = other.n;
+				break;
+			case datatypes::string:
+				s = buildString(other.s->val);
+				break;
+			case datatypes::variable:
+				s = buildString(other.s->val);
+				break;
+			default:
+				break;
+			}
+			//other.nuke();
+		}
+		// by convention, always return *this
+		return *this;
+	}
+	bool value::isNil() {
+		return type == datatypes::nil;
+	}
+	value& value::operator=(const value& other) {
+		if (this != &other) {
+			nuke();
+			type = other.type;
+			switch (other.type) {
+			case datatypes::block:
+				s = buildString(other.s->val);
+				break;
+			case datatypes::boolean:
+				b = other.b;
+				break;
+			case datatypes::custom:
+				// Handle this later
+				break;
+			case datatypes::env:
+				// Handle this later
+				break;
+			case datatypes::escape:
+				s = buildString(other.s->val);
+				break;
+			case datatypes::nil:
+				// No need to do anything
+				break;
+			case datatypes::number:
+				n = other.n;
+				break;
+			case datatypes::string:
+				s = buildString(other.s->val);
+				break;
+			case datatypes::variable:
+				s = buildString(other.s->val);
+				break;
+			default:
+				break;
+			} 
+		}
+		// by convention, always return *this
+		return *this;
+	}
+	bool operator==(const value& lhs, const value& rhs) {
+		return lhs.getPrintable() == rhs.getPrintable();
+	}
+	value operator+(const value& lhs, const value& rhs) {
+		if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
+			return value(lhs.n + rhs.n);
+		}
+		else {
+			return lhs.getPrintable() + rhs.getPrintable();
+		}
+	}
+	value operator-(const value& lhs, const value& rhs) {
+		if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
+			return value(lhs.n - rhs.n);
+		}
+		else {
+			return value(datatypes::error);
+		}
+	}
+	value operator/(const value& lhs, const value& rhs) {
+		if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
+			return value(lhs.n / rhs.n);
+		}
+		else {
+			return value(datatypes::error);
+		}
+	}
+	value operator*(const value& lhs, const value& rhs) {
+		if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
+			return value(lhs.n * rhs.n);
+		}
+		else {
+			return value(datatypes::error);
+		}
+	}
+	bool operator!=(const value& lhs, const value& rhs) {
+		return !(lhs.getPrintable() == rhs.getPrintable());
+	}
+	value value::resolve(dms_state* state) {
+		if (type == datatypes::variable && (*this)!=(*state->getMem())[getPrintable()]) {
+			return (*state->getMem())[getPrintable()].resolve(state);
+		}
+		return *this;
+	}
+	void dms_args::push(value val) {
 		args.push_back(val);
 	}
 	size_t dms_args::size() {
@@ -49,7 +218,7 @@ namespace dms {
 		std::stringstream ind;
 		bool varStart = false;
 		bool indStart = false;
-		for (size_t i = 0; i < length; i++) {
+		for (size_t i = 0; i < val.size(); i++) {
 			if (indStart && val[i] == '`') {
 				std::string lookup = var.str();
 				std::string index = ind.str();
@@ -60,21 +229,21 @@ namespace dms {
 				varStart = false;
 				indStart = false;
 				if (state->getMem()->count(lookup)) {
-					value* v = (*state->getMem())[lookup];
-					if (v->type == datatypes::block) {
-						if ((state->chunks.count(v->s->getValue()) && state->chunks[v->s->getValue()]->type == blocktype::bt_character) && state->getCharacter(v->s->getValue())!=nullptr) {
-							character* cha = state->getCharacter(v->s->getValue());
+					value v = (*state->getMem())[lookup];
+					if (v.type == datatypes::block) {
+						if (state->getCharacter(v.getPrintable()) != nullptr) {
+							character* cha = state->getCharacter(v.getPrintable());
 							if (cha->values.count(index)) {
-								temp << cha->values[index]->getPrintable();
+								temp << cha->values[index].getPrintable();
 							}
 							else {
 								temp << cha->getName();
 							}
 						}
-						else if ((state->chunks.count(v->s->getValue()) && state->chunks[v->s->getValue()]->type == blocktype::bt_env) && state->getEnvironment(v->s->getValue()) != nullptr) {
-							enviroment* env = state->getEnvironment(v->s->getValue());
+						else if (state->getEnvironment(v.getPrintable())!=nullptr) {
+							enviroment* env = state->getEnvironment(v.getPrintable());
 							if (env->values.count(index)) {
-								temp << env->values[index]->getPrintable();
+								temp << env->values[index].getPrintable();
 							}
 							else {
 								temp << env;
@@ -84,14 +253,14 @@ namespace dms {
 							temp << "nil";
 						}
 					}
-					else if (v->resolve(state)->type == datatypes::env) {
-						if(v->resolve(state)->e->ipart.size()> std::stoi(index))
-							temp << v->resolve(state)->e->ipart[std::stoi(index)-1]->getPrintable();
+					else if (v.resolve(state).type == datatypes::env) {
+						if(v.resolve(state).e->ipart.size()> std::stoi(index))
+							temp << v.resolve(state).e->ipart[std::stoi(index)-(int64_t)1].getPrintable();
 						else
 							temp << "nil";
 					}
 					else {
-						temp << v->resolve(state)->getPrintable();
+						temp << v.resolve(state).getPrintable();
 					}
 				}
 				else {
@@ -121,17 +290,17 @@ namespace dms {
 				var.clear();
 				varStart = false;
 				if (state->getMem()->count(lookup)) {
-					value* v = (*state->getMem())[lookup];
-					if (v->type == datatypes::block) {
-						if (state->getCharacter(v->s->getValue())) {
-							temp << state->characters[v->s->getValue()]->getName();
+					value v = (*state->getMem())[lookup];
+					if (v.type == datatypes::block) {
+						if (state->getCharacter(v.s->getValue())) {
+							temp << state->characters[v.s->getValue()]->getName();
 						}
 						else {
 							temp << "nil";
 						}
 					}
 					else {
-						temp << v->resolve(state)->getPrintable();
+						temp << v.resolve(state).getPrintable();
 					}
 				}
 				else {
@@ -163,13 +332,13 @@ namespace dms {
 			out << s->getValue();
 		}
 		else if (type == number) {
-			out << n->getValue();
+			out << n;
 		}
 		else if (type == nil) {
 			out << "nil";
 		}
 		else if (type == boolean) {
-			if (b->getValue())
+			if (b)
 				out << "true";
 			else
 				out << "false";
@@ -189,112 +358,94 @@ namespace dms {
 		return out.str();
 	}
 	dms_string* buildString(std::string str) {
-		size_t len = str.length();
-		uint8_t* arr = new uint8_t[len];
-		for (size_t i = 0; i < len; i++) {
-			arr[i] = str.at(i);
-		}
-		dms_string* dms_str = new dms_string{ str.length(), arr };
+		std::stringstream newstr;
+		for (int i = 0; i < str.size(); i++)
+			newstr << str[i];
+		dms_string* dms_str = new dms_string{ newstr.str() };
 		return dms_str;
 	}
 	dms_boolean* buildBool(bool b) {
-		dms_boolean* dms_bool = new dms_boolean{b};
-		return dms_bool;
-	}
-	dms_number* buildNumber(double num) {
-		dms_number* dms_num = new dms_number{ num };
-		return dms_num;
+		return new dms_boolean{b};
 	}
 	std::string value::toString() const {
 		std::stringstream temp;
 		temp << this;
 		return temp.str();
 	}
-	value* buildValue() {
-		return new value;
-	}
-	value* buildNil() {
-		return new value;
-	}
-	size_t count = 0;
-	value* buildVariable() {
-		count++;
-		std::stringstream str;
-		str << "$" << count;
-		std::string val = str.str();
-		return buildVariable(val);
-	}
-	value* buildBlock(std::string str) {
-		value* val = new value{};
-		val->set(buildString(str));
-		val->type = block;
-		return val;
-	}
-	value* buildVariable(std::string str) {
-		value* val = new value{};
-		val->set(buildString(str));
-		val->type = variable;
-		return val;
-	}
-	value* buildValue(char const* s) {
-		value* val = new value{};
-		val->set(buildString(s));
-		return val;
-	}
-	value* buildValue(std::string str) {
-		value* val = new value{};
-		val->set(buildString(str));
-		return val;
-	}
-	value* buildValue(double dbl) {
-		value* val = new value{};
-		val->set(buildNumber(dbl));
-		return val;
-	}
-	value* buildValue(int i) {
-		value* val = new value{};
-		val->set(buildNumber((double)i));
-		return val;
-	}
-	value* buildValue(bool b) {
-		value* val = new value{};
-		val->set(buildBool(b));
-		return val;
-	}
+	// Compile time
 	void value::nuke() {
-		if (type == datatypes::custom)
-			c->_del();
-		delete[] s;
-		delete[] b;
-		delete[] n;
-		delete[] e;
-		delete[] c;
+		delete s;
+		delete e;
+		delete c;
 		s = nullptr;
-		b = nullptr;
-		n = nullptr;
 		e = nullptr;
 		c = nullptr;
 	}
+	std::ostream& operator << (std::ostream& out, const value& c) {
+		if (c.type == string) {
+			out << (char)c.type << c.s->getValue() << (char)0;
+		}
+		else if (c.type == number) {
+			out << (char)c.type << c.n;
+		}
+		else if (c.type == nil) {
+			out << (char)c.type << "nil";
+		}
+		else if (c.type == boolean) {
+			if(c.b)
+				out << (char)c.type << "true";
+			else
+				out << (char)c.type << "false";
+		}
+		else if (c.type == env) {
+			out << (char)c.type << "Env: " << c;
+		}
+		else if (c.type == custom) {
+			out << (char)c.type << "Custom Data: " << c;
+		}
+		else if (c.type == block) {
+			out << (char)c.type << c.s->getValue();
+		}
+		else if (c.type == datatypes::variable) {
+			out << (char)c.type << c.s->getValue(); // Do the lookup
+		}
+		return out;
+	};
 	// Fixed issue with memory not properly being cleaned up
 	bool value::typeMatch(const value* o) const {
 		return type == o->type;
+	}
+	void value::set(value* val) {
+		if (type == datatypes::number) {
+			n = val->n;
+		}
+		else if (type == datatypes::string || type == datatypes::block || type == datatypes::variable) {
+			s->val = val->s->val;
+		}
+		else if (type == datatypes::boolean) {
+			b = val->b;
+		}
+		else { // Handle custom and env
+			return;
+		}
+		type = val->type;
 	}
 	void value::set(dms_string* str) {
 		nuke();
 		s = str;
 		type = string;
 	}
-	void value::set(dms_boolean* bo) {
+	void value::set(bool bo) {
 		nuke();
 		b = bo;
 		type = boolean;
 	}
-	void value::set(dms_number* num) {
+	void value::set(double num) {
 		nuke();
 		n = num;
 		type = number;
 	}
-	void dms::value::set(dms_env* en) {
+	void dms::value::set(dms_list* en) {
 		nuke();
 		e = en;
 		type = env;
@@ -310,35 +461,45 @@ namespace dms {
 		type = nil;
 	}
 	std::string dms_string::getValue() {
-		std::stringstream temp;
-		for (size_t i = 0; i < length; i++) {
-			temp << val[i];
-		}
-		return temp.str();
+		return val;
 	}
-	void dms_env::pushValue(value* val) {
+	void dms_list::pushValue(value val) {
 		ipart.push_back(val);
 	}
-	void dms_env::pushValue(value* ind, value* val) {
-		if (val->type == nil) {
-			hpart[ind->toString()]->nuke();
-			hpart.erase(ind->toString());
-			count--;
+	value dms_list::getValue(value ind) {
+		if (ind.type == number) {
+			return ipart.at((int)ind.n);
 		}
 		else {
-			hpart.insert_or_assign(ind->toString(), val);
-			count++;
+			return new value();
 		}
 	}
-	value* dms_env::getValue(value* ind) {
-		if (ind->type == number) {
-			return ipart.at((int)ind->n->getValue());
+	std::ostream& operator << (std::ostream& out, const dms_args& c) {
+		for (size_t i = 0; i < c.args.size(); i++) {
+			if (i == c.args.size() - 1)
+				out << c.args[i];
+			else
+				out << c.args[i] << ", ";
 		}
-		else if (ind->type == number) {
-			return new value{}; // Return a nil value
+		return out;
+	}
+	std::string dms_args::toString() {
+		std::stringstream str;
+		for (size_t i = 0; i < args.size(); i++) {
+			str << args[i];
 		}
-		else {
-			return hpart.at(ind->toString());
-		}
+		return str.str();
+	}
+	std::ostream& operator << (std::ostream& out, const dms_string& c) {
+		out << c.val;
+		return out;
+	}
+	std::ostream& operator << (std::ostream& out, const dms_boolean& c) {
+		out << c.val;
+		return out;
+	}
+	std::ostream& operator << (std::ostream& out, const dms_number& c) {
+		out << c.val;
+		return out;
 	}
 }
