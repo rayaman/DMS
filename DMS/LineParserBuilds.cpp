@@ -11,6 +11,17 @@ namespace dms {
 		}
 		current_chunk->addCmd(c);
 	}
+	void LineParser::buildJump(std::string g, bool v) {
+		cmd* c = new cmd;
+		c->opcode = codes::JUMP;
+		if (v) {
+			c->args.push(value(g, datatypes::variable));
+		}
+		else {
+			c->args.push(value(g));
+		}
+		current_chunk->addCmd(c);
+	}
 	void LineParser::buildNoop() {
 		cmd* c = new cmd;
 		c->opcode = codes::NOOP;

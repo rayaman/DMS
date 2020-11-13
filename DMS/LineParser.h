@@ -79,6 +79,7 @@ namespace dms {
 
 		// Build
 		void buildGoto(std::string g, bool v = false);
+		void buildJump(std::string j, bool v = false);
 		void buildNoop();
 		void buildLabel(std::string l);
 		void buildSpeed(double s);

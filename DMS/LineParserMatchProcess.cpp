@@ -486,9 +486,10 @@ namespace dms {
 
 			That's all there is to functions within the bytecode side of things, the vm is where things are a little more involved
 		*/
-		if (stream->match(tokens::name, tokens::parao)) {
+		if (stream->match(tokens::name, tokens::parao) || stream->match(tokens::gotoo, tokens::parao) || stream->match(tokens::name, tokens::jump)) {
 			cmd* c = new cmd;
 			c->opcode = codes::FUNC;
+			token tokn = stream->peek();
 			std::string n = stream->next().name;
 			c->args.push(value(n,datatypes::variable)); // Set the func identifier as the first variable
 			// Let's set the target
@@ -513,6 +514,30 @@ namespace dms {
 			t.push_back(token{ tokens::nil,codes::NOOP,"",t[0].line_num });
 			t.push_back(end);
 			tempstream.init(&t); // Turn tokens we consumed into a tokenstream
+			if (tokn.type==tokens::gotoo) {
+				if (tempstream.match(tokens::string) || tempstream.match(tokens::gotoo)) {
+					buildGoto(tempstream.next().name);
+					buildNoop();
+					delete c;
+					return true;
+				}
+				else {
+					badSymbol(&tempstream);
+					return false;
+				}
+			}
+			else if (tokn.type == tokens::jump) {
+				if (tempstream.match(tokens::string) || tempstream.match(tokens::jump)) {
+					buildJump(tempstream.next().name);
+					buildNoop();
+					delete c;
+					return true;
+				}
+				else {
+					badSymbol(&tempstream);
+					return false;
+				}
+			}
 			value tempval;
 			token tok;
 			value ref = value(datatypes::variable);

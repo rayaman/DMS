@@ -79,144 +79,145 @@ Line <20> gotoo
 Line <20> string 		 this
 Line <20> newline 		 
 Line <20> newline 		 
-Line <21> string 		 test2
-Line <21> name 		 tryme
+Line <21> string 		 that
+Line <21> gotoo 		 
 Line <21> parao 		 (
-Line <21> true 		 true
+Line <21> string 		 that
 Line <21> parac 		 )
 Line <21> newline 		 
 Line <21> newline 		 
-Line <22> string 		 that
-Line <22> gotoo 		 
-Line <22> string 		 that
+Line <22> cbracketc 		 }
 Line <22> newline 		 
 Line <22> newline 		 
-Line <23> string 		 test
-Line <23> name 		 test
-Line <23> parao 		 (
-Line <23> number 		 1
-Line <23> seperator 		 ,
-Line <23> number 		 2
-Line <23> seperator 		 ,
-Line <23> number 		 3
-Line <23> parac 		 )
+Line <23> label 		 this
 Line <23> newline 		 
 Line <23> newline 		 
-Line <24> cbracketc 		 }
+Line <24> string 		 At "this"
 Line <24> newline 		 
 Line <24> newline 		 
-Line <25> label 		 this
+Line <25> gotoo 		 
+Line <25> parao 		 (
+Line <25> string 		 loop
+Line <25> parac 		 )
 Line <25> newline 		 
 Line <25> newline 		 
-Line <26> string 		 At "this"
+Line <26> label 		 that
 Line <26> newline 		 
 Line <26> newline 		 
-Line <27> gotoo 		 
-Line <27> string 		 loop
+Line <27> string 		 At "that"
 Line <27> newline 		 
 Line <27> newline 		 
-Line <28> label 		 that
+Line <28> label 		 loop
 Line <28> newline 		 
 Line <28> newline 		 
-Line <29> string 		 At "that"
+Line <29> name 		 a
+Line <29> equal 		 =
+Line <29> name 		 a
+Line <29> plus 		 +
+Line <29> number 		 1
 Line <29> newline 		 
 Line <29> newline 		 
-Line <30> label 		 loop
+Line <30> string 		 a = `a`
 Line <30> newline 		 
 Line <30> newline 		 
-Line <31> name 		 a
-Line <31> equal 		 =
-Line <31> name 		 a
-Line <31> plus 		 +
-Line <31> number 		 1
+Line <31> gotoo 		 
+Line <31> parao 		 (
+Line <31> string 		 loop
+Line <31> parac 		 )
 Line <31> newline 		 
 Line <31> newline 		 
-Line <32> string 		 a = `a`
 Line <32> newline 		 
-Line <32> newline 		 
-Line <33> gotoo 		 
-Line <33> string 		 loop
 Line <33> newline 		 
 Line <33> newline 		 
 Line <34> newline 		 
-Line <34> newline 		 
-Line <35> bracketo 		 [
-Line <35> name 		 Bob
-Line <35> colon 		 :
-Line <35> name 		 char
-Line <35> bracketc 		 ]
 Line <35> newline 		 
 Line <35> newline 		 
 Line <36> newline 		 
 Line <37> newline 		 
+Line <37> newline 		 
 Line <38> newline 		 
-Line <39> name 		 unknown
-Line <39> equal 		 =
-Line <39> string 		 Some Random Guy
 Line <39> newline 		 
 Line <39> newline 		 
-Line <40> name 		 age
-Line <40> equal 		 =
-Line <40> number 		 0.24
 Line <40> newline 		 
-Line <40> newline 		 
-Line <41> name 		 money
-Line <41> equal 		 =
-Line <41> number 		 100
 Line <41> newline 		 
 Line <41> newline 		 
-Line <42> name 		 excited
+Line <42> bracketo 		 [
+Line <42> name 		 Bob
 Line <42> colon 		 :
-Line <42> string 		 path/to/file
+Line <42> name 		 char
+Line <42> bracketc 		 ]
 Line <42> newline 		 
 Line <42> newline 		 
 Line <43> newline 		 
-Line <43> newline 		 
-Line <44> bracketo 		 [
-Line <44> name 		 test1
-Line <44> colon 		 :
-Line <44> name 		 function
-Line <44> parao 		 (
-Line <44> parac 		 )
-Line <44> bracketc 		 ]
 Line <44> newline 		 
-Line <44> newline 		 
-Line <45> string 		 Inside a function!
 Line <45> newline 		 
-Line <45> newline 		 
+Line <46> name 		 unknown
+Line <46> equal 		 =
+Line <46> string 		 Some Random Guy
 Line <46> newline 		 
+Line <46> newline 		 
+Line <47> name 		 age
+Line <47> equal 		 =
+Line <47> number 		 0.24
 Line <47> newline 		 
+Line <47> newline 		 
+Line <48> name 		 money
+Line <48> equal 		 =
+Line <48> number 		 100
 Line <48> newline 		 
 Line <48> newline 		 
-Line <49> bracketo 		 [
-Line <49> name 		 newblock
+Line <49> name 		 excited
 Line <49> colon 		 :
-Line <49> name 		 function
-Line <49> parao 		 (
-Line <49> name 		 a
-Line <49> seperator 		 ,
-Line <49> name 		 b
-Line <49> seperator 		 ,
-Line <49> name 		 c
-Line <49> parac 		 )
-Line <49> bracketc 		 ]
+Line <49> string 		 path/to/file
 Line <49> newline 		 
 Line <49> newline 		 
-Line <50> string 		 Func Arguments: a = `a`, b = `b`, c = `c`
 Line <50> newline 		 
 Line <50> newline 		 
-Line <51> string 		 Time to return
+Line <51> bracketo 		 [
+Line <51> name 		 test1
+Line <51> colon 		 :
+Line <51> name 		 function
+Line <51> parao 		 (
+Line <51> parac 		 )
+Line <51> bracketc 		 ]
 Line <51> newline 		 
 Line <51> newline 		 
-Line <52> ret 		 
-Line <52> name 		 a
-Line <52> plus 		 +
-Line <52> name 		 b
-Line <52> plus 		 +
-Line <52> name 		 c
+Line <52> string 		 Inside a function!
 Line <52> newline 		 
 Line <52> newline 		 
-Line <52> eof 		 
+Line <53> newline 		 
+Line <54> newline 		 
+Line <55> newline 		 
+Line <55> newline 		 
+Line <56> bracketo 		 [
+Line <56> name 		 newblock
+Line <56> colon 		 :
+Line <56> name 		 function
+Line <56> parao 		 (
+Line <56> name 		 a
+Line <56> seperator 		 ,
+Line <56> name 		 b
+Line <56> seperator 		 ,
+Line <56> name 		 c
+Line <56> parac 		 )
+Line <56> bracketc 		 ]
+Line <56> newline 		 
+Line <56> newline 		 
+Line <57> string 		 Func Arguments: a = `a`, b = `b`, c = `c`
+Line <57> newline 		 
+Line <57> newline 		 
+Line <58> string 		 Time to return
+Line <58> newline 		 
+Line <58> newline 		 
+Line <59> ret 		 
+Line <59> name 		 a
+Line <59> plus 		 +
+Line <59> name 		 b
+Line <59> plus 		 +
+Line <59> name 		 c
+Line <59> newline 		 
+Line <59> newline 		 
+Line <59> eof 		 
 Line <1> newline 		 
 Line <1> newline 		 
 Line <1> bracketo 		 [

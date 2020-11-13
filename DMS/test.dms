@@ -18,19 +18,26 @@ using extendedDefine
 	"Loop Test... `test`"
 	choice "Pick one" {
 		"this" goto "this"
-		"test2" tryme(true)
-		"that" goto "that"
-		"test" test(1,2,3)
+		"that" goto ("that")
 	}
 	::this::
 		"At \"this\""
-		goto "loop"
+		goto ("loop")
 	::that::
 		"At \"that\""
 	::loop::
 		a = a + 1
 		"a = `a`"
-		goto "loop"
+		goto ("loop")
+	// if (this==that) this()|that()
+	
+	// if(this == that){
+		
+	// } else if (that > this) {
+		
+	// } else {
+		
+	// }
 
 [Bob:char]
 	//fname = "Bob"
