@@ -178,12 +178,10 @@
     <ClInclude Include="dms_state.h" />
     <ClInclude Include="Invoker.h" />
     <ClInclude Include="memory.h" />
-    <ClInclude Include="string_utils.h" />
     <ClInclude Include="dms_exceptions.h" />
     <ClInclude Include="errors.h" />
     <ClInclude Include="dms.h" />
     <ClInclude Include="LineParser.h" />
-    <ClInclude Include="number_utils.h" />
     <ClInclude Include="token.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="value.h" />

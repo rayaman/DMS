@@ -107,16 +107,10 @@
     <ClInclude Include="LineParser.h">
       <Filter>Header Files\DMS</Filter>
     </ClInclude>
-    <ClInclude Include="number_utils.h">
-      <Filter>Header Files\DMS</Filter>
-    </ClInclude>
     <ClInclude Include="dms.h">
       <Filter>Header Files\DMS</Filter>
     </ClInclude>
     <ClInclude Include="errors.h">
-      <Filter>Header Files\DMS</Filter>
-    </ClInclude>
-    <ClInclude Include="string_utils.h">
       <Filter>Header Files\DMS</Filter>
     </ClInclude>
     <ClInclude Include="dms_state.h">

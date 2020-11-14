@@ -515,9 +515,13 @@ namespace dms {
 			t.push_back(end);
 			tempstream.init(&t); // Turn tokens we consumed into a tokenstream
 			if (tokn.type==tokens::gotoo) {
-				if (tempstream.match(tokens::string) || tempstream.match(tokens::gotoo)) {
+				if (tempstream.match(tokens::string)) {
 					buildGoto(tempstream.next().name);
-					buildNoop();
+					delete c;
+					return true;
+				}
+				else if (tempstream.match(tokens::name)) {
+					buildGoto(tempstream.next().name,true);
 					delete c;
 					return true;
 				}
@@ -527,9 +531,13 @@ namespace dms {
 				}
 			}
 			else if (tokn.type == tokens::jump) {
-				if (tempstream.match(tokens::string) || tempstream.match(tokens::jump)) {
+				if (tempstream.match(tokens::string)) {
 					buildJump(tempstream.next().name);
-					buildNoop();
+					delete c;
+					return true;
+				}
+				else if (tempstream.match(tokens::name)) {
+					buildJump(tempstream.next().name, true);
 					delete c;
 					return true;
 				}

@@ -8,8 +8,6 @@
 #include "dms_state.h"
 #include "errors.h"
 #include "LineParser.h"
-#include "number_utils.h"
-#include "string_utils.h"
 #include "token.h"
 #include "utils.h"
 #include "value.h"

@@ -61,12 +61,13 @@ namespace dms {
 	dms_state::dms_state() {
 		// We should define the defaults for the enables
 		pushMem(); // Main memory
-		enables.insert_or_assign("leaking", false);
-		enables.insert_or_assign("debugging", false);
-		enables.insert_or_assign("warnings", false); //
-		enables.insert_or_assign("statesave", true); // Allows you to save state
-		enables.insert_or_assign("omniscient", false); // Allows you to know who's who when you first meet them
-		enables.insert_or_assign("fullname", true);
+		disable("forwardlabels");
+		disable("leaking");
+		disable("debugging");
+		disable("warnings");
+		disable("omniscient");
+		disable("fullname");
+		enable("statesave");
 		chunk* c = new chunk;
 		c->name = "$END";
 		c->type = blocktype::bt_block;

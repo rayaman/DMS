@@ -179,9 +179,21 @@ namespace dms {
 				case GOTO:
 					{
 						value labl = c->args.args[0];
-						size_t nnpos = seek(labl.getPrintable(),cmds, LABL, 0);
+						if (isEnabled("forwardlabels")) {
+							size_t nnpos = seek(labl.resolve(this).getPrintable(), cmds, LABL, pos); // Seek from next pos (pos++) to end of cmds
+							if (!nnpos) {
+								// This could be a method, it could, but it isn't. We jump to searching from the beginning of the block
+								goto seek_from_0;
+							}
+							else {
+								pos = nnpos;
+							}
+							break;
+						}
+					seek_from_0:
+						size_t nnpos = seek(labl.resolve(this).getPrintable(),cmds, LABL, 0);
 						if (!nnpos) {
-							push_error(errors::error{ errors::choice_unknown ,utils::concat("Unknown choice!") });
+							push_error(errors::error{ errors::choice_unknown ,utils::concat("Unknown label '",labl.resolve(this).getPrintable(),"'!") });
 							return false;
 						}
 						else {
