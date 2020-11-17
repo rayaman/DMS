@@ -18,7 +18,7 @@ namespace dms {
 		if (has("nickname")) {
 			return values["nickname"].getPrintable();
 		}
-		if (seen && has("fname") && has("lname")) {
+		if (seen && has("fname") && has("lname") && fullname) {
 			return utils::concat(values["fname"].getPrintable()," ", values["lname"].getPrintable());
 		}
 		else if (seen && has("fname")) {

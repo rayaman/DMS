@@ -51,7 +51,6 @@ namespace dms {
 		value* self;
 	};
 	dms_string* buildString(std::string str);
-	dms_boolean* buildBool(bool b);
 	struct value {
 	public:
 		datatypes type = datatypes::nil;
@@ -75,11 +74,16 @@ namespace dms {
 		value& operator=(value& other);
 		value& operator=(const value& other);
 		friend bool operator==(const value& lhs, const value& rhs);
+		friend bool operator!=(const value& lhs, const value& rhs);
+		friend bool operator>(const value& lhs, const value& rhs);
+		friend bool operator<(const value& lhs, const value& rhs);
+		friend bool operator>=(const value& lhs, const value& rhs);
+		friend bool operator<=(const value& lhs, const value& rhs);
+
 		friend value operator+(const value& lhs, const value& rhs);
 		friend value operator-(const value& lhs, const value& rhs);
 		friend value operator/(const value& lhs, const value& rhs);
 		friend value operator*(const value& lhs, const value& rhs);
-		friend bool operator!=(const value& lhs, const value& rhs);
 		value resolve(dms_state*);
 		void nuke();
 		void set(value*);

@@ -5,43 +5,53 @@ using namespace dms::utils;
 namespace dms {
 	bool LineParser::match_process_standard(tokenstream* stream, value& v) {
 		if (match_process_expression(stream, v)) {
+			match_process_condition(stream,v);
 			return true;
 		}
 		else if (match_process_function(stream, v)) {
+			match_process_condition(stream, v);
 			return true;
 		}
 		else if (match_process_list(stream, v)) {
+			match_process_condition(stream, v);
 			return true;
 		}
 		else if (match_process_index(stream, v)) {
+			match_process_condition(stream, v);
 			return true;
 		}
 		else if (stream->match(tokens::True)) {
-			v.set(buildBool(true));
+			v.set(true);
 			stream->next();
+			match_process_condition(stream, v);
 			return true;
 		}
 		else if (stream->match(tokens::False)) {
-			v.set(buildBool(false));
+			v.set(false);
 			stream->next();
+			match_process_condition(stream, v);
 			return true;
 		}
 		else if (stream->match(tokens::number)) {
 			v.set(std::stod(stream->next().name));
+			match_process_condition(stream, v);
 			return true;
 		}
 		else if (stream->match(tokens::string)) {
 			v.set(buildString(stream->next().name));
+			match_process_condition(stream, v);
 			return true;
 		}
 		else if (stream->match(tokens::name)) {
 			v.set(buildString(stream->next().name));
 			v.type = datatypes::variable;
+			match_process_condition(stream, v);
 			return true;
 		}
 		else if (stream->match(tokens::nil)) {
 			stream->next();
 			v.set();
+			match_process_condition(stream, v);
 			return true;
 		}
 		else if (stream->match(tokens::bracketo, tokens::name, tokens::bracketc)) {
@@ -50,11 +60,82 @@ namespace dms {
 			v.set(buildString(stream->next().name));
 			v.type = datatypes::block;
 			stream->next();
+			match_process_condition(stream, v);
 			return true;
 		}
 		else if (stream->match(tokens::newline)) {
 			return false;
 		}
+		return false;
+	}
+	bool LineParser::match_process_condition(tokenstream* stream, value& v) {
+		// This has taken way too long, but there exists only a few places where this needs to be interjected
+		// The reference to v needs some work if we have a comparison!
+		// First we need to get a copy of v store it somewhere do the comparision and convert v into a variable that points to the output of the comparison
+
+		comp cmp;
+		// We only need to see if one of these conditions are true
+		//==
+		if (stream->match(tokens::equal,tokens::equal)) {
+			cmp = comp::eq;
+			stream->next();
+			stream->next();
+		}
+		//<=
+		else if (stream->match(tokens::anglebracketO, tokens::equal)) {
+			cmp = comp::lteq;
+			stream->next();
+			stream->next();
+		}
+		//>=
+		else if (stream->match(tokens::anglebracketC, tokens::equal)) {
+			cmp = comp::gteq;
+			stream->next();
+			stream->next();
+		}
+		//!=
+		else if (stream->match(tokens::exclamation, tokens::equal)) {
+			cmp = comp::nteq;
+			stream->next();
+			stream->next();
+		}
+		//<
+		else if (stream->match(tokens::anglebracketO)) {
+			cmp = comp::lt;
+			stream->next();
+		}
+		//>
+		else if (stream->match(tokens::anglebracketC)) {
+			cmp = comp::gt;
+			stream->next();
+		}
+		else {
+			return false;
+		}
+		// So if all is good we continue here
+		value right = value(datatypes::variable);
+		value left = v;
+		value var = value(datatypes::variable);
+		// COMP cmp out v1 v2
+		if (match_process_standard(stream,right)) {
+			v.set(buildString(var.s->getValue()));
+			v.type = datatypes::variable;
+			cmd* c = new cmd;
+			c->opcode = codes::COMP;
+			c->args.push(value((double)cmp));
+			c->args.push(var);
+			c->args.push(left);
+			c->args.push(right);
+			current_chunk->addCmd(c);
+			return true;
+		}
+		else {
+			badSymbol(stream);
+			return false;
+		}
+	}
+	//Covers if, elseif, else
+	bool LineParser::match_process_if(tokenstream* stream) {
 		return false;
 	}
 	bool LineParser::match_process_list(tokenstream* stream, value& v) {
@@ -557,7 +638,7 @@ namespace dms {
 				if (tempstream.match(tokens::seperator)) {
 					// We have a seperator for function arguments
 					tempstream.next(); // Consume it
-				} 
+				}
 				else if (match_process_standard(&tempstream, tempval)) {
 					c->args.push(tempval);
 				}

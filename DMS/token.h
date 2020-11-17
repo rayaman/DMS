@@ -50,6 +50,8 @@ namespace dms::tokens {
 		ampersand,
 		nil,
 		pipe,
+		anglebracketO,
+		anglebracketC,
 	};//stream, t_vec, line, isNum, buffer
 	struct token {
 		tokentype type = noop;
@@ -121,7 +123,9 @@ namespace dms::tokens {
 				"dollar",
 				"ampersand",
 				"nil",
-				"pipe"
+				"pipe",
+				"anglebracketO",
+				"anglebracketC",
 			};
 			out << "Line <" << c.line_num << "> " << tokenlist[c.type] << " \t\t " << c.name;
 			return out;

@@ -2,7 +2,7 @@
 #include "Handlers.h"
 namespace dms {
 	void dms_state::init() {
-		if (init_init)
+		if (init_init || stop)
 			return;
 		init_init = true;
 		cmd* c = new cmd;
@@ -36,6 +36,9 @@ namespace dms {
 	}
 	void dms_state::pushMem() {
 		mem_stack.push(memory());
+	}
+	void dms_state::pushMem(memory &mem) {
+		mem_stack.push(mem);
 	}
 	void dms_state::popMem() {
 		mem_stack.pop();

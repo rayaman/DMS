@@ -140,5 +140,8 @@
     <ClInclude Include="dms_list.h">
       <Filter>Source Files\DMS</Filter>
     </ClInclude>
+    <ClInclude Include="comparisons.h">
+      <Filter>Header Files\DMS</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

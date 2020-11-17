@@ -231,6 +231,14 @@ namespace dms {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
 				t_vec.push_back(token{ tokens::ampersand,codes::NOOP,"&",line });
 			}
+			else if (data == '>') {
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::anglebracketC,codes::NOOP,">",line });
+			}
+			else if (data == '>') {
+				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
+				t_vec.push_back(token{ tokens::anglebracketO,codes::NOOP,"<",line });
+			}
 			else if (data == '\t') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
 				t_vec.push_back(token{ tokens::tab,codes::NOOP,"\t",line });
@@ -377,6 +385,10 @@ namespace dms {
 					flagcmd = new cmd;
 				}
 				else if (code == codes::ENTR && tok == tokens::name) {
+					if (state->entry != "$undefined") {
+						state->push_error(errors::error{ errors::unknown ,utils::concat("Entrypoint already defined as '",state->entry,"'. Trying to redefine as '",temp[0].name,"' is not allowed!"), true,stream->last().line_num,current_chunk });
+						return;
+					}
 					state->entry = temp[0].name;
 					flagcmd->opcode = code;
 					flagcmd->args.push(value(temp[0].name));
@@ -411,6 +423,7 @@ namespace dms {
 				}
 				else {
 					state->push_error(errors::error{ errors::badtoken,concat("Expected <FLAG IDENTIFIER> got: ", current, temp[0]),true,line,current_chunk });
+					return;
 				}
 			}
 			// Default block
@@ -470,6 +483,8 @@ namespace dms {
 							std::stringstream str;
 							str << "Unexpected symbol: " << tokens[i];
 							state->push_error(errors::error{ errors::badtoken,str.str(),true,line,current_chunk });
+							
+							return;
 						}
 					}
 					// If all went well the 'args' now has all of tha params for the method we will be working with
@@ -479,6 +494,8 @@ namespace dms {
 				else {
 					str << "'function' keyword expected got " << b;
 					state->push_error(errors::error{ errors::badtoken, str.str(),true,line,current_chunk });
+					
+					return;
 				}
 			}
 			// Control Handle all controls here

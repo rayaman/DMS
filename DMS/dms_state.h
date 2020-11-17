@@ -12,11 +12,13 @@
 #include "memory.h"
 #include <stack>
 #include "dms_list.h"
+#include "comparisons.h"
 namespace dms {
 	struct Handler;
 	value blockInvoke(void*, dms_state*, dms_args*);
 	struct dms_state
 	{
+		friend class LineParser;
 		Handler* handler = nullptr;
 		bool hasFirst = false;
 		Invoker invoker;
@@ -74,6 +76,7 @@ namespace dms {
 	private:
 		// From what I gathered
 		//std::mutex memory_mutex;
+		void pushMem(memory&);
 		bool stop = false;
 		bool init_init = false;
 		void init(chunk* chunk, size_t &pos,size_t &max, std::vector<cmd*>& cmds);

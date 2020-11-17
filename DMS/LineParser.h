@@ -14,6 +14,7 @@
 #include "token.h"
 #include "utils.h"
 #include "errors.h"
+#include "comparisons.h"
 
 namespace dms {
 	struct tokenstream {
@@ -76,6 +77,8 @@ namespace dms {
 		bool match_process_standard(tokenstream* stream, value& v); // All types that are matchable are handled here!
 		bool match_process_index(tokenstream* stream,value& v, bool leftside = false);
 		bool match_process_return(tokenstream* stream);
+		bool match_process_condition(tokenstream* stream, value& v);
+		bool match_process_if(tokenstream* stream);
 
 		// Build
 		void buildGoto(std::string g, bool v = false);

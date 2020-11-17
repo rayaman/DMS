@@ -11,20 +11,6 @@ namespace dms {
 	void dms_state::setHandler(Handler* hand) {
 		this->handler = hand;
 	}
-	void checkCharacter(character* cc,std::string index, datatypes type) {
-		value val = cc->get(index);
-		// If a type mismatch is present, overwrite them with the defaults
-		if (val.type!=type) {
-			if (type == datatypes::string)
-				cc->values[index] = value("");
-			else if (type == datatypes::boolean) {
-				cc->values[index] = value(false);
-			}
-			else if (type == datatypes::number) {
-				cc->values[index] = value(0);
-			}
-		}
-	}
 	enviroment* dms_state::getEnvironment(std::string env) {
 		if (environments.count(env)) {
 			return environments[env];
@@ -46,6 +32,20 @@ namespace dms {
 		}
 		return nullptr;
 	}
+	void checkCharacter(character* cha, std::string index, datatypes type) {
+		auto val = cha->values[index];
+		// If a type mismatch is present, overwrite them with the defaults
+		if (val.type != type) {
+			if (type == datatypes::string)
+				cha->values[index] = value("");
+			else if (type == datatypes::boolean) {
+				cha->values[index] = value(false);
+			}
+			else if (type == datatypes::number) {
+				cha->values[index] = value(0);
+			}
+		}
+	}
 	character* dms_state::getCharacter(std::string cha) {
 		if (characters.count(cha)) {
 			characters[cha]->seen = true;
@@ -53,12 +53,13 @@ namespace dms {
 		}
 		else {
 			if (blockExists(cha)) {
+				pushMem();
 				character* cc = new character;
 				cc->fullname = isEnabled("fullname");
-				cc->set("fname", cha);
+				/*cc->set("fname", cha);
 				cc->set("lname", "");
 				cc->set("unknown", "Unknown");
-				cc->set("known", false);
+				cc->set("known", false);*/
 				if (isEnabled("omniscient")) {
 					cc->seen = true;
 				}
@@ -66,20 +67,25 @@ namespace dms {
 					cc->seen = false;
 				}
 				if (run(cha,&cc->values)) {
+					cc->values = *getMem();
 					checkCharacter(cc, "fname",datatypes::string);
-					checkCharacter(cc, "lname", datatypes::string);
+					if (cc->get("fname") == value("")) {
+						cc->set("fname",value(cha));
+					}
 					checkCharacter(cc, "unknown", datatypes::string);
 					checkCharacter(cc, "known", datatypes::boolean);
-					if (cc->get("known").b == true) {
+					if (cc->get("known").b) {
 						cc->seen = true;
 					}
 				}
 				else {
+					popMem();
 					return nullptr;
 				}
 				characters.insert_or_assign(cha, cc);
 				// Call Character event!
 				handler->OnSpeakerCreated(this,cc);
+				popMem();
 				return cc;
 			}
 			else {
@@ -108,6 +114,8 @@ namespace dms {
 		return true;
 	}
 	bool dms_state::run() {
+		if (stop)
+			return false;
 		if (chunks[entry] == NULL) {
 			push_error(errors::error{ errors::non_existing_block ,utils::concat("Attempted to Jump to a non existing block [",entry,"]") });
 			return false;
@@ -226,6 +234,8 @@ namespace dms {
 						else if (environmentExists(obj)) {
 							ret = getEnvironment(obj)->Invoke(funcname, this, &args);
 						}
+						if (ret.type == datatypes::error)
+							return false;
 						if (assn.type != datatypes::nil) {
 							assign(assn, ret);
 						}
@@ -248,6 +258,8 @@ namespace dms {
 						else {
 							ret = invoker.Invoke(funcname, this, &args);
 						}
+						if (ret.type == datatypes::error)
+							return false;
 						if (assn.type != datatypes::nil) {
 							assign(assn, ret);
 						}
@@ -385,9 +397,43 @@ namespace dms {
 						list.e->pushValue(c->args.args[1]);
 					}
 					break;
+				case COMP:
+					{
+						comp cmp = (comp)c->args.args[0].n;
+						value assn = c->args.args[1];
+						value left = c->args.args[2].resolve(this);
+						value right = c->args.args[3].resolve(this);
+						switch (cmp) {
+							case comp::eq: {
+								assign(assn, value(left == right));
+								break;
+							}
+							case comp::gt: {
+								assign(assn, value(left > right));
+								break;
+							}
+							case comp::gteq: {
+								assign(assn, value(left >= right));
+								break;
+							}
+							case comp::lt: {
+								assign(assn, value(left < right));
+								break;
+							}
+							case comp::lteq: {
+								assign(assn, value(left <= right));
+								break;
+							}
+							case comp::nteq: {
+								assign(assn, value(left != right));
+								break;
+							}
+						}
+					}
+					break;
 				case HALT:
 					//wait();
-					sleep(700);
+					//sleep(700);
 					std::cout << std::endl;
 					break;
 				case WAIT:

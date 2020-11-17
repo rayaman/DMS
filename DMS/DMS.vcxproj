@@ -169,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="character.h" />
+    <ClInclude Include="comparisons.h" />
     <ClInclude Include="dms_list.h" />
     <ClInclude Include="enviroment.h" />
     <ClInclude Include="Handlers.h" />

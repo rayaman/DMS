@@ -1,6 +1,7 @@
 entry main // Will either start the first block seen or the block supplied by you!
 //enable warnings
 disable omniscient
+enable fullname
 enable forwardlabels // Do most of your labels exist ahead?
 enable savestate
 //enable leaking
@@ -8,18 +9,20 @@ enable savestate
 loadfile "loadtest.dms"
 version 0.2
 using extendedDefine
-
 [main]
 	Ryan: "Hello `Bob`, how are you doing?"
-	Bob: "Hi `Ryan`, I'm good."
+	Bob: "Hi `Ryan`, I'm good, I'm Bob by the way."
+	Ryan: "Oh so your name is `Bob`, nice to meet you!"
 	a = 1000
 	imp = "this"
+	print("Hello",122==123)
 	test = invokeTest("Running external code!");
 	"Loop Test... `test`"
 	choice "Pick one" {
 		"this" goto imp
 		"that" goto ("that")
 	}
+	enable test
 	::this::
 		"At \"this\""
 		goto "loop"
@@ -31,16 +34,16 @@ using extendedDefine
 		goto ("loop")
 	
 	
-	if (this==that) this()|that()
+	// if (this==that) this()|that()
 	
 	
-	if(this == that){
+	// if(this == that){
 		
-	} else if (that > this) {
+	// } elseif (that > this) {
 		
-	} else {
+	// } else {
 		
-	}
+	// }
 
 [Bob:char]
 	//fname = "Bob"

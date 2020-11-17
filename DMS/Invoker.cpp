@@ -24,7 +24,7 @@ namespace dms {
             return funcs[str](self, state, args);
         }
         state->push_error(errors::error{ errors::non_existing_function, utils::concat("Attempt to call '",str,"' a nil value!") });
-        return nullptr;
+        return value(datatypes::error);
     }
     std::unordered_map<std::string, value (*)(void*, dms_state*, dms_args*)> Invoker::Export() {
         return funcs;

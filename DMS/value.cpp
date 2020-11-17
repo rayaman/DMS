@@ -52,7 +52,7 @@ namespace dms {
 				s = buildString(other.s->val);
 				break;
 			case datatypes::boolean:
-				b = buildBool(other.b);
+				b = other.b;
 				break;
 			case datatypes::custom:
 				// Handle this later
@@ -199,6 +199,30 @@ namespace dms {
 	}
 	bool operator!=(const value& lhs, const value& rhs) {
 		return !(lhs.getPrintable() == rhs.getPrintable());
+	}
+	bool operator>(const value& lhs, const value& rhs) {
+		if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
+			return lhs.n > rhs.n;
+		}
+		return false;
+	}
+	bool operator<(const value& lhs, const value& rhs) {
+		if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
+			return lhs.n < rhs.n;
+		}
+		return false;
+	}
+	bool operator>=(const value& lhs, const value& rhs) {
+		if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
+			return lhs.n >= rhs.n;
+		}
+		return false;
+	}
+	bool operator<=(const value& lhs, const value& rhs) {
+		if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
+			return lhs.n <= rhs.n;
+		}
+		return false;
 	}
 	value value::resolve(dms_state* state) {
 		if (type == datatypes::variable && (*this)!=(*state->getMem())[getPrintable()]) {
@@ -363,9 +387,6 @@ namespace dms {
 			newstr << str[i];
 		dms_string* dms_str = new dms_string{ newstr.str() };
 		return dms_str;
-	}
-	dms_boolean* buildBool(bool b) {
-		return new dms_boolean{b};
 	}
 	std::string value::toString() const {
 		std::stringstream temp;
