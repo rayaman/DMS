@@ -2,25 +2,29 @@
 #include "dms_state.h"
 #include "utils.h"
 namespace dms {
-	const std::string datatype[] = { "escape", "nil", "number", "boolean", "env", "string", "custom", "variable", "block" };
+	const std::string datatype[] = { "escape", "nil", "number", "boolean", "env", "string", "custom", "variable", "block" , "error"};
 	value::value() {
 		// Nothing to do here yet!
 	}
 	value::value(char const* str, datatypes t) {
 		type = t;
-		s = buildString(str);
+		s = str;
 	}
 	value::value(char const* str) {
 		type = datatypes::string;
-		s = buildString(str);
+		s = str;
+	}
+	value::value(size_t val) {
+		type = datatypes::number;
+		n = val;
 	}
 	value::value(std::string str) {
 		type = datatypes::string;
-		s = buildString(str);
+		s = str;
 	}
 	value::value(std::string str,datatypes t) {
 		type = t;
-		s = buildString(str);
+		s = str;
 	}
 	value::value(double d) {
 		type = datatypes::number;
@@ -40,7 +44,7 @@ namespace dms {
 	size_t count = 0;
 	value::value(datatypes t) : value() {
 		if (t == datatypes::variable) {
-			set(buildString(utils::concat("$",++count)));
+			set(utils::concat("$",++count));
 		}
 		type = t;
 	}
@@ -49,7 +53,7 @@ namespace dms {
 			type = other.type;
 			switch (other.type) {
 			case datatypes::block:
-				s = buildString(other.s->val);
+				s = other.s;
 				break;
 			case datatypes::boolean:
 				b = other.b;
@@ -61,7 +65,7 @@ namespace dms {
 				// Handle this later
 				break;
 			case datatypes::escape:
-				s = buildString(other.s->val);
+				s = other.s;
 				break;
 			case datatypes::nil:
 				// No need to do anything
@@ -70,10 +74,10 @@ namespace dms {
 				n = other.n;
 				break;
 			case datatypes::string:
-				s = buildString(other.s->val);
+				s = other.s;
 				break;
 			case datatypes::variable:
-				s = buildString(other.s->val);
+				s = other.s;
 				break;
 			default:
 				break;
@@ -86,7 +90,7 @@ namespace dms {
 			type = other.type;
 			switch (other.type) {
 			case datatypes::block:
-				s = buildString(other.s->val);
+				s = other.s;
 				break;
 			case datatypes::boolean:
 				b = other.b;
@@ -98,7 +102,7 @@ namespace dms {
 				// Handle this later
 				break;
 			case datatypes::escape:
-				s = buildString(other.s->val);
+				s = other.s;
 				break;
 			case datatypes::nil:
 				// No need to do anything
@@ -107,10 +111,10 @@ namespace dms {
 				n = other.n;
 				break;
 			case datatypes::string:
-				s = buildString(other.s->val);
+				s = other.s;
 				break;
 			case datatypes::variable:
-				s = buildString(other.s->val);
+				s = other.s;
 				break;
 			default:
 				break;
@@ -129,7 +133,7 @@ namespace dms {
 			type = other.type;
 			switch (other.type) {
 			case datatypes::block:
-				s = buildString(other.s->val);
+				s = other.s;
 				break;
 			case datatypes::boolean:
 				b = other.b;
@@ -141,7 +145,7 @@ namespace dms {
 				// Handle this later
 				break;
 			case datatypes::escape:
-				s = buildString(other.s->val);
+				s = other.s;
 				break;
 			case datatypes::nil:
 				// No need to do anything
@@ -150,10 +154,10 @@ namespace dms {
 				n = other.n;
 				break;
 			case datatypes::string:
-				s = buildString(other.s->val);
+				s = other.s;
 				break;
 			case datatypes::variable:
-				s = buildString(other.s->val);
+				s = other.s;
 				break;
 			default:
 				break;
@@ -169,8 +173,14 @@ namespace dms {
 		if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
 			return value(lhs.n + rhs.n);
 		}
-		else {
+		else if (lhs.type == datatypes::boolean && rhs.type == datatypes::boolean) {
+			return value((bool)(lhs.b + rhs.b));
+		}
+		else if (lhs.type == datatypes::string || rhs.type == datatypes::string) {
 			return lhs.getPrintable() + rhs.getPrintable();
+		}
+		else {
+			return value("Invalid use of '+'!", datatypes::error);
 		}
 	}
 	value operator-(const value& lhs, const value& rhs) {
@@ -192,6 +202,9 @@ namespace dms {
 	value operator*(const value& lhs, const value& rhs) {
 		if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
 			return value(lhs.n * rhs.n);
+		}
+		else if (lhs.type == datatypes::boolean && rhs.type == datatypes::boolean) {
+			return value((bool)(lhs.b * rhs.b));
 		}
 		else {
 			return value(datatypes::error);
@@ -237,6 +250,9 @@ namespace dms {
 		return args.size();
 	}
 	std::string dms_string::getValue(dms_state* state) {
+		std::vector<char> _temp;
+		std::vector<char> _var;
+		std::vector<char> _ind;
 		std::stringstream temp;
 		std::stringstream var;
 		std::stringstream ind;
@@ -316,8 +332,8 @@ namespace dms {
 				if (state->getMem()->count(lookup)) {
 					value v = (*state->getMem())[lookup];
 					if (v.type == datatypes::block) {
-						if (state->getCharacter(v.s->getValue())) {
-							temp << state->characters[v.s->getValue()]->getName();
+						if (state->getCharacter(v.s)) {
+							temp << state->characters[v.s]->getName();
 						}
 						else {
 							temp << "nil";
@@ -351,60 +367,51 @@ namespace dms {
 		return temp.str();
 	}
 	std::string value::getPrintable() const {
-		std::stringstream out;
 		if (type == string) {
-			out << s->getValue();
+			return s;
 		}
 		else if (type == number) {
-			out << n;
+			return std::to_string(n);
 		}
 		else if (type == nil) {
-			out << "nil";
+			return "nil";
 		}
 		else if (type == boolean) {
 			if (b)
-				out << "true";
+				return "true";
 			else
-				out << "false";
+				return "false";
 		}
 		else if (type == env) {
-			out << "Env: " << this;
+			return "env";
 		}
 		else if (type == custom) {
-			out << "Custom Data: " << this;
+			return "custom";
 		}
 		else if (type == block) {
-			out << s->getValue();
+			return s;
 		}
 		else if (type == datatypes::variable) {
-			out << s->getValue(); // Do the lookup
+			return s; // Do the lookup
 		}
-		return out.str();
-	}
-	dms_string* buildString(std::string str) {
-		std::stringstream newstr;
-		for (int i = 0; i < str.size(); i++)
-			newstr << str[i];
-		dms_string* dms_str = new dms_string{ newstr.str() };
-		return dms_str;
+		else if (type == datatypes::error) {
+			return std::string("ERROR: ") + s;
+		}
+		return "unknown";
 	}
 	std::string value::toString() const {
-		std::stringstream temp;
-		temp << this;
-		return temp.str();
+		return getPrintable();
 	}
 	// Compile time
 	void value::nuke() {
-		delete s;
 		delete e;
 		delete c;
-		s = nullptr;
 		e = nullptr;
 		c = nullptr;
 	}
 	std::ostream& operator << (std::ostream& out, const value& c) {
 		if (c.type == string) {
-			out << (char)c.type << c.s->getValue() << (char)0;
+			out << (char)c.type << c.s << (char)0;
 		}
 		else if (c.type == number) {
 			out << (char)c.type << c.n;
@@ -425,10 +432,10 @@ namespace dms {
 			out << (char)c.type << "Custom Data: " << c;
 		}
 		else if (c.type == block) {
-			out << (char)c.type << c.s->getValue();
+			out << (char)c.type << c.s;
 		}
 		else if (c.type == datatypes::variable) {
-			out << (char)c.type << c.s->getValue(); // Do the lookup
+			out << (char)c.type << c.s; // Do the lookup
 		}
 		return out;
 	};
@@ -441,7 +448,7 @@ namespace dms {
 			n = val->n;
 		}
 		else if (type == datatypes::string || type == datatypes::block || type == datatypes::variable) {
-			s->val = val->s->val;
+			s = val->s;
 		}
 		else if (type == datatypes::boolean) {
 			b = val->b;
@@ -451,7 +458,7 @@ namespace dms {
 		}
 		type = val->type;
 	}
-	void value::set(dms_string* str) {
+	void value::set(std::string str) {
 		nuke();
 		s = str;
 		type = string;

@@ -50,13 +50,12 @@ namespace dms {
 		dms_state* state=nullptr;
 		value* self;
 	};
-	dms_string* buildString(std::string str);
 	struct value {
 	public:
 		datatypes type = datatypes::nil;
 		bool b=false;
 		double n=0;
-		dms_string* s = nullptr;
+		std::string s;
 		dms_list* e = nullptr;
 		dms_custom* c = nullptr;
 		value();
@@ -67,6 +66,7 @@ namespace dms {
 		value(char const*);
 		value(double);
 		value(int);
+		value(size_t);
 		value(bool);
 		~value();
 		value(const value& other);
@@ -87,7 +87,7 @@ namespace dms {
 		value resolve(dms_state*);
 		void nuke();
 		void set(value*);
-		void set(dms_string* str);
+		void set(std::string str);
 		void set(bool bo);
 		void set(double num);
 		void set(dms_list* en);

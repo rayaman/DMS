@@ -210,7 +210,7 @@ namespace dms {
 			if (current_chunk->cmds.size() >= 2 && current_chunk->cmds[current_chunk->cmds.size() - 1]!=nullptr && current_chunk->cmds[current_chunk->cmds.size() - 1]->opcode==codes::LINE && (size_t)current_chunk->cmds[current_chunk->cmds.size()-1]->args.args[0].n== (size_t)stream->peek().line_num) {
 				return;
 			}
-			int current_line = stream->peek().line_num;
+			int current_line = (int)stream->peek().line_num;
 			cmd* ln = new cmd;
 			ln->opcode = codes::LINE;
 			ln->args.push(value(current_line));

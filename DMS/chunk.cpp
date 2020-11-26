@@ -11,6 +11,7 @@ namespace dms {
 			return "character";
 		if (b == bt_menu)
 			return "menu";
+		return "unknown";
 	}
 	void chunk::addCmd(cmd* c) {
 		cmds.push_back(c);

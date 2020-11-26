@@ -1,5 +1,19 @@
 #include "utils.h"
 namespace dms::utils {
+	void print(const value val) {
+		printf(val.getPrintable().c_str());
+	}
+	std::string concat(value& v1, value& v2, value& v3, value& v4, value& v5, value& v7, value& v8, value& v9, value& v10, value& v11, value& v12) {
+		std::vector<value> list{v1,v2,v3,v4,v5,v7,v8,v9,v10,v11,v12};
+		std::string str="";
+		for (size_t i = 0; i < list.size(); i++) {
+			if (list[i] != nullptr)
+				str = (str + list[i].toString());
+			else
+				return str;
+		}
+		return str;
+	}
 	void sleep(unsigned int mseconds)
 	{
 		clock_t goal = mseconds + clock();

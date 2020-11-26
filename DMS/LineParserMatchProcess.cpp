@@ -4,6 +4,27 @@ using namespace dms::utils;
 // TODO: process if elseif else statements, for loops and while loops
 namespace dms {
 	bool LineParser::match_process_standard(tokenstream* stream, value& v) {
+		if (stream->match(tokens::parao)) {
+			std::vector<tokens::token> toks = stream->next(tokens::parao, tokens::parac);
+			//toks.pop_back(); // Remove the ')'
+			toks.push_back(tokens::token{tokens::newline,codes::NOOP,"",stream->peek().line_num});
+			tokenstream tempstream;
+			tempstream.init(&toks);
+			value var(datatypes::variable);
+			if (match_process_standard(&tempstream, var)) {
+				v.set(var.s);
+				v.type = datatypes::variable;
+				return true;
+			}
+			else {
+				badSymbol(stream);
+				return false;
+			}
+			return true;
+		}
+		else if (match_process_andor(stream, v)) {
+			return true;
+		}
 		if (match_process_expression(stream, v)) {
 			match_process_condition(stream,v);
 			return true;
@@ -38,12 +59,12 @@ namespace dms {
 			return true;
 		}
 		else if (stream->match(tokens::string)) {
-			v.set(buildString(stream->next().name));
+			v.set(stream->next().name);
 			match_process_condition(stream, v);
 			return true;
 		}
 		else if (stream->match(tokens::name)) {
-			v.set(buildString(stream->next().name));
+			v.set(stream->next().name);
 			v.type = datatypes::variable;
 			match_process_condition(stream, v);
 			return true;
@@ -57,22 +78,50 @@ namespace dms {
 		else if (stream->match(tokens::bracketo, tokens::name, tokens::bracketc)) {
 			// We are assigning a block as a variable
 			stream->next();
-			v.set(buildString(stream->next().name));
+			v.set(stream->next().name);
 			v.type = datatypes::block;
 			stream->next();
 			match_process_condition(stream, v);
 			return true;
 		}
 		else if (stream->match(tokens::newline)) {
-			return false;
+			return match_process_standard(stream,v);
 		}
 		return false;
+	}
+	bool LineParser::match_process_andor(tokenstream* stream, value& v) {
+		codes::op code = codes::MUL;
+		if (stream->match(tokens::Or)) {
+			code = codes::ADD;
+		}
+		else if (!stream->match(tokens::And)){
+			return false;
+		}
+		stream->next();
+		value right = value(datatypes::variable);
+		value left = v;
+		value var = value(datatypes::variable);
+		// We have some work to do here
+		if (match_process_standard(stream, right)) {
+			v.set(var.s);
+			v.type = datatypes::variable;
+			cmd* c = new cmd;
+			c->opcode = code;
+			c->args.push(v);
+			c->args.push(left);
+			c->args.push(right);
+			current_chunk->addCmd(c);
+			return true;
+		}
+		else {
+			badSymbol(stream);
+			return false;
+		}
 	}
 	bool LineParser::match_process_condition(tokenstream* stream, value& v) {
 		// This has taken way too long, but there exists only a few places where this needs to be interjected
 		// The reference to v needs some work if we have a comparison!
 		// First we need to get a copy of v store it somewhere do the comparision and convert v into a variable that points to the output of the comparison
-
 		comp cmp;
 		// We only need to see if one of these conditions are true
 		//==
@@ -118,7 +167,7 @@ namespace dms {
 		value var = value(datatypes::variable);
 		// COMP cmp out v1 v2
 		if (match_process_standard(stream,right)) {
-			v.set(buildString(var.s->getValue()));
+			v.set(var.s);
 			v.type = datatypes::variable;
 			cmd* c = new cmd;
 			c->opcode = codes::COMP;
@@ -127,6 +176,9 @@ namespace dms {
 			c->args.push(left);
 			c->args.push(right);
 			current_chunk->addCmd(c);
+			if (match_process_andor(stream, v)) {
+				match_process_standard(stream, v);
+			}
 			return true;
 		}
 		else {
@@ -135,9 +187,6 @@ namespace dms {
 		}
 	}
 	//Covers if, elseif, else
-	bool LineParser::match_process_if(tokenstream* stream) {
-		return false;
-	}
 	bool LineParser::match_process_list(tokenstream* stream, value& v) {
 		if (stream->match(tokens::cbracketo)) {
 			token start = stream->peek();
@@ -628,13 +677,11 @@ namespace dms {
 				}
 			}
 			value tempval;
-			token tok;
 			value ref = value(datatypes::variable);
 			// This part we add values to the opcodes for the bytecode FUNC val a1 a2 a3 ... an
 			while (tempstream.peek().type != tokens::none) { // End of stream
 				debugInvoker(stream);
 				tempval = value(datatypes::variable);
-				tok = tempstream.peek();
 				if (tempstream.match(tokens::seperator)) {
 					// We have a seperator for function arguments
 					tempstream.next(); // Consume it
@@ -651,6 +698,7 @@ namespace dms {
 					return true;
 				}
 				else {
+					utils::debug(tempstream.peek());
 					badSymbol(&tempstream);
 				}
 			}
@@ -807,6 +855,21 @@ namespace dms {
 		return false;
 	}
 	bool LineParser::match_process_IFFF(tokenstream* stream) {
+		/*if(this) {
+		*	then()
+		* }
+		* else if(that){
+		*	doThis()
+		* } else {
+		*	this()
+		* }
+		*/
+
+		// We match a condition, or anything that is non nil/false
+		// God controls are from a time past... I could refactor, but I'm lazy and would have to change a lot of old code... So we will deal with controls
+		if (stream->match(tokens::name) && stream->peek().name == "if") {
+			utils::debug("Let's process an if");
+		}
 		return false; // TODO finish this
 	}
 	
@@ -848,7 +911,8 @@ namespace dms {
 				debugInvoker(stream);
 				if (stream->match(tokens::parao)) {
 					tokenstream temp;
-					temp.init(&(stream->next(tokens::parao, tokens::parac))); // Balanced match!
+					auto ts = stream->next(tokens::parao, tokens::parac);
+					temp.init(&ts); // Balanced match!
 					value tmpvalue = value(datatypes::variable);
 					if (match_process_expression(&temp, tmpvalue)) {
 						if (left.isNil())

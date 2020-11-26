@@ -235,7 +235,7 @@ namespace dms {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
 				t_vec.push_back(token{ tokens::anglebracketC,codes::NOOP,">",line });
 			}
-			else if (data == '>') {
+			else if (data == '<') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
 				t_vec.push_back(token{ tokens::anglebracketO,codes::NOOP,"<",line });
 			}
@@ -244,8 +244,9 @@ namespace dms {
 				t_vec.push_back(token{ tokens::tab,codes::NOOP,"\t",line });
 			}
 
-			if (data == ' ' && !isStr) { // tokens end with a space
+			if ((data == ' ' || data == '(') && !isStr) { // tokens end with a space
 				std::string str = stream.processBuffer(buffer);
+				utils::debug("> ",str);
 				tolower(str);
 				if (str == "enable") {
 					t_vec.push_back(token{ tokens::flag,codes::ENAB,"",line });
@@ -265,32 +266,17 @@ namespace dms {
 				else if (str == "disable") {
 					t_vec.push_back(token{ tokens::flag,codes::DISA,"",line });
 				}
-				else if (str == "if") {
-					t_vec.push_back(token{ tokens::control,codes::IFFF,"",line });
-				}
-				else if (str == "elseif") {
-					t_vec.push_back(token{ tokens::control,codes::ELIF,"",line });
-				}
-				else if (str == "while") {
-					t_vec.push_back(token{ tokens::control,codes::WHLE,"",line });
-				}
 				else if (str == "true") {
 					t_vec.push_back(token{ tokens::True,codes::NOOP,"",line });
 				}
 				else if (str == "false") {
 					t_vec.push_back(token{ tokens::False,codes::NOOP,"",line });
 				}
-				else if (str == "else") {
-					t_vec.push_back(token{ tokens::control,codes::ELSE,"",line });
-				}
 				else if (str == "and") {
 					t_vec.push_back(token{ tokens::And,codes::NOOP,"",line });
 				}
 				else if (str == "or") {
 					t_vec.push_back(token{ tokens::Or,codes::NOOP,"",line });
-				}
-				else if (str == "for") {
-					t_vec.push_back(token{ tokens::For,codes::NOOP,"",line });
 				}
 				else if (str == "choice") {
 					t_vec.push_back(token{ tokens::control,codes::CHOI,"",line });
@@ -473,7 +459,7 @@ namespace dms {
 							// We got a name which is refering to a variable so lets build one
 							value v;
 							v.type = datatypes::variable; // Special type, it writes data to the string portion, but is interperted as a lookup
-							v.s = buildString(tokens[i].name);
+							v.s = tokens[i].name;
 							args.push(v);
 						}
 						else if (tokens[i].type == tokens::seperator) {
@@ -499,15 +485,7 @@ namespace dms {
 				}
 			}
 			// Control Handle all controls here
-			if (stream->match(tokens::control)) {
-				//token control = stream->next();
-				if (match_process_choice(stream)) {
-					// Handle choice stuff
-				}
-				else if (match_process_IFFF(stream)) {
-					// This will probably be the toughest one of them all
-				}
-			}
+			match_process_IFFF(stream);
 			// Let's handle function stuff!
 			//utils::print("[return]");
 			match_process_return(stream);

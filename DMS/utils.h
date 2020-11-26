@@ -10,13 +10,14 @@
 #include <time.h>
 namespace dms::utils {
 	template<class... Args>
-	void print(const Args... args) {
+	void debug(const Args... args) {
 		(std::cout << ... << args) << std::endl;
 	}
 	template<class... Args>
 	void write(const Args... args) {
 		(std::cout << ... << args);
 	}
+	void print(const value values...);
 	template<class... Args>
 	std::string concat(Args... args) {
 		std::stringstream str;

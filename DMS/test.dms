@@ -10,29 +10,13 @@ loadfile "loadtest.dms"
 version 0.2
 using extendedDefine
 [main]
-	Ryan: "Hello `Bob`, how are you doing?"
-	Bob: "Hi `Ryan`, I'm good, I'm Bob by the way."
-	Ryan: "Oh so your name is `Bob`, nice to meet you!"
-	a = 1000
-	imp = "this"
-	print("Hello",122==123)
-	test = invokeTest("Running external code!");
-	"Loop Test... `test`"
-	choice "Pick one" {
-		"this" goto imp
-		"that" goto ("that")
+	a = 10
+	b = 15
+	print(a==b or (a!=b and a==a) or a>b)
+	if(a==b){
+		
 	}
-	enable test
-	::this::
-		"At \"this\""
-		goto "loop"
-	::that::
-		"At \"that\""
-	::loop::
-		a = a + 1
-		"a = `a`"
-		goto ("loop")
-	
+	//	   0 + (1 * 0) + 0
 	
 	// if (this==that) this()|that()
 	

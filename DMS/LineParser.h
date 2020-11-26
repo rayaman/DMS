@@ -30,6 +30,7 @@ namespace dms {
 		tokens::token peek();
 		tokens::token last();
 		std::vector<tokens::token> next(tokens::tokentype tk);
+		bool match(codes::op t1 = codes::NOOP);
 		bool match(tokens::tokentype t1 = tokens::none, tokens::tokentype t2 = tokens::none, tokens::tokentype t3 = tokens::none, tokens::tokentype t4 = tokens::none, tokens::tokentype t5 = tokens::none, tokens::tokentype t6 = tokens::none, tokens::tokentype t7 = tokens::none, tokens::tokentype t8 = tokens::none, tokens::tokentype t9 = tokens::none, tokens::tokentype t10 = tokens::none, tokens::tokentype t11 = tokens::none, tokens::tokentype t12 = tokens::none);
 		bool match(tokens::tokentype* t1 = nullptr, tokens::tokentype* t2 = nullptr, tokens::tokentype* t3 = nullptr, tokens::tokentype* t4 = nullptr, tokens::tokentype* t5 = nullptr, tokens::tokentype* t6 = nullptr, tokens::tokentype* t7 = nullptr, tokens::tokentype* t8 = nullptr, tokens::tokentype* t9 = nullptr, tokens::tokentype* t10 = nullptr, tokens::tokentype* t11 = nullptr, tokens::tokentype* t12 = nullptr);
 		bool hasScope(size_t tabs);
@@ -78,6 +79,7 @@ namespace dms {
 		bool match_process_index(tokenstream* stream,value& v, bool leftside = false);
 		bool match_process_return(tokenstream* stream);
 		bool match_process_condition(tokenstream* stream, value& v);
+		bool match_process_andor(tokenstream* stream,value& v);
 		bool match_process_if(tokenstream* stream);
 
 		// Build

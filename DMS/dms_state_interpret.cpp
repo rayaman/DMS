@@ -180,7 +180,7 @@ namespace dms {
 				// Flags handled
 				case EXIT:
 					if (c->args.args.size()) {
-						exitcode = c->args.args[0].n;
+						exitcode = (int)c->args.args[0].n;
 					}
 					return true;
 					break;
@@ -301,7 +301,7 @@ namespace dms {
 						value assn = c->args.args[0];
 						value o1 = c->args.args[1];
 						value o2 = c->args.args[2];
-						value ret = value(o1.resolve(this).n+o2.resolve(this).n);
+						value ret = value(o1.resolve(this)+o2.resolve(this));
 						assign(assn, ret);
 					}
 					break;
@@ -310,7 +310,7 @@ namespace dms {
 					value assn = c->args.args[0];
 					value o1 = c->args.args[1];
 					value o2 = c->args.args[2];
-					value ret = value(o1.resolve(this).n - o2.resolve(this).n);
+					value ret = value(o1.resolve(this) - o2.resolve(this));
 					assign(assn, ret);
 				}
 				break;
@@ -319,7 +319,7 @@ namespace dms {
 					value assn = c->args.args[0];
 					value o1 = c->args.args[1];
 					value o2 = c->args.args[2];
-					value ret = value(o1.resolve(this).n * o2.resolve(this).n);
+					value ret = value(o1.resolve(this) * o2.resolve(this));
 					assign(assn, ret);
 				}
 				break;
@@ -328,7 +328,7 @@ namespace dms {
 					value assn = c->args.args[0];
 					value o1 = c->args.args[1];
 					value o2 = c->args.args[2];
-					value ret = value(o1.resolve(this).n / o2.resolve(this).n);
+					value ret = value(o1.resolve(this) / o2.resolve(this));
 					assign(assn, ret);
 				}
 				break;
@@ -450,29 +450,31 @@ namespace dms {
 					break;
 				case SSPK:
 					//Because we are using void* we must cast our pointers
-					if (characterExists(c->args.args[0].s->getValue())){
-						speaker = getCharacter(c->args.args[0].s->getValue());
+					if (characterExists(c->args.args[0].s)){
+						speaker = getCharacter(c->args.args[0].s);
 						if (!handler->handleSpeaker(this, speaker))
 							return false;
 					}
 					else {
-						push_error(errors::error{ errors::disp_unknown,concat("Unknown character '",c->args.args[0].s->getValue(),"'!")});
+						push_error(errors::error{ errors::disp_unknown,concat("Unknown character '",c->args.args[0].s,"'!")});
 						return false;
 					}
 					break;
 				case APND:
-					if (!handler->handleMessageAppend(this, c->args.args[0].s->getValue(this)))
+					//FIX STRING STER
+					if (!handler->handleMessageAppend(this, c->args.args[0].s))
 						return false;
 					break;
 				case DISP:
-					if (!handler->handleMessageDisplay(this, c->args.args[0].s->getValue(this)))
+					//FIX STRING STER
+					if (!handler->handleMessageDisplay(this, c->args.args[0].s))
 						return false;
 					break;
 				case ASGN:
 					assign(c->args.args[0], c->args.args[1]);
 					break;
 				case LINE:
-					cur_line = c->args.args[0].n;
+					cur_line = (size_t)c->args.args[0].n;
 					break;
 				case NOOP:
 					break;
@@ -480,10 +482,10 @@ namespace dms {
 					//Because we are using void* we must cast our pointers
 					{
 						std::vector<std::string> args;
-						std::string prompt = c->args.args[0].s->getValue();
-						std::string fn = c->args.args[1].s->getValue();
+						std::string prompt = c->args.args[0].s;
+						std::string fn = c->args.args[1].s;
 						for (size_t i = 2; i < c->args.args.size(); i++)
-							args.push_back(c->args.args[i].resolve(this).s->getValue());
+							args.push_back(c->args.args[i].resolve(this).s);
 						size_t npos = handler->handleChoice(this, prompt, args);
 						size_t nnpos = seek(concat("CHOI_", fn, "_", npos),cmds,LABL,pos);
 						if (!nnpos) {
@@ -498,7 +500,7 @@ namespace dms {
 				case JUMP:
 					// Value assert resolves the data so a variable must eventually equal a string
 					if (utils::valueassert(c->args, this, datatypes::string)) {
-						std::string block = c->args.args[0].resolve(this).s->getValue();
+						std::string block = c->args.args[0].resolve(this).s;
 						if (chunks[block] == NULL) {
 							push_error(errors::error{ errors::non_existing_block ,utils::concat("Attempted to Jump to a non existing block [",block,"]") });
 							return false;
@@ -515,7 +517,7 @@ namespace dms {
 						//utils::print(c->args.args[0].type);
 						datatypes set = c->args.args[0].resolve(this).type;
 						//utils::print("> ",set);
-						push_error(errors::error{ errors::invalid_arguments, utils::concat("String expected got ",datatype[set]), true,ln });
+						push_error(errors::error{ errors::invalid_arguments, utils::concat("String expected got ",datatype[set]), true, ln });
 						return false;
 					}
 					break;
