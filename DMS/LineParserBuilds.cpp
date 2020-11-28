@@ -33,6 +33,7 @@ namespace dms {
 		c->args.push(value(l));
 		current_chunk->addCmd(c);
 		current_chunk->addLabel(l);
+		utils::debug("Building Label: ",l);
 	}
 	void LineParser::buildSpeed(double s) {
 		cmd* c = new cmd;

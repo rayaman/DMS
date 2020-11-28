@@ -18,6 +18,8 @@
 
 namespace dms {
 	struct tokenstream {
+		tokenstream();
+		tokenstream(std::vector<tokens::token>*);
 		std::vector<tokens::token> tokens;
 		size_t pos = 0;
 		std::stack<size_t> spos;
@@ -30,7 +32,6 @@ namespace dms {
 		tokens::token peek();
 		tokens::token last();
 		std::vector<tokens::token> next(tokens::tokentype tk);
-		bool match(codes::op t1 = codes::NOOP);
 		bool match(tokens::tokentype t1 = tokens::none, tokens::tokentype t2 = tokens::none, tokens::tokentype t3 = tokens::none, tokens::tokentype t4 = tokens::none, tokens::tokentype t5 = tokens::none, tokens::tokentype t6 = tokens::none, tokens::tokentype t7 = tokens::none, tokens::tokentype t8 = tokens::none, tokens::tokentype t9 = tokens::none, tokens::tokentype t10 = tokens::none, tokens::tokentype t11 = tokens::none, tokens::tokentype t12 = tokens::none);
 		bool match(tokens::tokentype* t1 = nullptr, tokens::tokentype* t2 = nullptr, tokens::tokentype* t3 = nullptr, tokens::tokentype* t4 = nullptr, tokens::tokentype* t5 = nullptr, tokens::tokentype* t6 = nullptr, tokens::tokentype* t7 = nullptr, tokens::tokentype* t8 = nullptr, tokens::tokentype* t9 = nullptr, tokens::tokentype* t10 = nullptr, tokens::tokentype* t11 = nullptr, tokens::tokentype* t12 = nullptr);
 		bool hasScope(size_t tabs);
@@ -49,6 +50,7 @@ namespace dms {
 	};
 	class LineParser
 	{
+		bool stop = false;
 		std::string fn;
 		chunk* current_chunk = nullptr;
 		std::string chunk_name;
@@ -61,6 +63,7 @@ namespace dms {
 		dms_state* state = nullptr;
 		void doCheck(passer* stream, std::vector<tokens::token>* t_vec, size_t line, bool& isNum, bool& hasDec, std::vector<uint8_t>* buffer);
 		void _Parse(tokenstream* stream);
+		void ParseLoop(tokenstream* stream);
 		std::stack<std::string> lastCall;
 		// Match Process Code
 		bool match_process_debug(tokenstream* stream);
@@ -72,6 +75,8 @@ namespace dms {
 		bool match_process_exit(tokenstream* stream);
 		bool match_process_expression(tokenstream* stream, value& v);
 		bool match_process_IFFF(tokenstream* stream);
+		bool match_process_ELIF(tokenstream* stream,std::string);
+		bool match_process_ELSE(tokenstream* stream,std::string);
 		bool match_process_assignment(tokenstream* stream);
 		bool match_process_list(tokenstream* stream, value& v);
 		bool match_process_wait(tokenstream* stream);
@@ -80,7 +85,6 @@ namespace dms {
 		bool match_process_return(tokenstream* stream);
 		bool match_process_condition(tokenstream* stream, value& v);
 		bool match_process_andor(tokenstream* stream,value& v);
-		bool match_process_if(tokenstream* stream);
 
 		// Build
 		void buildGoto(std::string g, bool v = false);
@@ -91,6 +95,8 @@ namespace dms {
 		void buildWait(double w);
 
 		// Utils
+		std::string random_string(std::size_t length);
+
 		void badSymbol(errors::errortype err, tokenstream* stream);
 		void badSymbol(tokenstream* stream);
 		void badSymbol();

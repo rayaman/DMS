@@ -4,12 +4,15 @@ using namespace dms::utils;
 // TODO: process if elseif else statements, for loops and while loops
 namespace dms {
 	bool LineParser::match_process_standard(tokenstream* stream, value& v) {
+		//utils::debug(stream->peek());
+		if (stream->peek().type == tokens::none) {
+			return false;
+		}
 		if (stream->match(tokens::parao)) {
 			std::vector<tokens::token> toks = stream->next(tokens::parao, tokens::parac);
-			//toks.pop_back(); // Remove the ')'
+			toks.pop_back(); // Remove the ')'
 			toks.push_back(tokens::token{tokens::newline,codes::NOOP,"",stream->peek().line_num});
-			tokenstream tempstream;
-			tempstream.init(&toks);
+			tokenstream tempstream(&toks);
 			value var(datatypes::variable);
 			if (match_process_standard(&tempstream, var)) {
 				v.set(var.s);
@@ -22,7 +25,8 @@ namespace dms {
 			}
 			return true;
 		}
-		else if (match_process_andor(stream, v)) {
+		if (match_process_andor(stream, v)) {
+			match_process_condition(stream, v);
 			return true;
 		}
 		if (match_process_expression(stream, v)) {
@@ -85,6 +89,7 @@ namespace dms {
 			return true;
 		}
 		else if (stream->match(tokens::newline)) {
+			stream->next();
 			return match_process_standard(stream,v);
 		}
 		return false;
@@ -192,8 +197,7 @@ namespace dms {
 			token start = stream->peek();
 			token ancor = start;
 			std::vector<token> t = stream->next(tokens::cbracketo, tokens::cbracketc);
-			tokenstream tempstream;
-			tempstream.init(&t);
+			tokenstream tempstream(&t);
 			value ref = value(datatypes::variable);
 			value length = value();
 			value dict = value();
@@ -631,9 +635,10 @@ namespace dms {
 			}
 			// Already we have built: FUNC name val
 			// Next we add arguments this is where things get interesting
-			tokenstream tempstream;
 			// This is a balanced consuming method (()(()))
 			std::vector<token> t = stream->next(tokens::parao, tokens::parac); // Consume and get tokens
+			//t.pop_back();
+			tokenstream tempstream(&t);
 			if (t.size() == 1) { // No arg function!
 				current_chunk->addCmd(c);
 				return true;
@@ -702,6 +707,7 @@ namespace dms {
 					badSymbol(&tempstream);
 				}
 			}
+			
 		}
 		else if (stream->match(tokens::name,tokens::dot,tokens::name,tokens::parao)) {
 			cmd* c = new cmd;
@@ -719,9 +725,10 @@ namespace dms {
 			}
 			// Already we have built: FUNC name val
 			// Next we add arguments this is where things get interesting
-			tokenstream tempstream;
 			// This is a balanced consuming method (()(()))
 			std::vector<token> t = stream->next(tokens::parao, tokens::parac); // Consume and get tokens
+			t.pop_back();
+			tokenstream tempstream(&t);
 			if (t.size() == 1) { // No arg function!
 				current_chunk->addCmd(c);
 				return true;
@@ -750,16 +757,14 @@ namespace dms {
 				else if (tempstream.match(tokens::newline)) {
 					tempstream.next();
 				}
-				else if (tempstream.match(tokens::parac)) {
-					tempstream.next();
-					current_chunk->addCmd(c); // We push this onto the chunk after all dependants if any have been handled
-					//lastCall.pop();
-					return true;
-				}
 				else {
 					badSymbol(&tempstream);
 				}
 			}
+			tempstream.next();
+			current_chunk->addCmd(c); // We push this onto the chunk after all dependants if any have been handled
+			//lastCall.pop();
+			return true;
 		}
 		return false;
 	}
@@ -779,11 +784,10 @@ namespace dms {
 	bool LineParser::match_process_index(tokenstream* stream, value& v, bool leftside) {
 		if (stream->match(tokens::name,tokens::bracketo)) {
 			std::string name = stream->next().name;
-			std::vector<token> tok = stream->next(tokens::bracketo, tokens::bracketc);
-			tok.pop_back(); // Remove the last element since its a ']'
-			tok.push_back(token{ tokens::newline,codes::NOOP,"",tok[0].line_num });
-			tokenstream tempstream; // As usual the tokens are balanced match to [...] where the contents of tok = ...
-			tempstream.init(&tok);
+			std::vector<token> toks = stream->next(tokens::bracketo, tokens::bracketc);
+			toks.pop_back(); // Remove the last element since its a ']'
+			toks.push_back(token{ tokens::newline,codes::NOOP,"",toks[0].line_num });
+			tokenstream tempstream(&toks); // As usual the tokens are balanced match to [...] where the contents of tok = ...
 			value tempval = value(datatypes::variable);
 			cmd* c = new cmd;
 			if (leftside) {
@@ -867,10 +871,92 @@ namespace dms {
 
 		// We match a condition, or anything that is non nil/false
 		// God controls are from a time past... I could refactor, but I'm lazy and would have to change a lot of old code... So we will deal with controls
-		if (stream->match(tokens::name) && stream->peek().name == "if") {
-			utils::debug("Let's process an if");
+		if (stream->match(tokens::name,tokens::parao) && stream->peek().name == "if") {
+			stream->next();
+			std::vector<token> ts = stream->next(tokens::parao, tokens::parac);
+			ts.pop_back();
+			tokenstream tmpstream(&ts);
+			value cmp(datatypes::variable);
+			if (match_process_standard(&tmpstream,cmp)) {
+				std::string ifend = std::string("IFE_") + random_string(4);
+				std::string next = std::string("IFF_") + random_string(4);
+				if (stream->match(tokens::cbracketo)) {
+					std::vector<token> toks = stream->next(tokens::cbracketo, tokens::cbracketc);
+					toks.pop_back();
+					tokenstream tempstream(&toks);
+					cmd* c = new cmd;
+					c->opcode = codes::IFFF;
+					c->args.push(cmp);
+					c->args.push(value(next));
+					current_chunk->addCmd(c);
+					ParseLoop(&tempstream);
+					buildGoto(ifend);
+					buildLabel(next);
+					if (match_process_ELIF(stream,ifend)) {
+						utils::debug("here");
+					}
+					else if (match_process_ELSE(stream,ifend)) {
+						utils::debug("here");
+					}
+					buildLabel(ifend);
+					// We keep trying to match else if/else until nothing is left
+					return true;
+				}
+			}
+			else {
+				badSymbol(stream);
+			}
 		}
 		return false; // TODO finish this
+	}
+	bool LineParser::match_process_ELSE(tokenstream* stream, std::string ifend) {
+		if (stream->match(tokens::name, tokens::cbracketo) && stream->peek().name == "else") {
+			stream->next();
+			std::vector<token> ts = stream->next(tokens::cbracketo, tokens::cbracketc);
+			ts.pop_back();
+			tokenstream tempstream(&ts);
+			ParseLoop(&tempstream);
+			return true;
+		}
+		return false;
+	}
+	bool LineParser::match_process_ELIF(tokenstream* stream, std::string ifend) {
+		if (stream->match(tokens::name, tokens::parao) && stream->peek().name == "elseif") {
+			stream->next();
+			std::vector<token> ts = stream->next(tokens::parao, tokens::parac);
+			ts.pop_back();
+			tokenstream tmpstream(&ts);
+			value cmp(datatypes::variable);
+			//buildLabel(iff);
+			if (match_process_standard(&tmpstream, cmp)) {
+				std::string next = std::string("IFF_") + random_string(4);
+				if (stream->match(tokens::cbracketo)) {
+					std::vector<token> toks = stream->next(tokens::cbracketo, tokens::cbracketc);
+					toks.pop_back();
+					tokenstream tempstream(&toks);
+					cmd* c = new cmd;
+					c->opcode = codes::IFFF;
+					c->args.push(cmp);
+					c->args.push(value(next));
+					current_chunk->addCmd(c);
+					ParseLoop(&tempstream);
+					buildGoto(ifend);
+					buildLabel(next);
+					if (match_process_ELIF(stream, ifend)) {
+						utils::debug("here");
+					}
+					else if (match_process_ELSE(stream, ifend)) {
+						utils::debug("here");
+					}
+					// We keep trying to match else if/else until nothing is left
+					return true;
+				}
+			}
+			else {
+				badSymbol(stream);
+			}
+		}
+		return false;
 	}
 	
 	bool LineParser::match_process_wait(tokenstream* stream) {
@@ -910,9 +996,8 @@ namespace dms {
 			while (stream->peek().type != tokens::none) {
 				debugInvoker(stream);
 				if (stream->match(tokens::parao)) {
-					tokenstream temp;
 					auto ts = stream->next(tokens::parao, tokens::parac);
-					temp.init(&ts); // Balanced match!
+					tokenstream temp(&ts);
 					value tmpvalue = value(datatypes::variable);
 					if (match_process_expression(&temp, tmpvalue)) {
 						if (left.isNil())
@@ -1050,6 +1135,7 @@ namespace dms {
 					left = wv;
 				}
 			}
+			return stream->restore(lastcmd, current_chunk); // Always return false and restores the position in stream!
 		}
 		else {
 			return stream->restore(lastcmd, current_chunk); // Always return false and restores the position in stream!

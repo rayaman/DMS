@@ -143,7 +143,7 @@ namespace dms {
 		while (!stop || !halt) {
 			c = cmds[pos++];
 			code = c->opcode;
-			//print("(",pos,")> ",*c);
+			//debug("(",pos,")> ",*c);
 			//wait();
 			switch (code)
 			{
@@ -184,6 +184,18 @@ namespace dms {
 					}
 					return true;
 					break;
+				case IFFF:
+					{
+						value cmp = c->args.args[0].resolve(this);
+						value gt = c->args.args[1].resolve(this);
+						if (cmp.type == datatypes::boolean || cmp.isNil()) {
+							if (!cmp.b || cmp.isNil()) {
+								pos = seek(gt.getPrintable(), cmds, LABL, pos);
+								debug("> set pos: ", pos);
+							}
+						} 
+						break;
+					}
 				case GOTO:
 					{
 						value labl = c->args.args[0];

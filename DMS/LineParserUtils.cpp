@@ -1,4 +1,5 @@
 #include "LineParser.h"
+#include <random>
 using namespace dms::tokens;
 using namespace dms::utils;
 namespace dms {
@@ -70,6 +71,10 @@ namespace dms {
 			return token{ tokentype::none,codes::NOOP,"EOS",0 };
 		return this->tokens[pos];
 	}
+	tokenstream::tokenstream() {}
+	tokenstream::tokenstream(std::vector<tokens::token>* stream) {
+		this->tokens = *stream;
+	}
 	bool tokenstream::hasScope(size_t tabs) {
 		return false;
 	}
@@ -111,6 +116,24 @@ namespace dms {
 		return std::string(buf.begin(), buf.end());
 	}
 
+	std::string LineParser::random_string(std::size_t length)
+	{
+		const std::string CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+		std::random_device random_device;
+		std::mt19937 generator(random_device());
+		std::uniform_int_distribution<> distribution(0, CHARACTERS.size() - 1);
+
+		std::string random_string;
+
+		for (std::size_t i = 0; i < length; ++i)
+		{
+			random_string += CHARACTERS[distribution(generator)];
+		}
+
+		return random_string;
+	}
+
 	bool LineParser::isBlock() {
 		return isBlock(bt_block); // Default block type
 	}
@@ -123,6 +146,9 @@ namespace dms {
 	bool tokenstream::match(tokens::tokentype t1, tokens::tokentype t2, tokens::tokentype t3, tokens::tokentype t4, tokens::tokentype t5, tokens::tokentype t6, tokens::tokentype t7, tokens::tokentype t8, tokens::tokentype t9, tokens::tokentype t10, tokens::tokentype t11, tokens::tokentype t12) {
 		tokens::tokentype types[12] = { t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12 };
 		for (size_t i = 0; i < 12; i++) {
+			//std::cout << this->tokens.size() << " " << pos + i << std::endl;
+			if (this->tokens.size() == pos + i && types[i] != tokens::none)
+				return false;
 			if (types[i] == tokens::none)
 				return true;
 			if (this->tokens[pos+i].type != types[i])
@@ -196,12 +222,15 @@ namespace dms {
 	}
 	void LineParser::badSymbol(errors::errortype err,tokenstream* stream) {
 		state->push_error(errors::error{ err,concat("Unexpected symbol '",stream->next().toString(),"'"),true,stream->peek().line_num,current_chunk });
+		stop = true;
 	}
 	void LineParser::badSymbol(tokenstream* stream) {
 		state->push_error(errors::error{ errors::unknown,concat("Unexpected symbol '",stream->peek().toString(),"'"),true,stream->next().line_num,current_chunk });
+		stop = true;
 	}
 	void LineParser::badSymbol() {
 		state->push_error(errors::error{ errors::unknown,concat("Unexpected symbol '",_stream->peek().toString(),"'"),true,_stream->next().line_num,current_chunk });
+		stop = true;
 	}
 	void LineParser::debugInvoker(tokenstream* stream) {
 		if (state->isEnabled("debugging") && stream->peek().type != tokens::newline) {
@@ -267,8 +296,7 @@ namespace dms {
 		return true;
 	}
 	void LineParser::tokenizer(dms_state* state,std::vector<token> &toks) {
-		tokenstream stream;
-		stream.init(&toks);
+		tokenstream stream(&toks);
 		_stream = &stream;
 		this->state = state; // Grab the pointer to the state and store it within the parser object
 		_Parse(&stream);

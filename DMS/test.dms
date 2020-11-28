@@ -10,11 +10,24 @@ loadfile "loadtest.dms"
 version 0.2
 using extendedDefine
 [main]
-	a = 10
-	b = 15
-	print(a==b or (a!=b and a==a) or a>b)
+	a1 = 10
+	a2 = 10
+	a3 = 10
+	b1 = 15
+	b2 = 15
+	b3 = 15
+	
+	print(a1==b1 or (a2!=b2 and a3==a3) or a3>b3)
+	
 	if(a==b){
-		
+		print("Doing a test!")
+		if(a!=b){
+			print("Doing more tests!")
+		}
+	} elseif (a1==10) {
+		print("Does this work?")
+	} else {
+		print("This is an else!")
 	}
 	//	   0 + (1 * 0) + 0
 	

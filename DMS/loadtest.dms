@@ -14,7 +14,7 @@
 
 [step:function(a,b,c)]
 	"Testing..." // testing
-	d = (100 + b) / c
+	//d = (100 + b) / c
 	e = "somestring"
 	e = nil
 	g = false

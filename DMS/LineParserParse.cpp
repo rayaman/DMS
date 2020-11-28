@@ -246,7 +246,6 @@ namespace dms {
 
 			if ((data == ' ' || data == '(') && !isStr) { // tokens end with a space
 				std::string str = stream.processBuffer(buffer);
-				utils::debug("> ",str);
 				tolower(str);
 				if (str == "enable") {
 					t_vec.push_back(token{ tokens::flag,codes::ENAB,"",line });
@@ -317,6 +316,9 @@ namespace dms {
 		tokenDump(&t_vec);
 		// Tokens build let's parse
 		tokenizer(state, t_vec);
+		if (stop) {
+			state->stop = true;
+		}
 		if (isFirst) {
 			state->init();
 		}
@@ -340,19 +342,15 @@ namespace dms {
 			outputFile.close();
 		}
 	}
-	void LineParser::_Parse(tokenstream* stream) {
+	void LineParser::ParseLoop(tokenstream* stream) {
+		if (stop) return;
 		token current = stream->next();
-		createBlock("$INIT", blocktype::bt_block);
 		cmd* flagcmd = new cmd;
-		if (state->isEnabled("debugging")) {
-			cmd* c = new cmd;
-			c->opcode = codes::FILE;
-			c->args.push(value(fn));
-			current_chunk->addCmd(c);
-		}
-		while (stream->peek().type != tokens::eof) {
+		value nil;
+		while (stream->peek().type != tokens::none) {
+			if (stop) return;
 			debugInvoker(stream);
-			//utils::print(current);
+			//utils::debug(current);
 			//utils::print("[flags]");
 			if (current.type == tokens::flag) {
 				temp = stream->next(tokens::newline);
@@ -413,7 +411,7 @@ namespace dms {
 				}
 			}
 			// Default block
-			if (stream->match(tokens::newline,tokens::bracketo, tokens::name, tokens::bracketc,tokens::newline)) {
+			if (stream->match(tokens::newline, tokens::bracketo, tokens::name, tokens::bracketc, tokens::newline)) {
 				stream->next();
 				stream->next();
 				std::string name = stream->next().name;
@@ -469,7 +467,7 @@ namespace dms {
 							std::stringstream str;
 							str << "Unexpected symbol: " << tokens[i];
 							state->push_error(errors::error{ errors::badtoken,str.str(),true,line,current_chunk });
-							
+
 							return;
 						}
 					}
@@ -480,7 +478,7 @@ namespace dms {
 				else {
 					str << "'function' keyword expected got " << b;
 					state->push_error(errors::error{ errors::badtoken, str.str(),true,line,current_chunk });
-					
+
 					return;
 				}
 			}
@@ -492,12 +490,11 @@ namespace dms {
 			//utils::print("[disp]");
 			match_process_disp(stream); // Match and process dialogue
 			//utils::print("[label]");
-			if (stream->match(tokens::newline,tokens::label)) { // Match and process labels
+			if (stream->match(tokens::newline, tokens::label)) { // Match and process labels
 				stream->next();
 				buildLabel(stream->next().name);
 			}
 			//utils::print("[func]");
-			value nil;
 			match_process_function(stream, nil); // Naked Function
 			//utils::print("[assn]");
 			match_process_assignment(stream);
@@ -513,6 +510,18 @@ namespace dms {
 			match_process_jump(stream);
 			current = stream->next();
 		}
+	}
+	void LineParser::_Parse(tokenstream* stream) {
+		if (stop) return;
+		createBlock("$INIT", blocktype::bt_block);
+		if (state->isEnabled("debugging")) {
+			cmd* c = new cmd;
+			c->opcode = codes::FILE;
+			c->args.push(value(fn));
+			current_chunk->addCmd(c);
+		}
+		ParseLoop(stream);
+		if (stop) return;
 		createBlock("$END", blocktype::bt_block);// Runs code that ensures that last user block is processed into the chunks array. Yes, I could have simply added in the lines of code at the end, but I didn't want to rewrite code again!
 	}
 }

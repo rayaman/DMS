@@ -125,8 +125,6 @@
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <SupportJustMyCode>false</SupportJustMyCode>
-      <Optimization>Full</Optimization>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
