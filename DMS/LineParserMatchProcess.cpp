@@ -877,6 +877,7 @@ namespace dms {
 			ts.pop_back();
 			tokenstream tmpstream(&ts);
 			value cmp(datatypes::variable);
+			value nil;
 			if (match_process_standard(&tmpstream,cmp)) {
 				std::string ifend = std::string("IFE_") + random_string(4);
 				std::string next = std::string("IFF_") + random_string(4);
@@ -892,15 +893,40 @@ namespace dms {
 					ParseLoop(&tempstream);
 					buildGoto(ifend);
 					buildLabel(next);
-					if (match_process_ELIF(stream,ifend)) {
-						utils::debug("here");
-					}
-					else if (match_process_ELSE(stream,ifend)) {
-						utils::debug("here");
-					}
+					if (match_process_ELIF(stream,ifend) || match_process_ELSE(stream, ifend)) {}
 					buildLabel(ifend);
 					// We keep trying to match else if/else until nothing is left
 					return true;
+				}
+				else if (stream->match(tokens::name,tokens::parao)) {
+					cmd* c = new cmd;
+					c->opcode = codes::IFFF;
+					c->args.push(cmp);
+					c->args.push(value(next));
+					current_chunk->addCmd(c);
+					if (match_process_function(stream, nil)) {
+						if (stream->match(tokens::pipe)) {
+							stream->next();
+							buildGoto(ifend);
+							buildLabel(next);
+							if (!match_process_function(stream, nil)) {
+								state->push_error(errors::error{ errors::unknown,"Missing else function",true,stream->peek().line_num,current_chunk });
+								return false;
+							}
+						}
+						else {
+							state->push_error(errors::error{ errors::unknown,"Expected '|'",true,stream->peek().line_num,current_chunk });
+							return false;
+						}
+					}
+					else {
+						state->push_error(errors::error{ errors::unknown,"Expected '{' or function pair!",true,stream->peek().line_num,current_chunk });
+						return false;
+					}
+					buildLabel(ifend);
+				}
+				else {
+					badSymbol(stream);
 				}
 			}
 			else {
@@ -942,12 +968,7 @@ namespace dms {
 					ParseLoop(&tempstream);
 					buildGoto(ifend);
 					buildLabel(next);
-					if (match_process_ELIF(stream, ifend)) {
-						utils::debug("here");
-					}
-					else if (match_process_ELSE(stream, ifend)) {
-						utils::debug("here");
-					}
+					if (match_process_ELIF(stream, ifend) || match_process_ELSE(stream, ifend)) {}
 					// We keep trying to match else if/else until nothing is left
 					return true;
 				}

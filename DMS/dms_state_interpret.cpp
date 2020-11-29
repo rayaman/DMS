@@ -191,7 +191,6 @@ namespace dms {
 						if (cmp.type == datatypes::boolean || cmp.isNil()) {
 							if (!cmp.b || cmp.isNil()) {
 								pos = seek(gt.getPrintable(), cmds, LABL, pos);
-								debug("> set pos: ", pos);
 							}
 						} 
 						break;

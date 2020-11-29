@@ -29,6 +29,13 @@ using extendedDefine
 	} else {
 		print("This is an else!")
 	}
+	
+	if(a1==10) this()|that()
+	
+	print("This is coming along nicely!")
+	// for(x, 10, 1, -1){
+		// print(x)
+	// }
 	//	   0 + (1 * 0) + 0
 	
 	// if (this==that) this()|that()
@@ -41,6 +48,12 @@ using extendedDefine
 	// } else {
 		
 	// }
+
+[this:function()]
+	print("This")
+	
+[that:function()]
+	print("That")
 
 [Bob:char]
 	//fname = "Bob"
