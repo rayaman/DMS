@@ -33,6 +33,7 @@ namespace dms {
 		std::string entry = "$undefined";
 		std::unordered_map<std::string, bool> enables;
 		std::size_t cur_line=0;
+		std::string cur_file = "";
 		int exitcode = 0;
 		const double Iversion = 1.0;
 		double Sversion; // The version of

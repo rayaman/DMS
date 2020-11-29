@@ -85,6 +85,7 @@ namespace dms {
 		bool match_process_return(tokenstream* stream);
 		bool match_process_condition(tokenstream* stream, value& v);
 		bool match_process_andor(tokenstream* stream,value& v);
+		bool match_process_scope(tokenstream* stream);
 
 		// Build
 		void buildGoto(std::string g, bool v = false);
@@ -97,6 +98,7 @@ namespace dms {
 		// Utils
 		std::string random_string(std::size_t length);
 
+		bool notBalanced(std::vector<tokens::token> ts, size_t last_line, tokenstream* stream, std::string o, std::string c);
 		void badSymbol(errors::errortype err, tokenstream* stream);
 		void badSymbol(tokenstream* stream);
 		void badSymbol();

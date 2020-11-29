@@ -3,6 +3,7 @@ namespace dms {
 	void LineParser::buildGoto(std::string g, bool v) {
 		cmd* c = new cmd;
 		c->opcode = codes::GOTO;
+		//utils::debug("Building Goto: ",g);
 		if (v) {
 			c->args.push(value(g,datatypes::variable));
 		}
@@ -28,6 +29,7 @@ namespace dms {
 		current_chunk->addCmd(c);
 	}
 	void LineParser::buildLabel(std::string l) {
+		//utils::debug("Building Label: ", l);
 		cmd* c = new cmd;
 		c->opcode = codes::LABL;
 		c->args.push(value(l));

@@ -8,8 +8,55 @@ namespace dms {
 		if (stream->peek().type == tokens::none) {
 			return false;
 		}
+		//!something
+		if (stream->match(exclamation)) {
+			stream->next(); // Consume the token
+			// Within the standard we always get passed a valid value, We need to pass a new value to a recursive call to standard then pass through
+			if (stream->match(name)) {
+				v = value(stream->next().name, variable);
+				cmd* c = new cmd;
+				c->opcode = codes::KNOT;
+				c->args.push(v);
+				current_chunk->addCmd(c);
+				return true;
+			}
+			else if (stream->match(parao)) {
+				size_t last_line = stream->peek().line_num;
+				std::vector<tokens::token> toks = stream->next(tokens::parao, tokens::parac);
+				if (notBalanced(toks, last_line, stream, "(", ")"))
+					return false;
+				toks.pop_back(); // Remove the ')'
+				tokenstream tempstream(&toks);
+				value var(variable);
+				if (match_process_standard(&tempstream,var)) {
+					value assn = value(datatypes::variable); // The variable that we will be setting stuff to
+					stream->next(); // Consume the equal
+					cmd* c = new cmd;
+					c->opcode = codes::ASGN;
+					c->args.push(assn);
+					c->args.push(var);
+					current_chunk->addCmd(c);
+
+					c = new cmd;
+					c->opcode = codes::KNOT;
+					c->args.push(assn);
+					current_chunk->addCmd(c);
+					v.set(assn.s);
+					v.type = variable;
+					return true;
+				}
+			}
+			else {
+				stop = true;
+				state->push_error(errors::error{ errors::unknown,concat("Unexpected symbol '",stream->next().toString(), "' near '!' \"Not\" can only be used on a varaible or a group!"),true,stream->peek().line_num,current_chunk });
+				return false;
+			}
+		}
 		if (stream->match(tokens::parao)) {
+			size_t last_line = stream->peek().line_num;
 			std::vector<tokens::token> toks = stream->next(tokens::parao, tokens::parac);
+			if (notBalanced(toks, last_line, stream, "(", ")"))
+				return false;
 			toks.pop_back(); // Remove the ')'
 			toks.push_back(tokens::token{tokens::newline,codes::NOOP,"",stream->peek().line_num});
 			tokenstream tempstream(&toks);
@@ -164,7 +211,7 @@ namespace dms {
 			stream->next();
 		}
 		else {
-			return false;
+			return match_process_andor(stream,v);
 		}
 		// So if all is good we continue here
 		value right = value(datatypes::variable);
@@ -196,7 +243,10 @@ namespace dms {
 		if (stream->match(tokens::cbracketo)) {
 			token start = stream->peek();
 			token ancor = start;
+			size_t last_line = stream->last().line_num;
 			std::vector<token> t = stream->next(tokens::cbracketo, tokens::cbracketc);
+			if (notBalanced(t, last_line, stream, "{", "}"))
+				return false;
 			tokenstream tempstream(&t);
 			value ref = value(datatypes::variable);
 			value length = value();
@@ -636,7 +686,10 @@ namespace dms {
 			// Already we have built: FUNC name val
 			// Next we add arguments this is where things get interesting
 			// This is a balanced consuming method (()(()))
+			size_t last_line = stream->last().line_num;
 			std::vector<token> t = stream->next(tokens::parao, tokens::parac); // Consume and get tokens
+			if (notBalanced(t, last_line, stream, "(", ")"))
+				return false;
 			//t.pop_back();
 			tokenstream tempstream(&t);
 			if (t.size() == 1) { // No arg function!
@@ -726,7 +779,10 @@ namespace dms {
 			// Already we have built: FUNC name val
 			// Next we add arguments this is where things get interesting
 			// This is a balanced consuming method (()(()))
+			size_t last_line = stream->last().line_num;
 			std::vector<token> t = stream->next(tokens::parao, tokens::parac); // Consume and get tokens
+			if (notBalanced(t, last_line, stream, "(", ")"))
+				return false;
 			t.pop_back();
 			tokenstream tempstream(&t);
 			if (t.size() == 1) { // No arg function!
@@ -858,6 +914,23 @@ namespace dms {
 		}
 		return false;
 	}
+	/*
+	We need to match {...}
+	This doesn't pass any varaible. It should be used to match and process program flow
+	*/
+	bool LineParser::match_process_scope(tokenstream* stream) {
+		if (stream->match(cbracketo)) {
+			size_t last_line = stream->last().line_num;
+			std::vector<token> t = stream->next(cbracketo, cbracketc); // Consume and get tokens
+			tokenstream tempstream(&t);
+			if (notBalanced(t, last_line, stream, "{", "}"))
+				return false;
+			// We got the balanced match, time to simple do it
+			ParseLoop(&tempstream); // Done
+			return true;
+		}
+		return false;
+	}
 	bool LineParser::match_process_IFFF(tokenstream* stream) {
 		/*if(this) {
 		*	then()
@@ -873,7 +946,10 @@ namespace dms {
 		// God controls are from a time past... I could refactor, but I'm lazy and would have to change a lot of old code... So we will deal with controls
 		if (stream->match(tokens::name,tokens::parao) && stream->peek().name == "if") {
 			stream->next();
+			size_t last_line = stream->last().line_num;
 			std::vector<token> ts = stream->next(tokens::parao, tokens::parac);
+			if (notBalanced(ts, last_line, stream, "(", ")"))
+				return false;
 			ts.pop_back();
 			tokenstream tmpstream(&ts);
 			value cmp(datatypes::variable);
@@ -882,7 +958,10 @@ namespace dms {
 				std::string ifend = std::string("IFE_") + random_string(4);
 				std::string next = std::string("IFF_") + random_string(4);
 				if (stream->match(tokens::cbracketo)) {
+					size_t last_line = stream->last().line_num;
 					std::vector<token> toks = stream->next(tokens::cbracketo, tokens::cbracketc);
+					if (notBalanced(toks, last_line, stream, "{", "}"))
+						return false;
 					toks.pop_back();
 					tokenstream tempstream(&toks);
 					cmd* c = new cmd;
@@ -909,8 +988,8 @@ namespace dms {
 							stream->next();
 							buildGoto(ifend);
 							buildLabel(next);
-							if (!match_process_function(stream, nil)) {
-								state->push_error(errors::error{ errors::unknown,"Missing else function",true,stream->peek().line_num,current_chunk });
+							if (!match_process_function(stream, nil) && !match_process_scope(stream)) {
+								state->push_error(errors::error{ errors::unknown,"Missing else function or scope",true,stream->peek().line_num,current_chunk });
 								return false;
 							}
 						}
@@ -938,7 +1017,10 @@ namespace dms {
 	bool LineParser::match_process_ELSE(tokenstream* stream, std::string ifend) {
 		if (stream->match(tokens::name, tokens::cbracketo) && stream->peek().name == "else") {
 			stream->next();
+			size_t last_line = stream->last().line_num;
 			std::vector<token> ts = stream->next(tokens::cbracketo, tokens::cbracketc);
+			if (notBalanced(ts, last_line, stream, "{", "}"))
+				return false;
 			ts.pop_back();
 			tokenstream tempstream(&ts);
 			ParseLoop(&tempstream);
@@ -949,7 +1031,10 @@ namespace dms {
 	bool LineParser::match_process_ELIF(tokenstream* stream, std::string ifend) {
 		if (stream->match(tokens::name, tokens::parao) && stream->peek().name == "elseif") {
 			stream->next();
+			size_t last_line = stream->last().line_num;
 			std::vector<token> ts = stream->next(tokens::parao, tokens::parac);
+			if (notBalanced(ts, last_line, stream, "(", ")"))
+				return false;
 			ts.pop_back();
 			tokenstream tmpstream(&ts);
 			value cmp(datatypes::variable);
@@ -957,7 +1042,10 @@ namespace dms {
 			if (match_process_standard(&tmpstream, cmp)) {
 				std::string next = std::string("IFF_") + random_string(4);
 				if (stream->match(tokens::cbracketo)) {
+					size_t last_line = stream->last().line_num;
 					std::vector<token> toks = stream->next(tokens::cbracketo, tokens::cbracketc);
+					if (notBalanced(ts, last_line, stream, "{", "}"))
+						return false;
 					toks.pop_back();
 					tokenstream tempstream(&toks);
 					cmd* c = new cmd;
@@ -1017,7 +1105,10 @@ namespace dms {
 			while (stream->peek().type != tokens::none) {
 				debugInvoker(stream);
 				if (stream->match(tokens::parao)) {
+					size_t last_line = stream->last().line_num;
 					auto ts = stream->next(tokens::parao, tokens::parac);
+					if (notBalanced(ts, last_line, stream, "(", ")"))
+						return false;
 					tokenstream temp(&ts);
 					value tmpvalue = value(datatypes::variable);
 					if (match_process_expression(&temp, tmpvalue)) {
@@ -1105,6 +1196,14 @@ namespace dms {
 						left = value(num);
 					else if (right.isNil())
 						right = value(num);
+					else
+						badSymbol(stream);
+				}
+				else if (stream->match(tokens::string)) {
+					if (left.isNil())
+						left = value(stream->next().name,string);
+					else if (right.isNil())
+						right = value(stream->next().name, string);
 					else
 						badSymbol(stream);
 				}

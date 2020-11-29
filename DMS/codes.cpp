@@ -18,7 +18,7 @@ const std::string dms::codes::list[] = {
 	"WHLE",
 	"FUNC",
 	"IFFF",
-	"ELIF",
+	"KNOT",
 	"ELSE",
 	"DEFN",
 	"SKIP",

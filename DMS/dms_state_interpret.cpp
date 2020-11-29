@@ -158,6 +158,8 @@ namespace dms {
 				case DISA:
 					disable(c->args.args[0].getPrintable());
 					break;
+				case codes::FILE:
+					cur_file = c->args.args[0].getPrintable();
 				case LOAD:
 					// Nothing needs to be done here
 					break;
@@ -184,6 +186,22 @@ namespace dms {
 					}
 					return true;
 					break;
+				case KNOT: 
+				{
+					value cmp = c->args.args[0];
+					if (cmp.resolve(this).type == datatypes::boolean || cmp.resolve(this).isNil()) {
+						if (!cmp.resolve(this).b || cmp.resolve(this).isNil()) {
+							assign(cmp, value(true));
+						}
+						else {
+							assign(cmp, value(false));
+						}
+					}
+					else {
+						assign(cmp, value(false));
+					}
+					break;
+				}
 				case IFFF:
 					{
 						value cmp = c->args.args[0].resolve(this);

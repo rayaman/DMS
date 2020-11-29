@@ -157,7 +157,7 @@ namespace dms {
 			std::cout << err.err_msg << " On Line <" << err.linenum << ">" << std::endl;
 		}
 		else if (isEnabled("debugging")) {
-			std::cout << err.err_msg << " On Line <" << cur_line << ">" << std::endl;
+			std::cout << err.err_msg << " In File " << cur_file << " On Line <" << cur_line << ">" << std::endl;
 		}
 		else {
 			std::cout << err.err_msg << std::endl;

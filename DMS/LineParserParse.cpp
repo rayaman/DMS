@@ -514,12 +514,6 @@ namespace dms {
 	void LineParser::_Parse(tokenstream* stream) {
 		if (stop) return;
 		createBlock("$INIT", blocktype::bt_block);
-		if (state->isEnabled("debugging")) {
-			cmd* c = new cmd;
-			c->opcode = codes::FILE;
-			c->args.push(value(fn));
-			current_chunk->addCmd(c);
-		}
 		ParseLoop(stream);
 		if (stop) return;
 		createBlock("$END", blocktype::bt_block);// Runs code that ensures that last user block is processed into the chunks array. Yes, I could have simply added in the lines of code at the end, but I didn't want to rewrite code again!

@@ -10,23 +10,23 @@ namespace dms::codes {
 		LOAD, // Done
 		VERN, // Done
 		USIN, // TODO
-		STAT,
+		STAT, // Done
 		DISP, // Done
 		ASGN, // Done
-		LABL,
+		LABL, // Done
 		CHOI, // Done
 		OPTN,
 		FORE,
 		WHLE,
 		FUNC, // Done
-		IFFF,
-		ELIF,
-		ELSE,
+		IFFF, // Done
+		KNOT, // Done
+		ELSE, // Scraped
 		DEFN,
 		SKIP,
-		COMP,
+		COMP, // Done
 		INDX, // Done
-		JMPZ,
+		JMPZ, // Scraped see [COMP]
 		INST, // Done
 		ERRO,
 		GOTO,
@@ -54,7 +54,4 @@ namespace dms::codes {
 		OFUN // Done
 	};
 	extern const std::string list[];
-	static bool isControl(const op code) {
-		return (code == STAT || code == CHOI || code == FORE || code == WHLE || code == IFFF || code == ELIF || code == ELSE);
-	};
 }

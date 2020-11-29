@@ -176,7 +176,7 @@ namespace dms {
 		else if (lhs.type == datatypes::boolean && rhs.type == datatypes::boolean) {
 			return value((bool)(lhs.b + rhs.b));
 		}
-		else if (lhs.type == datatypes::string || rhs.type == datatypes::string) {
+		else if ((lhs.type == datatypes::string && !(rhs.type == nil)) || rhs.type == datatypes::string && !(lhs.type == nil)) {
 			return lhs.getPrintable() + rhs.getPrintable();
 		}
 		else {
@@ -371,7 +371,14 @@ namespace dms {
 			return s;
 		}
 		else if (type == number) {
-			return std::to_string(n);
+			std::string temp = std::to_string(n);
+			while (temp.find(".") != std::string::npos   // !=string::npos is important!!!
+				&& temp.substr(temp.length() - 1, 1) == "0"
+				|| temp.substr(temp.length() - 1, 1) == ".")
+				{
+					temp.pop_back();
+				}
+			return temp;
 		}
 		else if (type == nil) {
 			return "nil";

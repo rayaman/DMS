@@ -11,7 +11,7 @@ namespace dms {
 	}
 	token tokenstream::next() {
 		if (pos > this->tokens.size()-1)
-			return token{ tokentype::none,codes::NOOP,"EOS",0 };
+			return token{ tokentype::none,codes::NOOP,"EOS", this->tokens[pos - 2].line_num };
 		return this->tokens[pos++];
 	}
 	void tokenstream::prev() {
@@ -38,12 +38,15 @@ namespace dms {
 		if (peek().type == to) {
 			open++;
 			next(); // Consume
-			while (open != 0) {
+			while (open != 0 && peek().type!=tokens::none) {
 				if (peek().type == to)
 					open++;
 				else if (peek().type == tc)
 					open--;
 				tok.push_back(next());
+			}
+			if (tok.back().type == tokens::eof) {
+				tok.clear(); // Empty the vector
 			}
 		}
 		return tok;
@@ -68,7 +71,7 @@ namespace dms {
 	}
 	token tokenstream::peek() {
 		if (pos > this->tokens.size()-1)
-			return token{ tokentype::none,codes::NOOP,"EOS",0 };
+			return token{ tokentype::none,codes::NOOP,"EOS",this->tokens[pos - 2].line_num };
 		return this->tokens[pos];
 	}
 	tokenstream::tokenstream() {}
@@ -133,7 +136,14 @@ namespace dms {
 
 		return random_string;
 	}
-
+	bool LineParser::notBalanced(std::vector<tokens::token> ts, size_t last_line, tokenstream* stream, std::string o, std::string c) {
+		if (ts.size() == 0) {
+			stop = true;
+			state->push_error(errors::error{ errors::unknown,utils::concat("Unbalanced match! '",c,"' Expected to close '",o,"' At Line: ",last_line),true,stream->peek().line_num,current_chunk });
+			return true;
+		}
+		return false;
+	}
 	bool LineParser::isBlock() {
 		return isBlock(bt_block); // Default block type
 	}
@@ -257,12 +267,6 @@ namespace dms {
 					return true;
 				}
 				else if (bk_name == "$END") {
-					/*cmd* c = new cmd;
-					c->opcode = codes::JUMP;
-					c->args.push(buildValue("$END"));
-					current_chunk->addCmd(c);
-					state->push_chunk(current_chunk->name, current_chunk);
-					current_chunk = state->chunks["$END"];*/
 					return true;
 				}
 				else {
@@ -292,6 +296,14 @@ namespace dms {
 		current_chunk->name = bk_name;
 		chunk_type = bk_type;
 		current_chunk->type = bk_type;
+
+		if (state->isEnabled("debugging")) {
+			cmd* c = new cmd;
+			c->opcode = codes::FILE;
+			c->args.push(value(fn));
+			current_chunk->addCmd(c);
+		}
+
 		state->push_chunk(bk_name, current_chunk);
 		return true;
 	}
