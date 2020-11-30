@@ -52,6 +52,7 @@ namespace dms::tokens {
 		pipe,
 		anglebracketO,
 		anglebracketC,
+		escape,
 	};//stream, t_vec, line, isNum, buffer
 	struct token {
 		tokentype type = noop;
@@ -126,6 +127,7 @@ namespace dms::tokens {
 				"pipe",
 				"anglebracketO",
 				"anglebracketC",
+				"escape"
 			};
 			out << "Line <" << c.line_num << "> " << tokenlist[c.type] << " \t\t " << c.name;
 			return out;

@@ -5,14 +5,14 @@ enable fullname
 enable forwardlabels // Do most of your labels exist ahead?
 enable savestate
 //enable leaking
-enable debugging
+//enable debugging
 loadfile "loadtest.dms"
 version 0.2
 using extendedDefine
 [main]
 	a1 = 10
 	b1 = 15
-	print((a1!=b1))
+	print("this" + " or " + "that")
 	
 	if(a==b){
 		print("Doing a test!")
@@ -25,21 +25,28 @@ using extendedDefine
 		print("This is an else!")
 	}
 	
-	if(a1!=10) this() | {
+	if (a1!=10)this() | {
 		print("Do you work?")
 	}
 	
+	count = 0
+	while(count<10){
+		print("Count: " + count)
+		count = count + 1
+	}
+	
+	// for(x, 10, 1, -1){
+		// print(x)
+	// }
 	
 	print("This is coming along nicely!")
 	
 	print("concat test")
 	test1 = "Hello "
 	print(2.2+test1+"World!"+fake)
-	// for(x, 10, 1, -1){
-		// print(x)
-	// }
 	
-	if (this==that) this()|that()
+	if(a==nil) this()|that()
+	
 
 [this:function()]
 	print("This")

@@ -352,7 +352,8 @@ namespace dms {
 			debugInvoker(stream);
 			//utils::debug(current);
 			//utils::print("[flags]");
-			if (current.type == tokens::flag) {
+			if (stream->match(flag)) {
+				current = stream->next();
 				temp = stream->next(tokens::newline);
 				stream->prev(); // Unconsume the newline piece
 				if (temp.size() != 2) {
@@ -437,6 +438,7 @@ namespace dms {
 				else if (temp == "menu") {
 					createBlock(name, bt_menu);
 				}
+				stream->next();
 			}
 			// Function block type
 			else if (stream->match(tokens::newline, tokens::bracketo, tokens::name, tokens::colon, tokens::name, tokens::parao)) {
@@ -474,6 +476,7 @@ namespace dms {
 					// If all went well the 'args' now has all of tha params for the method we will be working with
 					current_chunk->params = args;
 					// Thats should be all we need to do
+					stream->next();
 				}
 				else {
 					str << "'function' keyword expected got " << b;
@@ -483,6 +486,7 @@ namespace dms {
 				}
 			}
 			// Control Handle all controls here
+			match_process_while(stream);
 			match_process_IFFF(stream);
 			// Let's handle function stuff!
 			//utils::print("[return]");
@@ -508,7 +512,9 @@ namespace dms {
 			match_process_wait(stream);
 			//utils::print("[jump]");
 			match_process_jump(stream);
-			current = stream->next();
+			if(stream->match(newline) || stream->match(eof))
+				current = stream->next();
+			//utils::debug(stream->peek());
 		}
 	}
 	void LineParser::_Parse(tokenstream* stream) {

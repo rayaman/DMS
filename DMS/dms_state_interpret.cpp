@@ -438,18 +438,22 @@ namespace dms {
 								break;
 							}
 							case comp::gt: {
+								if (left.isNil() || right.isNil()) {push_error(errors::error{ errors::unknown ,"Attempt to compare a nil value!" });return false;}
 								assign(assn, value(left > right));
 								break;
 							}
 							case comp::gteq: {
+								if (left.isNil() || right.isNil()) { push_error(errors::error{ errors::unknown ,"Attempt to compare a nil value!" }); return false; }
 								assign(assn, value(left >= right));
 								break;
 							}
 							case comp::lt: {
+								if (left.isNil() || right.isNil()) { push_error(errors::error{ errors::unknown ,"Attempt to compare a nil value!" }); return false; }
 								assign(assn, value(left < right));
 								break;
 							}
 							case comp::lteq: {
+								if (left.isNil() || right.isNil()) { push_error(errors::error{ errors::unknown ,"Attempt to compare a nil value!" }); return false; }
 								assign(assn, value(left <= right));
 								break;
 							}

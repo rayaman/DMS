@@ -4,6 +4,7 @@ using namespace dms::utils;
 // TODO: process if elseif else statements, for loops and while loops
 namespace dms {
 	bool LineParser::match_process_standard(tokenstream* stream, value& v) {
+		stream->chomp(newline);
 		//utils::debug(stream->peek());
 		if (stream->peek().type == tokens::none) {
 			return false;
@@ -699,7 +700,7 @@ namespace dms {
 			token end = t.back();
 			t.pop_back();
 			t.push_back(token{ tokens::seperator,codes::NOOP,"",t[0].line_num });
-			t.push_back(token{ tokens::nil,codes::NOOP,"",t[0].line_num });
+			t.push_back(token{ tokens::escape,codes::NOOP,"",t[0].line_num });
 			t.push_back(end);
 			tempstream.init(&t); // Turn tokens we consumed into a tokenstream
 			if (tokn.type==tokens::gotoo) {
@@ -739,10 +740,15 @@ namespace dms {
 			// This part we add values to the opcodes for the bytecode FUNC val a1 a2 a3 ... an
 			while (tempstream.peek().type != tokens::none) { // End of stream
 				debugInvoker(stream);
+				//utils::debug(stream->peek());
 				tempval = value(datatypes::variable);
 				if (tempstream.match(tokens::seperator)) {
 					// We have a seperator for function arguments
 					tempstream.next(); // Consume it
+				}
+				else if (tempstream.match(tokens::escape)) {
+					c->args.push(value(datatypes::escape));
+					tempstream.next();
 				}
 				else if (match_process_standard(&tempstream, tempval)) {
 					c->args.push(tempval);
@@ -756,8 +762,9 @@ namespace dms {
 					return true;
 				}
 				else {
-					utils::debug(tempstream.peek());
+					//utils::debug(tempstream.peek());
 					badSymbol(&tempstream);
+					return false;
 				}
 			}
 			
@@ -922,12 +929,44 @@ namespace dms {
 		if (stream->match(cbracketo)) {
 			size_t last_line = stream->last().line_num;
 			std::vector<token> t = stream->next(cbracketo, cbracketc); // Consume and get tokens
+			t.pop_back();
 			tokenstream tempstream(&t);
 			if (notBalanced(t, last_line, stream, "{", "}"))
 				return false;
 			// We got the balanced match, time to simple do it
 			ParseLoop(&tempstream); // Done
 			return true;
+		}
+		return false;
+	}
+	bool LineParser::match_process_while(tokenstream* stream)
+	{
+		if (stream->match(tokens::name) && stream->peek().name == "while") {
+			stream->next();
+			stream->chomp(tokens::newline);
+			value ref(datatypes::variable);
+			std::string wstart = std::string("WHS_") + random_string(4);
+			std::string wend = std::string("WHE_") + random_string(4);
+			buildLabel(wstart);
+			if (stream->match(parao) && match_process_standard(stream,ref)) {
+				cmd* c = new cmd;
+				c->opcode = codes::IFFF;
+				c->args.push(ref);
+				c->args.push(value(wend));
+				current_chunk->addCmd(c);
+				if (match_process_scope(stream)) {
+					buildGoto(wstart);
+					buildLabel(wend);
+					return true;
+				}
+				else {
+					badSymbol(stream);
+				}
+			}
+			else {
+				badSymbol(stream);
+				return false;
+			}
 		}
 		return false;
 	}
@@ -954,6 +993,7 @@ namespace dms {
 			tokenstream tmpstream(&ts);
 			value cmp(datatypes::variable);
 			value nil;
+			stream->chomp(newline);
 			if (match_process_standard(&tmpstream,cmp)) {
 				std::string ifend = std::string("IFE_") + random_string(4);
 				std::string next = std::string("IFF_") + random_string(4);
@@ -984,8 +1024,10 @@ namespace dms {
 					c->args.push(value(next));
 					current_chunk->addCmd(c);
 					if (match_process_function(stream, nil)) {
+						stream->chomp(newline);
 						if (stream->match(tokens::pipe)) {
 							stream->next();
+							stream->chomp(newline);
 							buildGoto(ifend);
 							buildLabel(next);
 							if (!match_process_function(stream, nil) && !match_process_scope(stream)) {
@@ -1092,7 +1134,7 @@ namespace dms {
 		stream->store(current_chunk);
 		cmd* lastcmd = nullptr;
 		// It has to start with one of these 3 to even be considered an expression
-		if ((stream->match(tokens::number) || stream->match(tokens::name) || stream->match(tokens::parao)) && stream->tokens.size()>=3) {
+		if ((stream->match(tokens::number) || stream->match(tokens::string) || stream->match(tokens::name) || stream->match(tokens::parao)) && stream->tokens.size()>=3) {
 			// What do we know, math expressions can only be on a single line. We know where to stop looking if we have to
 			cmd* c = new cmd;
 			value wv;

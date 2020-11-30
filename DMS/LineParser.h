@@ -27,6 +27,7 @@ namespace dms {
 		void init(std::vector<tokens::token>* ptr);
 		tokens::token next();
 		void prev();
+		void chomp(tokens::tokentype t);
 		std::vector<tokens::token> next(tokens::tokentype to, tokens::tokentype tc);
 		std::vector<tokens::token> next(tokens::tokentype to, tokens::tokentype tc, bool nonewline);
 		tokens::token peek();
@@ -86,6 +87,7 @@ namespace dms {
 		bool match_process_condition(tokenstream* stream, value& v);
 		bool match_process_andor(tokenstream* stream,value& v);
 		bool match_process_scope(tokenstream* stream);
+		bool match_process_while(tokenstream* stream);
 
 		// Build
 		void buildGoto(std::string g, bool v = false);

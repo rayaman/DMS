@@ -176,11 +176,11 @@ namespace dms {
 		else if (lhs.type == datatypes::boolean && rhs.type == datatypes::boolean) {
 			return value((bool)(lhs.b + rhs.b));
 		}
-		else if ((lhs.type == datatypes::string && !(rhs.type == nil)) || rhs.type == datatypes::string && !(lhs.type == nil)) {
+		else if ((lhs.type == datatypes::string || rhs.type == datatypes::string)) {
 			return lhs.getPrintable() + rhs.getPrintable();
 		}
 		else {
-			return value("Invalid use of '+'!", datatypes::error);
+			return "Invalid use of '+'";
 		}
 	}
 	value operator-(const value& lhs, const value& rhs) {
@@ -404,6 +404,9 @@ namespace dms {
 		else if (type == datatypes::error) {
 			return std::string("ERROR: ") + s;
 		}
+		else if (type == datatypes::escape) {
+			return "";
+		}
 		return "unknown";
 	}
 	std::string value::toString() const {
@@ -443,6 +446,9 @@ namespace dms {
 		}
 		else if (c.type == datatypes::variable) {
 			out << (char)c.type << c.s; // Do the lookup
+		}
+		else if (c.type == datatypes::escape) {
+			out << (char)0;
 		}
 		return out;
 	};

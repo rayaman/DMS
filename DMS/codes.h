@@ -10,12 +10,12 @@ namespace dms::codes {
 		LOAD, // Done
 		VERN, // Done
 		USIN, // TODO
-		STAT, // Done
+		STAT, 
 		DISP, // Done
 		ASGN, // Done
 		LABL, // Done
 		CHOI, // Done
-		OPTN,
+		BLCK,
 		FORE,
 		WHLE,
 		FUNC, // Done

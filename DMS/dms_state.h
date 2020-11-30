@@ -40,8 +40,7 @@ namespace dms {
 		errors::error err;
 
 		dms_state();
-		void dump(errors::error err);
-		void dump(bool print=false);
+		void dump(std::string fn = "dump.bin");
 		void push_error(errors::error err);
 		void push_warning(errors::error err);
 		void push_chunk(std::string s, chunk* c);

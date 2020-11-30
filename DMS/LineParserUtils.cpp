@@ -17,6 +17,11 @@ namespace dms {
 	void tokenstream::prev() {
 		pos--;
 	}
+	void tokenstream::chomp(tokens::tokentype t)
+	{
+		while (peek().type == t)
+			next();
+	}
 	void tokenstream::store(chunk* c) {
 		stack.push(c->cmds.size());
 		spos.push(pos);
@@ -297,6 +302,11 @@ namespace dms {
 		chunk_type = bk_type;
 		current_chunk->type = bk_type;
 
+		cmd* bn = new cmd;
+		bn->opcode = codes::BLCK;
+		bn->args.push(value(bk_name));
+		bn->args.push(value(bk_type));
+		current_chunk->addCmd(bn);
 		if (state->isEnabled("debugging")) {
 			cmd* c = new cmd;
 			c->opcode = codes::FILE;

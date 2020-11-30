@@ -13,7 +13,7 @@ const std::string dms::codes::list[] = {
 	"ASGN",
 	"LABL",
 	"CHOI",
-	"OPTN",
+	"BLCK",
 	"FORE",
 	"WHLE",
 	"FUNC",

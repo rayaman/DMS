@@ -73,7 +73,12 @@ namespace dms {
 		enable("statesave");
 		chunk* c = new chunk;
 		c->name = "$END";
-		c->type = blocktype::bt_block;
+		c->type = bt_block;
+		cmd* bn = new cmd;
+		bn->opcode = codes::BLCK;
+		bn->args.push(value("$END"));
+		bn->args.push(value(bt_block));
+		c->addCmd(bn);
 		cmd* cc = new cmd;
 		cc->opcode = codes::EXIT;
 		cc->args.push(value(0));
@@ -113,19 +118,6 @@ namespace dms {
 		}
 		return false;
 	}
-	void dms_state::dump(errors::error err) {
-		std::cout << std::endl << "STATE DUMP" << std::endl << "Number of chunks: " << chunks.size();
-		std::ofstream outputFile("dump.bin");
-		for (const auto& [key, val] : chunks) {
-			std::cout << "Key: " << key << "<" << getBlockType(val->type) << ">" << std::endl << *val << std::endl;
-			outputFile << "Key: " << key << "<" << getBlockType(val->type) << ">" << std::endl << *val << std::endl;
-		}
-		//If the error has a chunk then we get the data from it
-		if (err.current_chunk != nullptr) {
-			outputFile << err.current_chunk->name << ":" << std::endl << *err.current_chunk << std::endl;
-		}
-		outputFile.close();
-	}
 	bool dms_state::hasError() {
 		return stop;
 	}
@@ -138,14 +130,10 @@ namespace dms {
 		(*getMem())[var.getPrintable()] = val;
 		return true;
 	}
-	void dms_state::dump(bool print) {
-		if (print)
-			std::cout << "Number of chunks: " << chunks.size() << std::endl;
-		std::ofstream outputFile("dump.bin");
+	void dms_state::dump(std::string fn) {
+		std::ofstream outputFile(fn);
 		for (const auto& [key, val] : chunks) {
-			if(print)
-				std::cout << "Key: " << key << "<" << getBlockType(val->type) << ">" << std::endl << *val << std::endl;
-			outputFile << "Key: " << key << "<" << getBlockType(val->type) << ">" << std::endl << *val << std::endl;
+			outputFile << *val << std::endl;
 		}
 		outputFile.close();
 	}
@@ -157,7 +145,7 @@ namespace dms {
 			std::cout << err.err_msg << " On Line <" << err.linenum << ">" << std::endl;
 		}
 		else if (isEnabled("debugging")) {
-			std::cout << err.err_msg << " In File " << cur_file << " On Line <" << cur_line << ">" << std::endl;
+			std::cout << err.err_msg << " In file: '" << cur_file << "' on Line <" << cur_line << ">" << std::endl;
 		}
 		else {
 			std::cout << err.err_msg << std::endl;

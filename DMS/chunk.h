@@ -26,7 +26,7 @@ namespace dms {
 		void addLabel(std::string name);
 		friend std::ostream& operator << (std::ostream& out, const chunk& c) {
 			for (size_t i = 0; i < c.cmds.size(); i++) {
-				out << *(c.cmds[i]) << std::endl;
+				out << *(c.cmds[i]) << std::endl;// (char)255 << (char)254;
 			}
 			return out;
 		}
