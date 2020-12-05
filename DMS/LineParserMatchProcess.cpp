@@ -5,7 +5,7 @@ using namespace dms::utils;
 namespace dms {
 	bool LineParser::match_process_standard(tokenstream* stream, value& v) {
 		stream->chomp(newline);
-		//utils::debug(stream->peek());
+		utils::debug(stream->peek());
 		if (stream->peek().type == tokens::none) {
 			return false;
 		}
@@ -73,10 +73,6 @@ namespace dms {
 			}
 			return true;
 		}
-		if (match_process_andor(stream, v)) {
-			match_process_condition(stream, v);
-			return true;
-		}
 		if (match_process_expression(stream, v)) {
 			match_process_condition(stream,v);
 			return true;
@@ -105,8 +101,7 @@ namespace dms {
 			match_process_condition(stream, v);
 			return true;
 		}
-		else if (stream->match(tokens::number)) {
-			v.set(std::stod(stream->next().name));
+		else if (match_process_number(stream, v)) {
 			match_process_condition(stream, v);
 			return true;
 		}
@@ -139,6 +134,9 @@ namespace dms {
 		else if (stream->match(tokens::newline)) {
 			stream->next();
 			return match_process_standard(stream,v);
+		} else if (match_process_andor(stream, v)) {
+			match_process_condition(stream, v);
+			return true;
 		}
 		return false;
 	}
@@ -212,7 +210,7 @@ namespace dms {
 			stream->next();
 		}
 		else {
-			return match_process_andor(stream,v);
+			return false;
 		}
 		// So if all is good we continue here
 		value right = value(datatypes::variable);
@@ -459,7 +457,7 @@ namespace dms {
 	}
 	bool LineParser::match_process_return(tokenstream* stream) {
 		// Only handle this inside of a function block!
-		if (current_chunk->type == blocktype::bt_method) {
+		if (current_chunk->type == bt_method) {
 			if (stream->match(tokens::ret)) {
 				cmd* c = new cmd;
 				c->opcode = codes::RETN;
@@ -937,6 +935,9 @@ namespace dms {
 			ParseLoop(&tempstream); // Done
 			return true;
 		}
+		else if (ParseLoop(stream, 1)) {
+			return true; // Let's try and match one command
+		}
 		return false;
 	}
 	bool LineParser::match_process_while(tokenstream* stream)
@@ -948,28 +949,311 @@ namespace dms {
 			std::string wstart = std::string("WHS_") + random_string(4);
 			std::string wend = std::string("WHE_") + random_string(4);
 			buildLabel(wstart);
-			if (stream->match(parao) && match_process_standard(stream,ref)) {
+			
+			if (stream->match(parao)) {
+				size_t last_line = stream->last().line_num;
+				std::vector<token> t = stream->next(parao, parac); // Consume and get tokens
+				t.pop_back();
+				tokenstream tempstream(&t);
+				if (notBalanced(t, last_line, stream, "(", ")"))
+					return false;
+				if (match_process_standard(&tempstream, ref)) {
+					cmd* c = new cmd;
+					c->opcode = codes::IFFF;
+					c->args.push(ref);
+					c->args.push(value(wend));
+					current_chunk->addCmd(c);
+					if (match_process_scope(stream)) {
+						buildGoto(wstart);
+						buildLabel(wend);
+						return true;
+					}
+					else {
+						badSymbol(stream);
+					}
+				}
+				else {
+					badSymbol(stream);
+					return false;
+				}
+			}
+		}
+		return false;
+	}
+	bool LineParser::match_process_for(tokenstream* stream)
+	{
+		if (stream->match(tokens::name) && stream->peek().name == "for") {
+			stream->next();
+			stream->chomp(tokens::newline);
+			value ref(datatypes::variable);
+			std::string fstart = std::string("FOS_") + random_string(4);
+			std::string fend = std::string("FOE_") + random_string(4);
+			if (stream->match(parao)) {
+				size_t last_line = stream->last().line_num;
+				std::vector<token> t = stream->next(tokens::parao, tokens::parac); // Consume and get tokens
+				if (notBalanced(t, last_line, stream, "(", ")"))
+					return false;
+				t.pop_back();
+				tokenstream tempstream(&t);
 				cmd* c = new cmd;
-				c->opcode = codes::IFFF;
-				c->args.push(ref);
-				c->args.push(value(wend));
-				current_chunk->addCmd(c);
+				int count = 0;
+				value iter;
+				value start;
+				value end;
+				value inc = value(1);
+				if (tempstream.match(tokens::name,tokens::equal)) {
+					std::vector<token> assn = tempstream.next(tokens::seperator);
+					assn.pop_back(); // That comma gets consumed
+					tokenstream tstream(&assn);
+					if (ParseLoop(&tstream, 1)) {
+						// Grab the values from the parseloop
+						cmd* tempc = current_chunk->cmds.back();
+						iter = tempc->args.args[0];
+						start = tempc->args.args[1];
+						buildLabel(fstart); // Now that we assigned we can  build the lael
+						if (match_process_standard(&tempstream, end)) {
+							// Set end to the value it needs to be
+							if (tempstream.match(tokens::seperator)) {
+								tempstream.next();
+								if (match_process_standard(&tempstream, inc)) {
+									// If this works then we got all the needed values
+									goto for_ack_done; // Skip all the checks from the nested if statements
+								}
+								else {
+									badSymbol(&tempstream);
+								}
+							}
+						}
+						else {
+							badSymbol(&tempstream);
+							return false;
+						}
+					}
+					else {
+						badSymbol(&tstream);
+						return false;
+					}
+				}
+				else {
+					badSymbol(&tempstream);
+					return false;
+				}
+				// Now we build the rest of the bytecode
+			for_ack_done:
+				value co = value(variable);
+				int com;
+
+				if (start > end) // counting up
+					com = comp::gteq;
+				else // counting down
+					com = comp::lteq;
+
+				buildCmd(codes::COMP, { value(com), co, iter, end });
+
+				buildCmd(codes::IFFF, { co, value(fend) });
+
 				if (match_process_scope(stream)) {
-					buildGoto(wstart);
-					buildLabel(wend);
+					buildCmd(codes::ADD, {iter,inc,iter});
+					buildGoto(fstart);
+					buildLabel(fend);
 					return true;
 				}
 				else {
 					badSymbol(stream);
 				}
 			}
-			else {
-				badSymbol(stream);
-				return false;
+		}
+		return false;
+	}
+	bool LineParser::match_process_number(tokenstream* stream, value& v)
+	{
+		if (stream->match(tokens::number)) {
+			v.set(std::stod(stream->next().name));
+			v.type = datatypes::number;
+			return true;
+		}
+		else if (stream->match(tokens::minus, tokens::number)) {
+			stream->next();
+			v.set(-std::stod(stream->next().name));
+			v.type = datatypes::number;
+			return true;
+		}
+		return false;
+	}
+	bool LineParser::match_process_asm(tokenstream* stream)
+	{
+		if (stream->match(tokens::name) && stream->peek().name == "asm") {
+			stream->next();
+			stream->chomp(tokens::newline);
+			if (stream->match(tokens::cbracketo)) {
+				size_t last_line = stream->last().line_num;
+				std::vector<token> t = stream->next(tokens::cbracketo, tokens::cbracketc); // Consume and get tokens
+				if (notBalanced(t, last_line, stream, "{", "}"))
+					return false;
+				t.pop_back();
+				tokenstream ts(&t);
+				std::vector<value> temp;
+				codes::op o;
+				while (ts.can()) {
+					utils::debug(ts.peek());
+					if (ts.match(tokens::string)) {
+						temp.push_back(value(ts.next().name));
+					}
+					else if (ts.match(tokens::number)) {
+						temp.push_back(value(std::stod(ts.next().name)));
+					}
+					else if (ts.match(tokens::minus,tokens::number)) {
+						ts.next();
+						temp.push_back(value(-std::stod(ts.next().name)));
+					}
+					else if (ts.match(tokens::True)) {
+						temp.push_back(value(true));
+					}
+					else if (ts.match(tokens::False)) {
+						temp.push_back(value(false));
+					}
+					else if (ts.match(tokens::bracketo, tokens::name, tokens::bracketc)) {
+						ts.next();
+						temp.push_back(value(ts.next().name,block));
+						ts.next();
+					}
+					else if (ts.match(tokens::percent, tokens::name)) {
+						ts.next();
+						temp.push_back(value(ts.next().name,variable));
+					}
+					else if (ts.match(tokens::newline)) {
+						ts.next();
+					}
+					else if (ts.match(tokens::nil)) {
+						temp.push_back(value());
+						ts.next();
+					}
+					else if (ts.match(tokens::name)) {
+						if (temp.size() >= 1) {
+							buildCmd(o, temp);
+						}
+						temp.clear();
+						std::string cmd = ts.next().name;
+						tolower(cmd);
+						if (cmd == "noop")
+							o = codes::NOOP;
+						else if (cmd == "entr")
+							o = codes::ENTR;
+						else if (cmd == "enab")
+							o = codes::ENAB;
+						else if (cmd == "disa")
+							o = codes::DISA;
+						else if (cmd == "load")
+							o = codes::LOAD;
+						else if (cmd == "vern")
+							o = codes::VERN;
+						else if (cmd == "usin")
+							o = codes::USIN;
+						else if (cmd == "stat")
+							o = codes::STAT;
+						else if (cmd == "disp")
+							o = codes::DISP;
+						else if (cmd == "asgn")
+							o = codes::ASGN;
+						else if (cmd == "labl")
+							o = codes::LABL;
+						else if (cmd == "choi")
+							o = codes::CHOI;
+						else if (cmd == "blck")
+							o = codes::BLCK;
+						else if (cmd == "fore")
+							o = codes::FORE;
+						else if (cmd == "whle")
+							o = codes::WHLE;
+						else if (cmd == "func")
+							o = codes::FUNC;
+						else if (cmd == "ifff")
+							o = codes::IFFF;
+						else if (cmd == "knot")
+							o = codes::KNOT;
+						else if (cmd == "else")
+							o = codes::ELSE;
+						else if (cmd == "defn")
+							o = codes::DEFN;
+						else if (cmd == "skip")
+							o = codes::SKIP;
+						else if (cmd == "comp")
+							o = codes::COMP;
+						else if (cmd == "indx")
+							o = codes::INDX;
+						else if (cmd == "inst")
+							o = codes::INST;
+						else if (cmd == "erro")
+							o = codes::ERRO;
+						else if (cmd == "goto")
+							o = codes::GOTO;
+						else if (cmd == "jump")
+							o = codes::JUMP;
+						else if (cmd == "retn")
+							o = codes::RETN;
+						else if (cmd == "exit")
+							o = codes::EXIT;
+						else if (cmd == "debg")
+							o = codes::DEBG;
+						else if (cmd == "dspd")
+							o = codes::DSPD;
+						else if (cmd == "dact")
+							o = codes::DACT;
+						else if (cmd == "wait")
+							o = codes::WAIT;
+						else if (cmd == "apnd")
+							o = codes::APND;
+						else if (cmd == "sspk")
+							o = codes::SSPK;
+						else if (cmd == "add")
+							o = codes::ADD;
+						else if (cmd == "sub")
+							o = codes::SUB;
+						else if (cmd == "mul")
+							o = codes::MUL;
+						else if (cmd == "div")
+							o = codes::DIV;
+						else if (cmd == "pow")
+							o = codes::POW;
+						else if (cmd == "mod")
+							o = codes::MOD;
+						else if (cmd == "list")
+							o = codes::LIST;
+						else if (cmd == "line")
+							o = codes::LINE;
+						else if (cmd == "halt")
+							o = codes::HALT;
+						else if (cmd == "file")
+							o = codes::FILE;
+						else if (cmd == "gc")
+							o = codes::GC;
+						else if (cmd == "asid")
+							o = codes::ASID;
+						else if (cmd == "ofun")
+							o = codes::OFUN;
+					}
+					else {
+						badSymbol(&ts);
+					}
+				}
+				if (temp.size() >= 1) {
+					buildCmd(o, temp);
+				}
+				return true;
 			}
 		}
 		return false;
 	}
+	/*
+	stream->match(tokens::bracketo, tokens::name, tokens::bracketc)) {
+			// We are assigning a block as a variable
+			stream->next();
+			v.set(stream->next().name);
+			v.type = datatypes::block;
+			stream->next();
+			match_process_condition(stream, v);
+			return true;
+	*/
 	bool LineParser::match_process_IFFF(tokenstream* stream) {
 		/*if(this) {
 		*	then()
@@ -997,32 +1281,38 @@ namespace dms {
 			if (match_process_standard(&tmpstream,cmp)) {
 				std::string ifend = std::string("IFE_") + random_string(4);
 				std::string next = std::string("IFF_") + random_string(4);
-				if (stream->match(tokens::cbracketo)) {
-					size_t last_line = stream->last().line_num;
+				cmd* c = new cmd;
+				c->opcode = codes::IFFF;
+				c->args.push(cmp);
+				c->args.push(value(next));
+				current_chunk->addCmd(c);
+				if (match_process_scope(stream)) {
+					/*size_t last_line = stream->last().line_num;
 					std::vector<token> toks = stream->next(tokens::cbracketo, tokens::cbracketc);
 					if (notBalanced(toks, last_line, stream, "{", "}"))
 						return false;
 					toks.pop_back();
 					tokenstream tempstream(&toks);
-					cmd* c = new cmd;
-					c->opcode = codes::IFFF;
-					c->args.push(cmp);
-					c->args.push(value(next));
-					current_chunk->addCmd(c);
-					ParseLoop(&tempstream);
+					ParseLoop(&tempstream);*/
 					buildGoto(ifend);
 					buildLabel(next);
-					if (match_process_ELIF(stream,ifend) || match_process_ELSE(stream, ifend)) {}
+					stream->chomp(newline);
+					if (match_process_ELIF(stream, ifend) || match_process_ELSE(stream, ifend)) {
+					
+					}
+					else if (stream->match(tokens::pipe)) {
+						stream->next();
+						stream->chomp(newline);
+						if (!match_process_scope(stream)) {
+							state->push_error(errors::error{ errors::unknown,"Missing else function or scope",true,stream->peek().line_num,current_chunk });
+							return false;
+						}
+					}
 					buildLabel(ifend);
 					// We keep trying to match else if/else until nothing is left
 					return true;
 				}
 				else if (stream->match(tokens::name,tokens::parao)) {
-					cmd* c = new cmd;
-					c->opcode = codes::IFFF;
-					c->args.push(cmp);
-					c->args.push(value(next));
-					current_chunk->addCmd(c);
 					if (match_process_function(stream, nil)) {
 						stream->chomp(newline);
 						if (stream->match(tokens::pipe)) {
@@ -1057,16 +1347,11 @@ namespace dms {
 		return false; // TODO finish this
 	}
 	bool LineParser::match_process_ELSE(tokenstream* stream, std::string ifend) {
-		if (stream->match(tokens::name, tokens::cbracketo) && stream->peek().name == "else") {
+		if (stream->match(tokens::name) && stream->peek().name == "else") {
 			stream->next();
-			size_t last_line = stream->last().line_num;
-			std::vector<token> ts = stream->next(tokens::cbracketo, tokens::cbracketc);
-			if (notBalanced(ts, last_line, stream, "{", "}"))
-				return false;
-			ts.pop_back();
-			tokenstream tempstream(&ts);
-			ParseLoop(&tempstream);
-			return true;
+			if (match_process_scope(stream)) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -1083,22 +1368,31 @@ namespace dms {
 			//buildLabel(iff);
 			if (match_process_standard(&tmpstream, cmp)) {
 				std::string next = std::string("IFF_") + random_string(4);
-				if (stream->match(tokens::cbracketo)) {
-					size_t last_line = stream->last().line_num;
+				if (match_process_scope(stream)) {
+					/*size_t last_line = stream->last().line_num;
 					std::vector<token> toks = stream->next(tokens::cbracketo, tokens::cbracketc);
 					if (notBalanced(ts, last_line, stream, "{", "}"))
 						return false;
 					toks.pop_back();
-					tokenstream tempstream(&toks);
+					tokenstream tempstream(&toks);*/
 					cmd* c = new cmd;
 					c->opcode = codes::IFFF;
 					c->args.push(cmp);
 					c->args.push(value(next));
 					current_chunk->addCmd(c);
-					ParseLoop(&tempstream);
+					//ParseLoop(&tempstream);
 					buildGoto(ifend);
 					buildLabel(next);
+					stream->chomp(newline);
 					if (match_process_ELIF(stream, ifend) || match_process_ELSE(stream, ifend)) {}
+					else if (stream->match(tokens::pipe)) {
+						stream->next();
+						stream->chomp(newline);
+						if (!match_process_scope(stream)) {
+							state->push_error(errors::error{ errors::unknown,"Missing else function or scope",true,stream->peek().line_num,current_chunk });
+							return false;
+						}
+					}
 					// We keep trying to match else if/else until nothing is left
 					return true;
 				}
@@ -1134,13 +1428,13 @@ namespace dms {
 		stream->store(current_chunk);
 		cmd* lastcmd = nullptr;
 		// It has to start with one of these 3 to even be considered an expression
-		if ((stream->match(tokens::number) || stream->match(tokens::string) || stream->match(tokens::name) || stream->match(tokens::parao)) && stream->tokens.size()>=3) {
+		if ((stream->match(tokens::minus,tokens::number) || stream->match(tokens::number) || stream->match(tokens::string) || stream->match(tokens::name) || stream->match(tokens::parao)) && stream->tokens.size()>=3) {
 			// What do we know, math expressions can only be on a single line. We know where to stop looking if we have to
 			cmd* c = new cmd;
 			value wv;
-			value left; // lefthand
+			value left; // left hand
 			codes::op op; // opperator
-			value right; // righthand
+			value right; // right hand
 			reset(left, op, right);
 			size_t loops = 0;
 			bool hasOP = false;

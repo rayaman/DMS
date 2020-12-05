@@ -342,13 +342,14 @@ namespace dms {
 			outputFile.close();
 		}
 	}
-	void LineParser::ParseLoop(tokenstream* stream) {
-		if (stop) return;
-		token current = stream->next();
+	bool LineParser::ParseLoop(tokenstream* stream, size_t count) {
+		if (stop) return false;
+		size_t current_count=0;
+		token current = token{tokentype::newline,codes::NOOP};
 		cmd* flagcmd = new cmd;
 		value nil;
 		while (stream->peek().type != tokens::none) {
-			if (stop) return;
+			if (stop) return false;
 			debugInvoker(stream);
 			//utils::debug(current);
 			//utils::print("[flags]");
@@ -372,7 +373,7 @@ namespace dms {
 				else if (code == codes::ENTR && tok == tokens::name) {
 					if (state->entry != "$undefined") {
 						state->push_error(errors::error{ errors::unknown ,utils::concat("Entrypoint already defined as '",state->entry,"'. Trying to redefine as '",temp[0].name,"' is not allowed!"), true,stream->last().line_num,current_chunk });
-						return;
+						return false;
 					}
 					state->entry = temp[0].name;
 					flagcmd->opcode = code;
@@ -408,20 +409,18 @@ namespace dms {
 				}
 				else {
 					state->push_error(errors::error{ errors::badtoken,concat("Expected <FLAG IDENTIFIER> got: ", current, temp[0]),true,line,current_chunk });
-					return;
+					return false;
 				}
 			}
 			// Default block
-			if (stream->match(tokens::newline, tokens::bracketo, tokens::name, tokens::bracketc, tokens::newline)) {
-				stream->next();
+			if (stream->match(tokens::bracketo, tokens::name, tokens::bracketc, tokens::newline)) {
 				stream->next();
 				std::string name = stream->next().name;
 				createBlock(name, bt_block);
 				line = stream->next().line_num; // Consume
 			}
 			// This handles a few block types since they all follow a similar format
-			else if (stream->match(tokens::newline, tokens::bracketo, tokens::name, tokens::colon, tokens::name, tokens::bracketc)) {
-				stream->next();
+			else if (stream->match(tokens::bracketo, tokens::name, tokens::colon, tokens::name, tokens::bracketc)) {
 				stream->next();
 				std::string name = stream->next().name;
 				line = stream->next().line_num;
@@ -441,9 +440,8 @@ namespace dms {
 				stream->next();
 			}
 			// Function block type
-			else if (stream->match(tokens::newline, tokens::bracketo, tokens::name, tokens::colon, tokens::name, tokens::parao)) {
+			else if (stream->match(tokens::bracketo, tokens::name, tokens::colon, tokens::name, tokens::parao)) {
 				std::stringstream str;
-				stream->next();
 				stream->next();
 				std::string name = stream->next().name;
 				line = stream->next().line_num; // The color, not needed after the inital match, but we still need to consume it
@@ -470,58 +468,69 @@ namespace dms {
 							str << "Unexpected symbol: " << tokens[i];
 							state->push_error(errors::error{ errors::badtoken,str.str(),true,line,current_chunk });
 
-							return;
+							return false;
 						}
 					}
 					// If all went well the 'args' now has all of tha params for the method we will be working with
 					current_chunk->params = args;
 					// Thats should be all we need to do
-					stream->next();
+					if (stream->peek().type != tokens::bracketc) {
+						state->push_error(errors::error{ errors::badtoken, "Incomplete function block declaration! Expected ']' to close the block!",true,line,current_chunk });
+						return false;
+					}
+					else {
+						stream->next();
+					}
 				}
 				else {
 					str << "'function' keyword expected got " << b;
 					state->push_error(errors::error{ errors::badtoken, str.str(),true,line,current_chunk });
 
-					return;
+					return false;
 				}
 			}
 			// Control Handle all controls here
-			match_process_while(stream);
-			match_process_IFFF(stream);
+			manageCount(match_process_while(stream),count,current_count);
+			manageCount(match_process_for(stream), count, current_count);
+			manageCount(match_process_IFFF(stream), count, current_count);
 			// Let's handle function stuff!
 			//utils::print("[return]");
-			match_process_return(stream);
+			manageCount(match_process_return(stream), count, current_count);
 			//utils::print("[disp]");
-			match_process_disp(stream); // Match and process dialogue
+			manageCount(match_process_disp(stream), count, current_count); // Match and process dialogue
 			//utils::print("[label]");
 			if (stream->match(tokens::newline, tokens::label)) { // Match and process labels
-				stream->next();
+				stream->next();// We don't add this to the count, since a label is just a position to jump to!
 				buildLabel(stream->next().name);
 			}
 			//utils::print("[func]");
-			match_process_function(stream, nil); // Naked Function
+			manageCount(match_process_function(stream, nil), count, current_count); // Naked Function
 			//utils::print("[assn]");
-			match_process_assignment(stream);
+			manageCount(match_process_assignment(stream), count, current_count);
 			//utils::print("[debug]");
-			match_process_debug(stream);
+			manageCount(match_process_debug(stream), count, current_count);
 			//utils::print("[goto]");
-			match_process_goto(stream);
+			manageCount(match_process_goto(stream), count, current_count);
 			//utils::print("[exit]");
-			match_process_exit(stream);
+			manageCount(match_process_exit(stream), count, current_count);
 			//utils::print("[wait]");
-			match_process_wait(stream);
+			manageCount(match_process_wait(stream), count, current_count);
 			//utils::print("[jump]");
-			match_process_jump(stream);
+			manageCount(match_process_jump(stream), count, current_count);
+			manageCount(match_process_asm(stream), count, current_count);
+			if (count != 0 && current_count == count) {
+				return true; // We got what we came for, we exit and consume no more!
+			}
 			if(stream->match(newline) || stream->match(eof))
 				current = stream->next();
-			//utils::debug(stream->peek());
+			utils::debug(stream->peek());
 		}
 	}
 	void LineParser::_Parse(tokenstream* stream) {
 		if (stop) return;
-		createBlock("$INIT", blocktype::bt_block);
+		createBlock("$INIT", bt_block);
 		ParseLoop(stream);
 		if (stop) return;
-		createBlock("$END", blocktype::bt_block);// Runs code that ensures that last user block is processed into the chunks array. Yes, I could have simply added in the lines of code at the end, but I didn't want to rewrite code again!
+		createBlock("$END", bt_block);// Runs code that ensures that last user block is processed into the chunks array. Yes, I could have simply added in the lines of code at the end, but I didn't want to rewrite code again!
 	}
 }

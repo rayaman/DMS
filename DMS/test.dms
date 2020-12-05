@@ -6,47 +6,22 @@ enable forwardlabels // Do most of your labels exist ahead?
 enable savestate
 //enable leaking
 //enable debugging
-loadfile "loadtest.dms"
+//loadfile "loadtest.dms"
 version 0.2
 using extendedDefine
 [main]
-	a1 = 10
-	b1 = 15
-	print("this" + " or " + "that")
-	
-	if(a==b){
-		print("Doing a test!")
-		if(a!=b){
-			print("Doing more tests!")
+	a=0
+	while(true)
+		asm {
+			add %a %a 1
+			func %print nil %a nil
 		}
-	} elseif (a1==10) {
-		print("Does this work?")
-	} else {
-		print("This is an else!")
-	}
-	
-	if (a1!=10)this() | {
-		print("Do you work?")
-	}
-	
-	count = 0
-	while(count<10){
-		print("Count: " + count)
-		count = count + 1
-	}
-	
-	// for(x, 10, 1, -1){
-		// print(x)
-	// }
-	
-	print("This is coming along nicely!")
-	
-	print("concat test")
-	test1 = "Hello "
-	print(2.2+test1+"World!"+fake)
-	
-	if(a==nil) this()|that()
-	
+
+[fact:function(n)]
+	if(n==1 or n==0)
+		return 1
+	else 
+		return n * fact(n-1)
 
 [this:function()]
 	print("This")
@@ -62,13 +37,3 @@ using extendedDefine
 	age = .24
 	money = 100
 	excited: "path/to/file"
-
-[test1:function()]
-	"Inside a function!"
-	//val = newblock(1,2,3)
-	//"val = `val`"
-
-[newblock:function(a,b,c)]
-	"Func Arguments: a = `a`, b = `b`, c = `c`"
-	"Time to return"
-	return a+b+c

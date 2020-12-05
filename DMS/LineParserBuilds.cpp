@@ -48,4 +48,11 @@ namespace dms {
 		c->args.push(value(w));
 		current_chunk->addCmd(c);
 	}
+	void LineParser::buildCmd(codes::op op, std::vector<value> args)
+	{
+		cmd* c = new cmd;
+		c->opcode = op;
+		c->args.args = args;
+		current_chunk->addCmd(c);
+	}
 }

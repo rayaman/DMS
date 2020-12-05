@@ -94,6 +94,10 @@ namespace dms {
 		temp.push_back(next());
 		return temp;
 	}
+	bool tokenstream::can()
+	{
+		return peek().type != tokens::none;
+	}
 	uint8_t passer::next() {
 		if (stream.size() == pos) {
 			return NULL;
@@ -140,6 +144,14 @@ namespace dms {
 		}
 
 		return random_string;
+	}
+	bool LineParser::manageCount(bool cond, size_t c, size_t& count)
+	{
+		if (cond && c!=0) {
+			count++;
+			return true;
+		}
+		return false;
 	}
 	bool LineParser::notBalanced(std::vector<tokens::token> ts, size_t last_line, tokenstream* stream, std::string o, std::string c) {
 		if (ts.size() == 0) {

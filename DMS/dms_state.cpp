@@ -7,14 +7,14 @@ namespace dms {
 		init_init = true;
 		cmd* c = new cmd;
 		for (const auto& [key, val] : chunks) {
-			if (val->type == blocktype::bt_character || val->type == blocktype::bt_env) {
+			if (val->type == bt_character || val->type == bt_env) {
 				c->opcode = codes::ASGN;
 				c->args.push(value(key, datatypes::variable));
 				c->args.push(value(key, datatypes::block));
 				chunks["$INIT"]->addCmd(c);
 				c = new cmd;
 			}
-			else if (val->type == blocktype::bt_method) {
+			else if (val->type == bt_method) {
 				c->opcode = codes::RETN;
 				c->args.push(value());
 				val->addCmd(c);
@@ -95,13 +95,13 @@ namespace dms {
 		return true;
 	}
 	bool dms_state::characterExists(std::string bk_name) {
-		return (chunks.count(bk_name) && chunks[bk_name]->type == blocktype::bt_character);
+		return (chunks.count(bk_name) && chunks[bk_name]->type == bt_character);
 	}
 	bool dms_state::environmentExists(std::string bk_name) {
-		return (chunks.count(bk_name) && chunks[bk_name]->type == blocktype::bt_env);
+		return (chunks.count(bk_name) && chunks[bk_name]->type == bt_env);
 	}
 	bool dms_state::functionExists(std::string bk_name) {
-		return (chunks.count(bk_name) && chunks[bk_name]->type == blocktype::bt_method);
+		return (chunks.count(bk_name) && chunks[bk_name]->type == bt_method);
 	}
 	bool dms_state::blockExists(std::string bk_name) {
 		return (chunks.count(bk_name));

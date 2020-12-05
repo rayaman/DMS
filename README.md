@@ -1,5 +1,5 @@
 # DMS
-The Dialogue Management Script's goal is to provide a nice and simple way to have dialogue for games. 
+The Dialogue Management Script's goal is to provide a nice and simple way to have dialogue for games, while also providing a fully functioning language to perform login in.
 
 # Todo
 - [X] ~~Implement bytecode for if/else if/else statements~~

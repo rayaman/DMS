@@ -33,6 +33,7 @@ namespace dms {
 		tokens::token peek();
 		tokens::token last();
 		std::vector<tokens::token> next(tokens::tokentype tk);
+		bool can();
 		bool match(tokens::tokentype t1 = tokens::none, tokens::tokentype t2 = tokens::none, tokens::tokentype t3 = tokens::none, tokens::tokentype t4 = tokens::none, tokens::tokentype t5 = tokens::none, tokens::tokentype t6 = tokens::none, tokens::tokentype t7 = tokens::none, tokens::tokentype t8 = tokens::none, tokens::tokentype t9 = tokens::none, tokens::tokentype t10 = tokens::none, tokens::tokentype t11 = tokens::none, tokens::tokentype t12 = tokens::none);
 		bool match(tokens::tokentype* t1 = nullptr, tokens::tokentype* t2 = nullptr, tokens::tokentype* t3 = nullptr, tokens::tokentype* t4 = nullptr, tokens::tokentype* t5 = nullptr, tokens::tokentype* t6 = nullptr, tokens::tokentype* t7 = nullptr, tokens::tokentype* t8 = nullptr, tokens::tokentype* t9 = nullptr, tokens::tokentype* t10 = nullptr, tokens::tokentype* t11 = nullptr, tokens::tokentype* t12 = nullptr);
 		bool hasScope(size_t tabs);
@@ -64,7 +65,7 @@ namespace dms {
 		dms_state* state = nullptr;
 		void doCheck(passer* stream, std::vector<tokens::token>* t_vec, size_t line, bool& isNum, bool& hasDec, std::vector<uint8_t>* buffer);
 		void _Parse(tokenstream* stream);
-		void ParseLoop(tokenstream* stream);
+		bool ParseLoop(tokenstream* stream, size_t count=0);
 		std::stack<std::string> lastCall;
 		// Match Process Code
 		bool match_process_debug(tokenstream* stream);
@@ -88,6 +89,9 @@ namespace dms {
 		bool match_process_andor(tokenstream* stream,value& v);
 		bool match_process_scope(tokenstream* stream);
 		bool match_process_while(tokenstream* stream);
+		bool match_process_for(tokenstream* stream);
+		bool match_process_number(tokenstream* stream, value& v);
+		bool match_process_asm(tokenstream* stream);
 
 		// Build
 		void buildGoto(std::string g, bool v = false);
@@ -96,10 +100,12 @@ namespace dms {
 		void buildLabel(std::string l);
 		void buildSpeed(double s);
 		void buildWait(double w);
+		void buildCmd(codes::op,std::vector<value>);
 
 		// Utils
 		std::string random_string(std::size_t length);
 
+		bool manageCount(bool cond, size_t c,size_t&);
 		bool notBalanced(std::vector<tokens::token> ts, size_t last_line, tokenstream* stream, std::string o, std::string c);
 		void badSymbol(errors::errortype err, tokenstream* stream);
 		void badSymbol(tokenstream* stream);
