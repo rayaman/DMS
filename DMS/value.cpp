@@ -79,6 +79,8 @@ namespace dms {
 			case datatypes::variable:
 				s = other.s;
 				break;
+			case datatypes::error:
+				s = other.s;
 			default:
 				break;
 			}
@@ -116,6 +118,8 @@ namespace dms {
 			case datatypes::variable:
 				s = other.s;
 				break;
+			case datatypes::error:
+				s = other.s;
 			default:
 				break;
 			}
@@ -159,6 +163,8 @@ namespace dms {
 			case datatypes::variable:
 				s = other.s;
 				break;
+			case datatypes::error:
+				s = other.s;
 			default:
 				break;
 			} 
@@ -170,7 +176,10 @@ namespace dms {
 		return lhs.getPrintable() == rhs.getPrintable();
 	}
 	value operator+(const value& lhs, const value& rhs) {
-		if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
+		if (lhs.type == datatypes::nil || rhs.type == datatypes::nil) {
+			return value("Attempt to concat a nil value!",datatypes::error);
+		}
+		else if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
 			return value(lhs.n + rhs.n);
 		}
 		else if (lhs.type == datatypes::boolean && rhs.type == datatypes::boolean) {
@@ -180,7 +189,7 @@ namespace dms {
 			return lhs.getPrintable() + rhs.getPrintable();
 		}
 		else {
-			return "Invalid use of '+'";
+			return value("Invalid use of '+'!", datatypes::error);
 		}
 	}
 	value operator-(const value& lhs, const value& rhs) {
@@ -188,7 +197,10 @@ namespace dms {
 			return value(lhs.n - rhs.n);
 		}
 		else {
-			return value(datatypes::error);
+			if(lhs.type!=datatypes::number)
+				return value(utils::concat("Attempted to perform arithmetic on a ", datatype[lhs.type] ," value!"),datatypes::error);
+			else
+				return value(utils::concat("Attempted to perform arithmetic on a ", datatype[rhs.type], " value!"), datatypes::error);
 		}
 	}
 	value operator/(const value& lhs, const value& rhs) {
@@ -196,7 +208,10 @@ namespace dms {
 			return value(lhs.n / rhs.n);
 		}
 		else {
-			return value(datatypes::error);
+			if (lhs.type != datatypes::number)
+				return value(utils::concat("Attempted to perform arithmetic on a ", datatype[lhs.type], " value!"), datatypes::error);
+			else
+				return value(utils::concat("Attempted to perform arithmetic on a ", datatype[rhs.type], " value!"), datatypes::error);
 		}
 	}
 	value operator*(const value& lhs, const value& rhs) {
@@ -207,7 +222,10 @@ namespace dms {
 			return value((bool)(lhs.b * rhs.b));
 		}
 		else {
-			return value(datatypes::error);
+			if (lhs.type != datatypes::number)
+				return value(utils::concat("Attempted to perform arithmetic on a ", datatype[lhs.type], " value!"), datatypes::error);
+			else
+				return value(utils::concat("Attempted to perform arithmetic on a ", datatype[rhs.type], " value!"), datatypes::error);
 		}
 	}
 	bool operator!=(const value& lhs, const value& rhs) {

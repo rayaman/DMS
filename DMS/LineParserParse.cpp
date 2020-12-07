@@ -348,6 +348,7 @@ namespace dms {
 		token current = token{tokentype::newline,codes::NOOP};
 		cmd* flagcmd = new cmd;
 		value nil;
+		size_t last_pos = SIZE_MAX;
 		while (stream->peek().type != tokens::none) {
 			if (stop) return false;
 			debugInvoker(stream);
@@ -490,7 +491,8 @@ namespace dms {
 				}
 			}
 			// Control Handle all controls here
-			manageCount(match_process_while(stream),count,current_count);
+			manageCount(match_process_choice(stream), count, current_count);
+			manageCount(match_process_while(stream), count, current_count);
 			manageCount(match_process_for(stream), count, current_count);
 			manageCount(match_process_IFFF(stream), count, current_count);
 			// Let's handle function stuff!
@@ -521,9 +523,14 @@ namespace dms {
 			if (count != 0 && current_count == count) {
 				return true; // We got what we came for, we exit and consume no more!
 			}
-			if(stream->match(newline) || stream->match(eof))
+			if (last_pos == stream->pos) {
+				badSymbol(stream);
+			}
+			last_pos = stream->pos;
+			if (stream->match(newline) || stream->match(eof)) {
 				current = stream->next();
-			utils::debug(stream->peek());
+			}
+			
 		}
 	}
 	void LineParser::_Parse(tokenstream* stream) {

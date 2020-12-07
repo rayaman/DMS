@@ -5,7 +5,7 @@ using namespace dms::utils;
 namespace dms {
 	bool LineParser::match_process_standard(tokenstream* stream, value& v) {
 		stream->chomp(newline);
-		utils::debug(stream->peek());
+		//utils::debug(stream->peek());
 		if (stream->peek().type == tokens::none) {
 			return false;
 		}
@@ -593,16 +593,22 @@ namespace dms {
 				else if (stream->match(tokens::string)) {
 					std::string name = stream->next().name;
 					c->args.push(value(name)); // We append the choice to the first part of the CHOI cmd
-
-					value val = value();
-					if (match_process_function(stream,val,false)) { // No returns and also no nesting of functions!
-						// We cannot have a nested function here, but if we dont have that then we add our goto
-						hasfunc = true;
-						buildGoto(choicelabel);
-					}
-					else if (match_process_goto(stream)) {}
+					if (match_process_goto(stream)) {}
 					else if (match_process_jump(stream)) {}
 					else if (match_process_exit(stream)) {}
+					else if (match_process_scope(stream)) {
+						buildGoto(choicelabel);
+					}
+					else {
+						badSymbol(stream);
+					}
+					//value val = value();
+					//if (match_process_function(stream,val,false)) { // No returns and also no nesting of functions!
+					//	// We cannot have a nested function here, but if we dont have that then we add our goto
+					//	hasfunc = true;
+					//	
+					//}
+					
 				}
 				// Last Match
 				else if (stream->match(tokens::newline)) {
@@ -612,12 +618,11 @@ namespace dms {
 					badSymbol(stream);
 				}
 			}
-			buildGoto(choicelabel);
 			cmd* cc = current_chunk->cmds.back(); // Delete last element
 			current_chunk->cmds.pop_back();
 			delete cc;
-			if (hasfunc)
-				buildLabel(choicelabel);
+			buildLabel(choicelabel);
+			stream->next(); // Remove the last bracket!
 			return true;
 		}
 		return false;
@@ -919,10 +924,7 @@ namespace dms {
 		}
 		return false;
 	}
-	/*
-	We need to match {...}
-	This doesn't pass any varaible. It should be used to match and process program flow
-	*/
+
 	bool LineParser::match_process_scope(tokenstream* stream) {
 		if (stream->match(cbracketo)) {
 			size_t last_line = stream->last().line_num;
@@ -1095,7 +1097,7 @@ namespace dms {
 				std::vector<value> temp;
 				codes::op o;
 				while (ts.can()) {
-					utils::debug(ts.peek());
+					//utils::debug(ts.peek());
 					if (ts.match(tokens::string)) {
 						temp.push_back(value(ts.next().name));
 					}

@@ -191,14 +191,20 @@ namespace dms {
 					value cmp = c->args.args[0];
 					if (cmp.resolve(this).type == datatypes::boolean || cmp.resolve(this).isNil()) {
 						if (!cmp.resolve(this).b || cmp.resolve(this).isNil()) {
-							assign(cmp, value(true));
+							if(!assign(cmp, value(true))) {
+								return false;
+							}
 						}
 						else {
-							assign(cmp, value(false));
+							if(!assign(cmp, value(false))) {
+								return false;
+							}
 						}
 					}
 					else {
-						assign(cmp, value(false));
+						if(!assign(cmp, value(false))) {
+							return false;
+						}
 					}
 					break;
 				}
@@ -266,7 +272,9 @@ namespace dms {
 						if (ret.type == datatypes::error)
 							return false;
 						if (assn.type != datatypes::nil) {
-							assign(assn, ret);
+							if(!assign(assn, ret)) {
+								return false;
+							}
 						}
 					}
 					break;
@@ -290,7 +298,9 @@ namespace dms {
 						if (ret.type == datatypes::error)
 							return false;
 						if (assn.type != datatypes::nil) {
-							assign(assn, ret);
+							if(!assign(assn, ret)) {
+								return false;
+							}
 						}
 					}
 					break;
@@ -320,7 +330,7 @@ namespace dms {
 					}
 					else if (env.type == datatypes::custom) {
 						env.c->NewIndex(indx, assn);
-						//assign( assn, env->c->Index(indx));
+						//if(!assign( assn, env->c->Index(indx));
 						// Call the method within the custom data
 					}
 					break;
@@ -330,8 +340,10 @@ namespace dms {
 						value assn = c->args.args[0];
 						value o1 = c->args.args[1];
 						value o2 = c->args.args[2];
-						value ret = value(o1.resolve(this)+o2.resolve(this));
-						assign(assn, ret);
+						value ret = o1.resolve(this)+o2.resolve(this);
+						if(!assign(assn, ret)) {
+							return false;
+						}
 					}
 					break;
 				case SUB:
@@ -339,8 +351,10 @@ namespace dms {
 					value assn = c->args.args[0];
 					value o1 = c->args.args[1];
 					value o2 = c->args.args[2];
-					value ret = value(o1.resolve(this) - o2.resolve(this));
-					assign(assn, ret);
+					value ret = o1.resolve(this) - o2.resolve(this);
+					if(!assign(assn, ret)) {
+						return false;
+					}
 				}
 				break;
 				case MUL:
@@ -348,8 +362,10 @@ namespace dms {
 					value assn = c->args.args[0];
 					value o1 = c->args.args[1];
 					value o2 = c->args.args[2];
-					value ret = value(o1.resolve(this) * o2.resolve(this));
-					assign(assn, ret);
+					value ret = o1.resolve(this) * o2.resolve(this);
+					if(!assign(assn, ret)) {
+						return false;
+					}
 				}
 				break;
 				case DIV:
@@ -357,8 +373,10 @@ namespace dms {
 					value assn = c->args.args[0];
 					value o1 = c->args.args[1];
 					value o2 = c->args.args[2];
-					value ret = value(o1.resolve(this) / o2.resolve(this));
-					assign(assn, ret);
+					value ret = o1.resolve(this) / o2.resolve(this);
+					if(!assign(assn, ret)) {
+						return false;
+					}
 				}
 				break;
 				case POW:
@@ -366,8 +384,10 @@ namespace dms {
 					value assn = c->args.args[0];
 					value o1 = c->args.args[1];
 					value o2 = c->args.args[2];
-					value ret = value(pow(o1.resolve(this).n, o2.resolve(this).n));
-					assign(assn, ret);
+					value ret = pow(o1.resolve(this).n, o2.resolve(this).n);
+					if(!assign(assn, ret)) {
+						return false;
+					}
 				}
 				break;
 				case MOD:
@@ -375,8 +395,10 @@ namespace dms {
 					value assn = c->args.args[0];
 					value o1 = c->args.args[1];
 					value o2 = c->args.args[2];
-					value ret = value(std::fmod(o1.resolve(this).n,o2.resolve(this).n));
-					assign(assn, ret);
+					value ret = std::fmod(o1.resolve(this).n,o2.resolve(this).n);
+					if(!assign(assn, ret)) {
+						return false;
+					}
 				}
 				break;
 				case INDX:
@@ -392,11 +414,15 @@ namespace dms {
 							else if (characters.count(env.getPrintable())) {
 								e = characters[env.getPrintable()];
 							}
-							assign( assn, e->values[indx.getPrintable()]);
+							if(!assign( assn, e->values[indx.getPrintable()])) {
+								return false;
+							}
 						}
 						else if (env.type == datatypes::env) {
 							if (indx.type == datatypes::number) {
-								assign( assn, env.e->getValue(indx));
+								if(!assign( assn, env.e->getValue(indx))) {
+									return false;
+								}
 							}
 							else {
 								push_error(errors::error{ errors::invalid_type ,concat("Expected a number value got ",datatype[indx.type]) });
@@ -404,7 +430,9 @@ namespace dms {
 							}
 						}
 						else if (env.type == datatypes::custom) {
-							assign( assn, env.c->Index(indx));
+							if(!assign( assn, env.c->Index(indx))) {
+								return false;
+							}
 							// Call the method within the custom data
 						}
 					}
@@ -417,7 +445,9 @@ namespace dms {
 						env->hpart["$size"] = c->args.args[1];
 						value val = new value;
 						val.set(env);
-						assign(c->args.args[0], val);
+						if(!assign(c->args.args[0], val)) {
+							return false;
+						}
 					}
 					break;
 				case INST:
@@ -434,31 +464,43 @@ namespace dms {
 						value right = c->args.args[3].resolve(this);
 						switch (cmp) {
 							case comp::eq: {
-								assign(assn, value(left == right));
+								if(!assign(assn, value(left == right))) {
+									return false;
+								}
 								break;
 							}
 							case comp::gt: {
 								if (left.isNil() || right.isNil()) {push_error(errors::error{ errors::unknown ,"Attempt to compare a nil value!" });return false;}
-								assign(assn, value(left > right));
+								if(!assign(assn, value(left > right))) {
+									return false;
+								}
 								break;
 							}
 							case comp::gteq: {
 								if (left.isNil() || right.isNil()) { push_error(errors::error{ errors::unknown ,"Attempt to compare a nil value!" }); return false; }
-								assign(assn, value(left >= right));
+								if(!assign(assn, value(left >= right))) {
+									return false;
+								}
 								break;
 							}
 							case comp::lt: {
 								if (left.isNil() || right.isNil()) { push_error(errors::error{ errors::unknown ,"Attempt to compare a nil value!" }); return false; }
-								assign(assn, value(left < right));
+								if(!assign(assn, value(left < right))) {
+									return false;
+								}
 								break;
 							}
 							case comp::lteq: {
 								if (left.isNil() || right.isNil()) { push_error(errors::error{ errors::unknown ,"Attempt to compare a nil value!" }); return false; }
-								assign(assn, value(left <= right));
+								if(!assign(assn, value(left <= right))) {
+									return false;
+								}
 								break;
 							}
 							case comp::nteq: {
-								assign(assn, value(left != right));
+								if(!assign(assn, value(left != right))) {
+									return false;
+								}
 								break;
 							}
 						}
@@ -504,7 +546,9 @@ namespace dms {
 						return false;
 					break;
 				case ASGN:
-					assign(c->args.args[0], c->args.args[1]);
+					if(!assign(c->args.args[0], c->args.args[1])) {
+						return false;
+					}
 					break;
 				case LINE:
 					cur_line = (size_t)c->args.args[0].n;

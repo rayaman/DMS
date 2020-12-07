@@ -10,12 +10,18 @@ enable savestate
 version 0.2
 using extendedDefine
 [main]
-	a=0
-	while(true)
-		asm {
-			add %a %a 1
-			func %print nil %a nil
+	choice "New Choice Test" {
+		"Option 1" print(fact("Hi!"))
+		"Option 2" goto "test"
+		"Option 3" {
+			print("Yes this works!")
+			print("Are you happy?")
 		}
+	}
+	goto "end"
+	::test::
+		print("Here!")
+	::end::
 
 [fact:function(n)]
 	if(n==1 or n==0)

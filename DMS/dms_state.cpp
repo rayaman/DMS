@@ -1,6 +1,37 @@
 #include "dms_state.h"
 #include "Handlers.h"
 namespace dms {
+	value dms::blockInvoke(void* self, dms_state* state, dms_args* args) {
+		std::string func = state->call_stack.top();
+		if (state->functionExists(func)) {
+			state->call_stack.pop();
+			value ret;
+			state->pushMem();
+			memory* Fmem = state->getMem();
+			// Only the nil argument
+			if (args->args.size())
+				for (int i = 0; i < state->chunks[func]->params.args.size(); i++)
+					(*Fmem)[state->chunks[func]->params.args.at(i).getPrintable()] = args->args.at(i).resolve(state);
+
+			if (!state->run(func, Fmem)) {
+				std::vector<value> err = Fmem->examine(datatypes::error);
+				if (err.size() > 0)
+					state->push_error(errors::error{ errors::unknown ,err[0].s });
+				else
+					state->push_error(errors::error{ errors::unknown ,"Function Returned an error!" });
+				state->popMem();// We need to restore the stack
+				return value("Function returned an error", datatypes::error);
+			}
+			ret = state->return_stack.top();
+			state->return_stack.pop();
+			state->popMem();
+			return ret;
+		}
+		return value();
+	}
+
+
+
 	void dms_state::init() {
 		if (init_init || stop)
 			return;
@@ -42,24 +73,6 @@ namespace dms {
 	}
 	void dms_state::popMem() {
 		mem_stack.pop();
-	}
-	value dms::blockInvoke(void* self, dms_state* state, dms_args* args) {
-		std::string func = state->call_stack.top();
-		if (state->functionExists(func)) {
-			state->call_stack.pop();
-			value ret;
-			state->pushMem();
-			memory* Fmem = state->getMem();
-			for (int i = 0; i < state->chunks[func]->params.args.size(); i++) {
-				(*Fmem)[state->chunks[func]->params.args[i].getPrintable()] = args->args[i].resolve(state);
-			}
-			state->run(func, Fmem);
-			ret = state->return_stack.top();
-			state->return_stack.pop();
-			state->popMem();
-			return ret;
-		}
-		return value();
 	}
 	dms_state::dms_state() {
 		// We should define the defaults for the enables
@@ -127,6 +140,11 @@ namespace dms {
 	}
 
 	bool dms_state::assign(value var, value val) {
+		if (val.type == datatypes::error) {
+			(*getMem())[var.getPrintable()] = val;
+			push_error(errors::error{ errors::unknown ,val.s });
+			return false;
+		}
 		(*getMem())[var.getPrintable()] = val;
 		return true;
 	}
@@ -141,6 +159,8 @@ namespace dms {
 		chunks.insert_or_assign(s, c);
 	}
 	void dms_state::push_error(errors::error err) {
+		if (stop)
+			return;
 		if (err.linenum != 0) {
 			std::cout << err.err_msg << " On Line <" << err.linenum << ">" << std::endl;
 		}
