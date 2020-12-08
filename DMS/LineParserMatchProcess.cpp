@@ -222,7 +222,7 @@ namespace dms {
 			v.type = datatypes::variable;
 			cmd* c = new cmd;
 			c->opcode = codes::COMP;
-			c->args.push(value((double)cmp));
+			c->args.push(value((int)cmp));
 			c->args.push(var);
 			c->args.push(left);
 			c->args.push(right);
@@ -793,8 +793,6 @@ namespace dms {
 			std::vector<token> t = stream->next(tokens::parao, tokens::parac); // Consume and get tokens
 			if (notBalanced(t, last_line, stream, "(", ")"))
 				return false;
-			t.pop_back();
-			tokenstream tempstream(&t);
 			if (t.size() == 1) { // No arg function!
 				current_chunk->addCmd(c);
 				return true;
@@ -802,20 +800,24 @@ namespace dms {
 			token end = t.back();
 			t.pop_back();
 			t.push_back(token{ tokens::seperator,codes::NOOP,"",t[0].line_num });
-			t.push_back(token{ tokens::nil,codes::NOOP,"",t[0].line_num });
+			t.push_back(token{ tokens::escape,codes::NOOP,"",t[0].line_num });
 			t.push_back(end);
-			tempstream.init(&t); // Turn tokens we consumed into a tokenstream
+			tokenstream tempstream(&t);
 			value tempval;
 			token tok;
 			value ref = value(datatypes::variable);
 			// This part we add values to the opcodes for the bytecode FUNC val a1 a2 a3 ... an
 			while (tempstream.peek().type != tokens::none) { // End of stream
 				debugInvoker(stream);
+				//utils::debug(stream->peek());
 				tempval = value(datatypes::variable);
-				tok = tempstream.peek();
 				if (tempstream.match(tokens::seperator)) {
 					// We have a seperator for function arguments
 					tempstream.next(); // Consume it
+				}
+				else if (tempstream.match(tokens::escape)) {
+					c->args.push(value(datatypes::escape));
+					tempstream.next();
 				}
 				else if (match_process_standard(&tempstream, tempval)) {
 					c->args.push(tempval);
@@ -823,13 +825,17 @@ namespace dms {
 				else if (tempstream.match(tokens::newline)) {
 					tempstream.next();
 				}
+				else if (tempstream.match(tokens::parac)) {
+					tempstream.next();
+					current_chunk->addCmd(c); // We push this onto the chunk after all dependants if any have been handled
+					return true;
+				}
 				else {
+					//utils::debug(tempstream.peek());
 					badSymbol(&tempstream);
+					return false;
 				}
 			}
-			tempstream.next();
-			current_chunk->addCmd(c); // We push this onto the chunk after all dependants if any have been handled
-			//lastCall.pop();
 			return true;
 		}
 		return false;
@@ -913,7 +919,7 @@ namespace dms {
 			c->opcode = codes::EXIT;
 			if (stream->match(tokens::number) || stream->match(tokens::name)) {
 				if(stream->match(tokens::number)){
-					c->args.push(value(std::stod(stream->next().name)));
+					c->args.push(stov(stream->next().name));
 				}
 				else {
 					c->args.push(value(stream->next().name,datatypes::variable));
@@ -972,6 +978,7 @@ namespace dms {
 					}
 					else {
 						badSymbol(stream);
+						return false;
 					}
 				}
 				else {
@@ -1062,6 +1069,7 @@ namespace dms {
 				}
 				else {
 					badSymbol(stream);
+					return false;
 				}
 			}
 		}
@@ -1070,14 +1078,14 @@ namespace dms {
 	bool LineParser::match_process_number(tokenstream* stream, value& v)
 	{
 		if (stream->match(tokens::number)) {
-			v.set(std::stod(stream->next().name));
-			v.type = datatypes::number;
+			v.set(stov(stream->next().name));
 			return true;
 		}
 		else if (stream->match(tokens::minus, tokens::number)) {
 			stream->next();
-			v.set(-std::stod(stream->next().name));
-			v.type = datatypes::number;
+			v.set(stov(stream->next().name));
+			v.i = -v.i;
+			v.n = -v.n;
 			return true;
 		}
 		return false;
@@ -1102,11 +1110,11 @@ namespace dms {
 						temp.push_back(value(ts.next().name));
 					}
 					else if (ts.match(tokens::number)) {
-						temp.push_back(value(std::stod(ts.next().name)));
+						temp.push_back(stov(stream->next().name));
 					}
 					else if (ts.match(tokens::minus,tokens::number)) {
 						ts.next();
-						temp.push_back(value(-std::stod(ts.next().name)));
+						temp.push_back(stov(stream->next().name));
 					}
 					else if (ts.match(tokens::True)) {
 						temp.push_back(value(true));
@@ -1236,6 +1244,7 @@ namespace dms {
 					}
 					else {
 						badSymbol(&ts);
+						return false;
 					}
 				}
 				if (temp.size() >= 1) {
@@ -1340,10 +1349,12 @@ namespace dms {
 				}
 				else {
 					badSymbol(stream);
+					return false;
 				}
 			}
 			else {
 				badSymbol(stream);
+				return false;
 			}
 		}
 		return false; // TODO finish this
@@ -1401,6 +1412,7 @@ namespace dms {
 			}
 			else {
 				badSymbol(stream);
+				return false;
 			}
 		}
 		return false;
@@ -1454,11 +1466,14 @@ namespace dms {
 							left = tmpvalue;
 						else if (right.isNil())
 							right = tmpvalue;
-						else
+						else {
 							badSymbol(stream);
+							return false;
+						}
 					}
 					else {
 						badSymbol(stream);
+						return false;
 					}
 					// Take that temp value and set it to left or right TODO finish this
 				}
@@ -1466,8 +1481,10 @@ namespace dms {
 					hasOP = true;
 					if (op == codes::NOOP)
 						op = codes::ADD;
-					else
+					else {
 						badSymbol(stream);
+						return false;
+					}
 					stream->next();
 				}
 				else if (stream->match(tokens::minus)) {
@@ -1477,40 +1494,50 @@ namespace dms {
 					}
 					if (op == codes::NOOP)
 						op = codes::SUB;
-					else
+					else {
 						badSymbol(stream);
+						return false;
+					}
 					stream->next();
 				}
 				else if (stream->match(tokens::multiply)) {
 					hasOP = true;
 					if (op == codes::NOOP)
 						op = codes::MUL;
-					else
+					else {
 						badSymbol(stream);
+						return false;
+					}
 					stream->next();
 				}
 				else if (stream->match(tokens::divide)) {
 					hasOP = true;
 					if (op == codes::NOOP)
 						op = codes::DIV;
-					else
+					else {
 						badSymbol(stream);
+						return false;
+					}
 					stream->next();
 				}
 				else if (stream->match(tokens::percent)) {
 					hasOP = true;
 					if (op == codes::NOOP)
 						op = codes::MOD;
-					else
+					else {
 						badSymbol(stream);
+						return false;
+					}
 					stream->next();
 				}
 				else if (stream->match(tokens::caret)) {
 					hasOP = true;
 					if (op == codes::NOOP)
 						op = codes::POW;
-					else
+					else {
 						badSymbol(stream);
+						return false;
+					}
 					stream->next();
 				}
 				else if (stream->match(tokens::name,tokens::parao)) {
@@ -1521,29 +1548,35 @@ namespace dms {
 							left = tmpvalue;
 						else if (right.isNil())
 							right = tmpvalue;
-						else
+						else {
 							badSymbol(stream);
+							return false;
+						}
 					}
 					else {
 						badSymbol(stream);
+						return false;
 					}
 				}
 				else if (stream->match(tokens::number)) {
-					double num = std::stod(stream->next().name);
 					if (left.isNil())
-						left = value(num);
+						left = stov(stream->next().name);
 					else if (right.isNil())
-						right = value(num);
-					else
+						right = stov(stream->next().name);
+					else {
 						badSymbol(stream);
+						return false;
+					}
 				}
 				else if (stream->match(tokens::string)) {
 					if (left.isNil())
 						left = value(stream->next().name,string);
 					else if (right.isNil())
 						right = value(stream->next().name, string);
-					else
+					else {
 						badSymbol(stream);
+						return false;
+					}
 				}
 				else if (stream->match(tokens::name)) {
 					// We tested functions already! So if that fails and we have a name then... we have a variable lets handle this!
@@ -1551,8 +1584,10 @@ namespace dms {
 						left = value(stream->next().name,datatypes::variable);
 					else if (right.isNil())
 						right = value(stream->next().name,datatypes::variable);
-					else
+					else {
 						badSymbol(stream);
+						return false;
+					}
 				}
 				else if (stream->match(tokens::newline) || stream->match(tokens::parac) || stream->match(tokens::seperator)) {
 					if (wv.isNil())

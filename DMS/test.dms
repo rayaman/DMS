@@ -5,26 +5,16 @@ enable fullname
 enable forwardlabels // Do most of your labels exist ahead?
 enable savestate
 //enable leaking
-//enable debugging
+enable debugging
 //loadfile "loadtest.dms"
 version 0.2
 using extendedDefine
 [main]
-	choice "New Choice Test" {
-		"Option 1" print(fact("Hi!"))
-		"Option 2" goto "test"
-		"Option 3" {
-			print("Yes this works!")
-			print("Are you happy?")
-		}
-	}
-	goto "end"
-	::test::
-		print("Here!")
-	::end::
+	num = 30.0
+	io.print("!"+num+" = " + fact(num))
 
 [fact:function(n)]
-	if(n==1 or n==0)
+	if(n==1)
 		return 1
 	else 
 		return n * fact(n-1)

@@ -254,10 +254,14 @@ namespace dms {
 					break;
 				case OFUN:
 					{
-						std::string obj = c->args.args[0].getPrintable();
+						std::string obj = c->args.args[0].resolve(this).getPrintable();
+						if (obj=="nil") {
+							obj = c->args.args[0].getPrintable();
+						}
 						std::string funcname = c->args.args[1].getPrintable();
 						value assn = c->args.args[2];
 						dms_args args;
+
 						for (int i = 3; i < c->args.args.size(); i++) {
 							args.push(c->args.args[i]);
 						}
@@ -458,47 +462,47 @@ namespace dms {
 					break;
 				case COMP:
 					{
-						comp cmp = (comp)c->args.args[0].n;
+						comp cmp = (comp)c->args.args[0].i;
 						value assn = c->args.args[1];
 						value left = c->args.args[2].resolve(this);
 						value right = c->args.args[3].resolve(this);
 						switch (cmp) {
 							case comp::eq: {
-								if(!assign(assn, value(left == right))) {
+								if(!assign(assn, left == right)) {
 									return false;
 								}
 								break;
 							}
 							case comp::gt: {
 								if (left.isNil() || right.isNil()) {push_error(errors::error{ errors::unknown ,"Attempt to compare a nil value!" });return false;}
-								if(!assign(assn, value(left > right))) {
+								if(!assign(assn, left > right)) {
 									return false;
 								}
 								break;
 							}
 							case comp::gteq: {
 								if (left.isNil() || right.isNil()) { push_error(errors::error{ errors::unknown ,"Attempt to compare a nil value!" }); return false; }
-								if(!assign(assn, value(left >= right))) {
+								if(!assign(assn, left >= right)) {
 									return false;
 								}
 								break;
 							}
 							case comp::lt: {
 								if (left.isNil() || right.isNil()) { push_error(errors::error{ errors::unknown ,"Attempt to compare a nil value!" }); return false; }
-								if(!assign(assn, value(left < right))) {
+								if(!assign(assn, left < right)) {
 									return false;
 								}
 								break;
 							}
 							case comp::lteq: {
 								if (left.isNil() || right.isNil()) { push_error(errors::error{ errors::unknown ,"Attempt to compare a nil value!" }); return false; }
-								if(!assign(assn, value(left <= right))) {
+								if(!assign(assn, left <= right)) {
 									return false;
 								}
 								break;
 							}
 							case comp::nteq: {
-								if(!assign(assn, value(left != right))) {
+								if(!assign(assn, left != right)) {
 									return false;
 								}
 								break;
@@ -551,7 +555,7 @@ namespace dms {
 					}
 					break;
 				case LINE:
-					cur_line = (size_t)c->args.args[0].n;
+					cur_line = (size_t)c->args.args[0].i;
 					break;
 				case NOOP:
 					break;

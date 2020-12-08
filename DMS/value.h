@@ -11,7 +11,7 @@ namespace dms {
 	struct dms_args;
 	struct dms_state;
 	extern const std::string datatype[];
-	enum datatypes { escape, nil, number, boolean, env, string, custom, variable, block, error };
+	enum datatypes { escape, nil, number, int64, boolean, env, string, custom, variable, block, error };
 	struct dms_number {
 		double val;
 		double getValue() { return val; }
@@ -55,6 +55,7 @@ namespace dms {
 		datatypes type = datatypes::nil;
 		bool b=false;
 		double n=0;
+		int64_t i=0;
 		std::string s;
 		dms_list* e = nullptr;
 		dms_custom* c = nullptr;
@@ -66,11 +67,13 @@ namespace dms {
 		value(char const*);
 		value(double);
 		value(int);
+		value(int64_t);
 		value(size_t);
 		value(bool);
 		~value();
 		value(const value& other);
-		bool isNil();
+		bool isNil() const;
+		bool isNum() const;
 		value& operator=(value& other);
 		value& operator=(const value& other);
 		friend bool operator==(const value& lhs, const value& rhs);
@@ -86,7 +89,7 @@ namespace dms {
 		friend value operator*(const value& lhs, const value& rhs);
 		value resolve(dms_state*);
 		void nuke();
-		void set(value*);
+		void set(value);
 		void set(std::string str);
 		void set(bool bo);
 		void set(double num);

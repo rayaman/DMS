@@ -57,6 +57,7 @@ namespace dms {
 		character* getCharacter(std::string c);
 		enviroment* getEnvironment(std::string c);
 
+		bool injectEnv(std::string, enviroment*);
 		bool assign(value var, value val);
 		size_t seek(std::string label,std::vector<cmd*> cmds ,codes::op code, size_t pos);
 		bool characterExists(std::string bk_name);

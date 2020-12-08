@@ -139,6 +139,21 @@ namespace dms {
 		return false;
 	}
 
+	bool dms_state::injectEnv(std::string name, enviroment* env)
+	{
+		std::string ename = std::string("$ENV_") + name;
+		assign(value(name, datatypes::variable), value(ename, datatypes::block));
+		environments.insert_or_assign(ename, env);
+		chunk* c = new chunk;
+		c->type = bt_env;
+		c->name = ename;
+		cmd* cc = new cmd;
+		cc->opcode = codes::NOOP;
+		c->addCmd(cc);
+		push_chunk(ename,c);
+		return false;
+	}
+
 	bool dms_state::assign(value var, value val) {
 		if (val.type == datatypes::error) {
 			(*getMem())[var.getPrintable()] = val;

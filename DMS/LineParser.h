@@ -17,6 +17,7 @@
 #include "comparisons.h"
 
 namespace dms {
+	struct value;
 	struct tokenstream {
 		tokenstream();
 		tokenstream(std::vector<tokens::token>*);
@@ -104,6 +105,7 @@ namespace dms {
 
 		// Utils
 		std::string random_string(std::size_t length);
+		value stov(std::string);
 
 		bool manageCount(bool cond, size_t c,size_t&);
 		bool notBalanced(std::vector<tokens::token> ts, size_t last_line, tokenstream* stream, std::string o, std::string c);

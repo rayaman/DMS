@@ -145,6 +145,13 @@ namespace dms {
 
 		return random_string;
 	}
+	value LineParser::stov(std::string s)
+	{
+		if (s.find('.')<=s.size()) {
+			return value(std::stod(s));
+		}
+		return value(std::stoi(s));
+	}
 	bool LineParser::manageCount(bool cond, size_t c, size_t& count)
 	{
 		if (cond && c!=0) {
@@ -263,13 +270,12 @@ namespace dms {
 		if (state->isEnabled("debugging") && stream->peek().type != tokens::newline) {
 			// A very nasty if statement, I won't hide it, this could be made much more readable
 			// This checks if the last cmd is a LINE cmd and if its the same line number as the current one we simply skip it
-			if (current_chunk->cmds.size() >= 2 && current_chunk->cmds[current_chunk->cmds.size() - 1]!=nullptr && current_chunk->cmds[current_chunk->cmds.size() - 1]->opcode==codes::LINE && (size_t)current_chunk->cmds[current_chunk->cmds.size()-1]->args.args[0].n== (size_t)stream->peek().line_num) {
+			if (current_chunk->cmds.size() >= 2 && current_chunk->cmds[current_chunk->cmds.size() - 1]!=nullptr && current_chunk->cmds[current_chunk->cmds.size() - 1]->opcode==codes::LINE && (size_t)current_chunk->cmds[current_chunk->cmds.size()-1]->args.args[0].i== (size_t)stream->peek().line_num) {
 				return;
 			}
-			int current_line = (int)stream->peek().line_num;
 			cmd* ln = new cmd;
 			ln->opcode = codes::LINE;
-			ln->args.push(value(current_line));
+			ln->args.push(stream->peek().line_num);
 			current_chunk->addCmd(ln);
 		}
 	}

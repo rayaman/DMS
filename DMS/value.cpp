@@ -2,9 +2,9 @@
 #include "dms_state.h"
 #include "utils.h"
 namespace dms {
-	const std::string datatype[] = { "escape", "nil", "number", "boolean", "env", "string", "custom", "variable", "block" , "error"};
+	const std::string datatype[] = { "escape", "nil", "number", "int", "boolean", "env", "string", "custom", "variable", "block" , "error"};
 	value::value() {
-		// Nothing to do here yet!
+		// Nothing to do here!
 	}
 	value::value(char const* str, datatypes t) {
 		type = t;
@@ -15,12 +15,16 @@ namespace dms {
 		s = str;
 	}
 	value::value(size_t val) {
-		type = datatypes::number;
-		n = val;
+		type = datatypes::int64;
+		i = val;
 	}
 	value::value(std::string str) {
 		type = datatypes::string;
 		s = str;
+	}
+	value::value(int64_t n) {
+		type = datatypes::int64;
+		i = n;
 	}
 	value::value(std::string str,datatypes t) {
 		type = t;
@@ -31,8 +35,8 @@ namespace dms {
 		n = d;
 	}
 	value::value(int d) {
-		type = datatypes::number;
-		n = d;
+		type = datatypes::int64;
+		i = d;
 	}
 	value::value(bool bo) {
 		type = datatypes::boolean;
@@ -73,6 +77,9 @@ namespace dms {
 			case datatypes::number:
 				n = other.n;
 				break;
+			case datatypes::int64:
+				i = other.i;
+				break;
 			case datatypes::string:
 				s = other.s;
 				break;
@@ -112,6 +119,9 @@ namespace dms {
 			case datatypes::number:
 				n = other.n;
 				break;
+			case datatypes::int64:
+				i = other.i;
+				break;
 			case datatypes::string:
 				s = other.s;
 				break;
@@ -128,7 +138,7 @@ namespace dms {
 		// by convention, always return *this
 		return *this;
 	}
-	bool value::isNil() {
+	bool value::isNil() const {
 		return type == datatypes::nil;
 	}
 	value& value::operator=(const value& other) {
@@ -157,6 +167,9 @@ namespace dms {
 			case datatypes::number:
 				n = other.n;
 				break;
+			case datatypes::int64:
+				i = other.i;
+				break;
 			case datatypes::string:
 				s = other.s;
 				break;
@@ -172,6 +185,10 @@ namespace dms {
 		// by convention, always return *this
 		return *this;
 	}
+	bool value::isNum() const
+	{
+		return (type == datatypes::number || type == datatypes::int64);
+	}
 	bool operator==(const value& lhs, const value& rhs) {
 		return lhs.getPrintable() == rhs.getPrintable();
 	}
@@ -181,6 +198,15 @@ namespace dms {
 		}
 		else if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
 			return value(lhs.n + rhs.n);
+		}
+		else if (lhs.type == datatypes::int64 && rhs.type == datatypes::number) {
+			return value(lhs.i + rhs.n);
+		}
+		else if (lhs.type == datatypes::int64 && rhs.type == datatypes::int64) {
+			return value(lhs.i + rhs.i);
+		}
+		else if (lhs.type == datatypes::number && rhs.type == datatypes::int64) {
+			return value(lhs.n + rhs.i);
 		}
 		else if (lhs.type == datatypes::boolean && rhs.type == datatypes::boolean) {
 			return value((bool)(lhs.b + rhs.b));
@@ -196,6 +222,15 @@ namespace dms {
 		if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
 			return value(lhs.n - rhs.n);
 		}
+		else if (lhs.type == datatypes::int64 && rhs.type == datatypes::number) {
+			return value(lhs.i - rhs.n);
+		}
+		else if (lhs.type == datatypes::int64 && rhs.type == datatypes::int64) {
+			return value(lhs.i - rhs.i);
+		}
+		else if (lhs.type == datatypes::number && rhs.type == datatypes::int64) {
+			return value(lhs.n - rhs.i);
+		}
 		else {
 			if(lhs.type!=datatypes::number)
 				return value(utils::concat("Attempted to perform arithmetic on a ", datatype[lhs.type] ," value!"),datatypes::error);
@@ -207,6 +242,15 @@ namespace dms {
 		if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
 			return value(lhs.n / rhs.n);
 		}
+		else if (lhs.type == datatypes::int64 && rhs.type == datatypes::number) {
+			return value(lhs.i / rhs.n);
+		}
+		else if (lhs.type == datatypes::int64 && rhs.type == datatypes::int64) {
+			return value(lhs.i / rhs.i);
+		}
+		else if (lhs.type == datatypes::number && rhs.type == datatypes::int64) {
+			return value(lhs.n / rhs.i);
+		}
 		else {
 			if (lhs.type != datatypes::number)
 				return value(utils::concat("Attempted to perform arithmetic on a ", datatype[lhs.type], " value!"), datatypes::error);
@@ -217,6 +261,15 @@ namespace dms {
 	value operator*(const value& lhs, const value& rhs) {
 		if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
 			return value(lhs.n * rhs.n);
+		}
+		else if (lhs.type == datatypes::int64 && rhs.type == datatypes::number) {
+			return value(lhs.i * rhs.n);
+		}
+		else if (lhs.type == datatypes::int64 && rhs.type == datatypes::int64) {
+			return value(lhs.i * rhs.i);
+		}
+		else if (lhs.type == datatypes::number && rhs.type == datatypes::int64) {
+			return value(lhs.n * rhs.i);
 		}
 		else if (lhs.type == datatypes::boolean && rhs.type == datatypes::boolean) {
 			return value((bool)(lhs.b * rhs.b));
@@ -235,11 +288,29 @@ namespace dms {
 		if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
 			return lhs.n > rhs.n;
 		}
+		else if (lhs.type == datatypes::int64 && rhs.type == datatypes::number) {
+			return lhs.i > rhs.n;
+		}
+		else if (lhs.type == datatypes::int64 && rhs.type == datatypes::int64) {
+			return lhs.i > rhs.i;
+		}
+		else if (lhs.type == datatypes::number && rhs.type == datatypes::int64) {
+			return lhs.n > rhs.i;
+		}
 		return false;
 	}
 	bool operator<(const value& lhs, const value& rhs) {
 		if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
 			return lhs.n < rhs.n;
+		}
+		else if (lhs.type == datatypes::int64 && rhs.type == datatypes::number) {
+			return lhs.i < rhs.n;
+		}
+		else if (lhs.type == datatypes::int64 && rhs.type == datatypes::int64) {
+			return lhs.i < rhs.i;
+		}
+		else if (lhs.type == datatypes::number && rhs.type == datatypes::int64) {
+			return lhs.n < rhs.i;
 		}
 		return false;
 	}
@@ -247,11 +318,29 @@ namespace dms {
 		if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
 			return lhs.n >= rhs.n;
 		}
+		else if (lhs.type == datatypes::int64 && rhs.type == datatypes::number) {
+			return lhs.i >= rhs.n;
+		}
+		else if (lhs.type == datatypes::int64 && rhs.type == datatypes::int64) {
+			return lhs.i >= rhs.i;
+		}
+		else if (lhs.type == datatypes::number && rhs.type == datatypes::int64) {
+			return lhs.n >= rhs.i;
+		}
 		return false;
 	}
 	bool operator<=(const value& lhs, const value& rhs) {
 		if (lhs.type == datatypes::number && rhs.type == datatypes::number) {
 			return lhs.n <= rhs.n;
+		}
+		else if (lhs.type == datatypes::int64 && rhs.type == datatypes::number) {
+			return lhs.i <= rhs.n;
+		}
+		else if (lhs.type == datatypes::int64 && rhs.type == datatypes::int64) {
+			return lhs.i <= rhs.i;
+		}
+		else if (lhs.type == datatypes::number && rhs.type == datatypes::int64) {
+			return lhs.n <= rhs.i;
 		}
 		return false;
 	}
@@ -398,6 +487,9 @@ namespace dms {
 				}
 			return temp;
 		}
+		else if (type == int64) {
+			return std::to_string(i);
+		}
 		else if (type == nil) {
 			return "nil";
 		}
@@ -444,6 +536,9 @@ namespace dms {
 		else if (c.type == number) {
 			out << (char)c.type << c.n;
 		}
+		else if (c.type == int64) {
+			out << (char)c.type << c.i;
+		}
 		else if (c.type == nil) {
 			out << (char)c.type << "nil";
 		}
@@ -474,20 +569,14 @@ namespace dms {
 	bool value::typeMatch(const value* o) const {
 		return type == o->type;
 	}
-	void value::set(value* val) {
-		if (type == datatypes::number) {
-			n = val->n;
-		}
-		else if (type == datatypes::string || type == datatypes::block || type == datatypes::variable) {
-			s = val->s;
-		}
-		else if (type == datatypes::boolean) {
-			b = val->b;
-		}
-		else { // Handle custom and env
-			return;
-		}
-		type = val->type;
+	void value::set(value val) {
+		type = val.type;
+		s = val.s;
+		n = val.n;
+		i = val.i;
+		b = val.b;
+		e = val.e;
+		c = val.c;
 	}
 	void value::set(std::string str) {
 		nuke();
