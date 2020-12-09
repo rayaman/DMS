@@ -25,6 +25,12 @@
     <Filter Include="Source Files\DMS\blocks">
       <UniqueIdentifier>{4c0bb4c5-388c-4f15-abb7-143cb6d6232f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\DMS\C-API">
+      <UniqueIdentifier>{f71964f6-66b3-4d8c-a8da-56d703ad1c2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DMS\C-API">
+      <UniqueIdentifier>{32abbbfd-6359-488c-83be-f61da8fd8f4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cmd.cpp">
@@ -142,6 +148,9 @@
     </ClInclude>
     <ClInclude Include="comparisons.h">
       <Filter>Header Files\DMS</Filter>
+    </ClInclude>
+    <ClInclude Include="sterilizer.h">
+      <Filter>Header Files\DMS\C-API</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

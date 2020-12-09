@@ -12,23 +12,6 @@ namespace dms {
 	struct dms_state;
 	extern const std::string datatype[];
 	enum datatypes { escape, nil, number, int64, boolean, env, string, custom, variable, block, error };
-	struct dms_number {
-		double val;
-		double getValue() { return val; }
-		friend std::ostream& operator << (std::ostream& out, const dms_number& c);
-	};
-	struct dms_boolean {
-		bool val;
-		bool getValue() { return val; }
-		friend std::ostream& operator << (std::ostream& out, const dms_boolean& c);
-	};
-	
-	struct dms_string {
-		std::string val;
-		std::string getValue();
-		std::string getValue(dms_state* state);
-		friend std::ostream& operator << (std::ostream& out, const dms_string& c);
-	};
 	// Custom data that you can work with by overriding this code
 	struct dms_custom {
 		void Init(dms_state* state);

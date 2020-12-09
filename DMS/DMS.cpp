@@ -5,6 +5,7 @@
 #include <iostream>
 #include "value.h"
 #include "enviroment.h"
+#include "sterilizer.h"
 //#include <chrono>
 using namespace dms;
 //typedef void(*FNPTR)();

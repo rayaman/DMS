@@ -356,123 +356,6 @@ namespace dms {
 	size_t dms_args::size() {
 		return args.size();
 	}
-	std::string dms_string::getValue(dms_state* state) {
-		std::vector<char> _temp;
-		std::vector<char> _var;
-		std::vector<char> _ind;
-		std::stringstream temp;
-		std::stringstream var;
-		std::stringstream ind;
-		bool varStart = false;
-		bool indStart = false;
-		for (size_t i = 0; i < val.size(); i++) {
-			if (indStart && val[i] == '`') {
-				std::string lookup = var.str();
-				std::string index = ind.str();
-				var.str("");
-				var.clear();
-				ind.str("");
-				ind.clear();
-				varStart = false;
-				indStart = false;
-				if (state->getMem()->count(lookup)) {
-					value v = (*state->getMem())[lookup];
-					if (v.type == datatypes::block) {
-						if (state->getCharacter(v.getPrintable()) != nullptr) {
-							character* cha = state->getCharacter(v.getPrintable());
-							if (cha->values.count(index)) {
-								temp << cha->values[index].getPrintable();
-							}
-							else {
-								temp << cha->getName();
-							}
-						}
-						else if (state->getEnvironment(v.getPrintable())!=nullptr) {
-							enviroment* env = state->getEnvironment(v.getPrintable());
-							if (env->values.count(index)) {
-								temp << env->values[index].getPrintable();
-							}
-							else {
-								temp << env;
-							}
-						}
-						else {
-							temp << "nil";
-						}
-					}
-					else if (v.resolve(state).type == datatypes::env) {
-						if(v.resolve(state).e->ipart.size()> std::stoi(index))
-							temp << v.resolve(state).e->ipart[std::stoi(index)-(int64_t)1].getPrintable();
-						else
-							temp << "nil";
-					}
-					else {
-						temp << v.resolve(state).getPrintable();
-					}
-				}
-				else {
-					temp << "nil";
-				}
-			}
-			else if (indStart && val[i] == ':') {
-				state->push_error(errors::error{ errors::badtoken,"Cannot index more than once in a string injection!" });
-				varStart = false;
-				indStart = false;
-				var.str("");
-				var.clear();
-				ind.str("");
-				ind.clear();
-				return "";
-			}
-			else if (indStart) {
-				ind << val[i];
-			}
-			else if (val[i] == '`' && !varStart) {
-				varStart = true;
-
-			}
-			else if (val[i] == '`' && varStart) {
-				std::string lookup = var.str();
-				var.str("");
-				var.clear();
-				varStart = false;
-				if (state->getMem()->count(lookup)) {
-					value v = (*state->getMem())[lookup];
-					if (v.type == datatypes::block) {
-						if (state->getCharacter(v.s)) {
-							temp << state->characters[v.s]->getName();
-						}
-						else {
-							temp << "nil";
-						}
-					}
-					else {
-						temp << v.resolve(state).getPrintable();
-					}
-				}
-				else {
-					temp << "nil";
-				}
-			}
-			// A space is not allowed at all
-			else if (val[i] == ':' && varStart) {
-				indStart = true;
-			}
-			else if (val[i] == ' ' && varStart) {
-				temp << var.str();
-				varStart = false;
-				var.str("");
-				var.clear();
-			}
-			else if (varStart) {
-				var << val[i];
-			}
-			else {
-				temp << val[i];
-			}
-		}
-		return temp.str();
-	}
 	std::string value::getPrintable() const {
 		if (type == string) {
 			return s;
@@ -608,9 +491,6 @@ namespace dms {
 		nuke();
 		type = nil;
 	}
-	std::string dms_string::getValue() {
-		return val;
-	}
 	void dms_list::pushValue(value val) {
 		ipart.push_back(val);
 	}
@@ -637,17 +517,5 @@ namespace dms {
 			str << args[i];
 		}
 		return str.str();
-	}
-	std::ostream& operator << (std::ostream& out, const dms_string& c) {
-		out << c.val;
-		return out;
-	}
-	std::ostream& operator << (std::ostream& out, const dms_boolean& c) {
-		out << c.val;
-		return out;
-	}
-	std::ostream& operator << (std::ostream& out, const dms_number& c) {
-		out << c.val;
-		return out;
 	}
 }
