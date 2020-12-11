@@ -149,7 +149,7 @@
     <ClInclude Include="comparisons.h">
       <Filter>Header Files\DMS</Filter>
     </ClInclude>
-    <ClInclude Include="sterilizer.h">
+    <ClInclude Include="wrapper.h">
       <Filter>Header Files\DMS\C-API</Filter>
     </ClInclude>
   </ItemGroup>

@@ -42,6 +42,7 @@ namespace dms {
 		std::string s;
 		dms_list* e = nullptr;
 		dms_custom* c = nullptr;
+		dms_state* state = nullptr;
 		value();
 		value(datatypes);
 		value(char const*,datatypes);
@@ -71,6 +72,7 @@ namespace dms {
 		friend value operator/(const value& lhs, const value& rhs);
 		friend value operator*(const value& lhs, const value& rhs);
 		value resolve(dms_state*);
+		value resolve();
 		void nuke();
 		void set(value);
 		void set(std::string str);

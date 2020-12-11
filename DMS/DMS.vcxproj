@@ -189,10 +189,10 @@
     <ClInclude Include="errors.h" />
     <ClInclude Include="dms.h" />
     <ClInclude Include="LineParser.h" />
-    <ClInclude Include="sterilizer.h" />
     <ClInclude Include="token.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="value.h" />
+    <ClInclude Include="wrapper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

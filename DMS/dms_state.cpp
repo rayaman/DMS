@@ -160,6 +160,8 @@ namespace dms {
 			push_error(errors::error{ errors::unknown ,val.s });
 			return false;
 		}
+		if(val.state==nullptr)
+			val.state = this;
 		(*getMem())[var.getPrintable()] = val;
 		return true;
 	}

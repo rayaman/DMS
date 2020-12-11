@@ -9,3 +9,4 @@ The Dialogue Management Script's goal is to provide a nice and simple way to hav
 - [ ] Finish implementing custom datatype
 - [ ] Speed up interperter
 - [ ] Finish C API for code
+- [ ] Extend beginning features

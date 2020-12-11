@@ -5,7 +5,7 @@
 #include <iostream>
 #include "value.h"
 #include "enviroment.h"
-#include "sterilizer.h"
+#include "wrapper.h"
 //#include <chrono>
 using namespace dms;
 //typedef void(*FNPTR)();
@@ -36,6 +36,9 @@ value type(void* self, dms_state* state, dms_args* args) {
 //}
 int main()
 {
+    // TODO fix disp cmd to handle the standard
+
+
     /*milliseconds ms = duration_cast<milliseconds>(
         system_clock::now().time_since_epoch()
     );

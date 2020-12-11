@@ -350,6 +350,9 @@ namespace dms {
 		}
 		return *this;
 	}
+	value value::resolve() {
+		return resolve(state);
+	}
 	void dms_args::push(value val) {
 		args.push_back(val);
 	}
@@ -389,6 +392,10 @@ namespace dms {
 			return "custom";
 		}
 		else if (type == block) {
+			if (state->characterExists(s)) {
+				auto cha = state->getCharacter(s);
+				return cha->getName();
+			}
 			return s;
 		}
 		else if (type == datatypes::variable) {

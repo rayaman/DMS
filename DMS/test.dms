@@ -10,26 +10,28 @@ enable debugging
 version 0.2
 using extendedDefine
 [main]
-	num = 30.0
-	io.print("!"+num+" = " + fact(num))
-
-[fact:function(n)]
-	if(n==1)
-		return 1
-	else 
-		return n * fact(n-1)
-
-[this:function()]
-	print("This")
+	Ryan: "I am good"
+	John: "Hi " + Ryan + " how are you?"
 	
-[that:function()]
-	print("That")
+
+
+[John:char]
+	lname = "Johnson"
+	age = 16
+	money = 100000
+	known = true
+
+[Ryan:char]
+	lname = "Ward"
+	age = 24
+	known = true
+	money = 0
 
 [Bob:char]
 	//fname = "Bob"
 	//known = true // defaults to false
 	//lname = "Johnson" // defaults to ""
 	unknown = "Some Random Guy"
-	age = .24
+	age = 24
 	money = 100
 	excited: "path/to/file"

@@ -545,9 +545,12 @@ namespace dms {
 						return false;
 					break;
 				case DISP:
-					//FIX STRING STER
-					if (!handler->handleMessageDisplay(this, c->args.args[0].s))
-						return false;
+					{
+						//FIX STRING STER
+						value disp = c->args.args[0].resolve(this).getPrintable();
+						if (!handler->handleMessageDisplay(this, c->args.args[0].s))
+							return false;
+					}
 					break;
 				case ASGN:
 					if(!assign(c->args.args[0], c->args.args[1])) {
