@@ -14,7 +14,7 @@ const std::string dms::codes::list[] = {
 	"LABL",
 	"CHOI",
 	"BLCK",
-	"FORE",
+	"CHAR",
 	"WHLE",
 	"FUNC",
 	"IFFF",

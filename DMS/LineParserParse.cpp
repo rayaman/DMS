@@ -519,6 +519,7 @@ namespace dms {
 			manageCount(match_process_wait(stream), count, current_count);
 			//utils::print("[jump]");
 			manageCount(match_process_jump(stream), count, current_count);
+			manageCount(match_process_1afunc(stream, nil),count,current_count);
 			manageCount(match_process_asm(stream), count, current_count);
 			if (count != 0 && current_count == count) {
 				return true; // We got what we came for, we exit and consume no more!

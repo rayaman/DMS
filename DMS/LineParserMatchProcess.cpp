@@ -73,6 +73,10 @@ namespace dms {
 			}
 			return true;
 		}
+		if (match_process_1afunc(stream, v)) {
+			match_process_condition(stream, v);
+			return true;
+		}
 		if (match_process_expression(stream, v)) {
 			match_process_condition(stream,v);
 			return true;
@@ -330,8 +334,46 @@ namespace dms {
 		}
 		return false;
 	}
+	bool LineParser::match_process_1afunc(tokenstream* stream, value& v ) {
+		if (stream->match(tokens::name,tokens::string) || stream->match(tokens::name,tokens::number) || stream->match(tokens::name,tokens::minus)) {
+			cmd* c = new cmd;
+			c->opcode = codes::FUNC;
+			c->args.push(value(stream->next().name,variable));
+			c->args.push(v);
+			value num;
+			if (stream->match(tokens::string)) {
+				c->args.push(value(stream->next().name));
+			} else if (match_process_number(stream,num)) {
+				c->args.push(num);
+			}
+			current_chunk->addCmd(c);
+			return true;
+		}
+		return false;
+	}
 	bool LineParser::match_process_disp(tokenstream* stream) {
-		if ((isBlock(bt_block) || isBlock(bt_method)) && stream->match(tokens::newline, tokens::string, tokens::newline)) {
+		if (stream->match(tokens::name,tokens::colon)) {
+			std::string name = stream->next().name;
+			stream->next();
+			cmd* c = new cmd;
+			c->opcode = codes::SSPK;
+			c->args.push(value(name, datatypes::variable));
+			current_chunk->addCmd(c);
+			value msg(variable);
+			if (match_process_standard(stream, msg)) {
+				c = new cmd;
+				c->opcode = codes::DISP;
+				c->args.push(msg);
+				current_chunk->addCmd(c); // Add the cmd to the current chunk
+				current_chunk->addCmd(new cmd{ codes::HALT });
+			}
+			else {
+				badSymbol(stream);
+				return false;
+			}
+			return true;
+		}
+		else if ((isBlock(bt_block) || isBlock(bt_method)) && stream->match(tokens::newline, tokens::string, tokens::newline)) {
 			stream->next(); // Standard consumption
 			cmd* c = new cmd;
 			c->opcode = codes::DISP;
@@ -874,6 +916,8 @@ namespace dms {
 					c->args.push(v);
 					c->args.push(value(name,datatypes::block));
 					c->args.push(tempval);
+					current_chunk->addCmd(c);
+					return true;
 				}
 				else if (nlcount) {
 					state->push_error(errors::error{ errors::badtoken,concat("Unexpected symbol '",tempstream.last().toString(),"' Expected ']' to close list (line: ",tempstream.last().line_num,") Indexing must be done on one line?"),true,tempstream.last().line_num,current_chunk });
@@ -888,9 +932,6 @@ namespace dms {
 					return false;
 				}
 			}
-			
-			current_chunk->addCmd(c);
-			return true;
 		}
 		return false;
 	}
@@ -1171,8 +1212,6 @@ namespace dms {
 							o = codes::CHOI;
 						else if (cmd == "blck")
 							o = codes::BLCK;
-						else if (cmd == "fore")
-							o = codes::FORE;
 						else if (cmd == "whle")
 							o = codes::WHLE;
 						else if (cmd == "func")
@@ -1577,6 +1616,19 @@ namespace dms {
 						badSymbol(stream);
 						return false;
 					}
+				}
+				else if (stream->match(tokens::name, tokens::bracketo)) {
+				value tmpvalue = value(datatypes::variable);
+				if (match_process_index(stream, tmpvalue)) {
+					if (left.isNil())
+						left = tmpvalue;
+					else if (right.isNil())
+						right = tmpvalue;
+					else {
+						badSymbol(stream);
+						return false;
+					}
+				}
 				}
 				else if (stream->match(tokens::name)) {
 					// We tested functions already! So if that fails and we have a name then... we have a variable lets handle this!

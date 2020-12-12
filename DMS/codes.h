@@ -15,8 +15,8 @@ namespace dms::codes {
 		ASGN, // Done
 		LABL, // Done
 		CHOI, // Done
-		BLCK,
-		FORE,
+		BLCK, // 
+		CHAR, // Done
 		WHLE,
 		FUNC, // Done
 		IFFF, // Done

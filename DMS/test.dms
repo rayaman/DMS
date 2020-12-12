@@ -1,25 +1,27 @@
 entry main // Will either start the first block seen or the block supplied by you!
 //enable warnings
 disable omniscient
-enable fullname
+disable fullname
 enable forwardlabels // Do most of your labels exist ahead?
 enable savestate
 //enable leaking
-enable debugging
+//enable debugging
 //loadfile "loadtest.dms"
 version 0.2
 using extendedDefine
 [main]
-	Ryan: "I am good"
-	John: "Hi " + Ryan + " how are you?"
+	Ryan: "Hello Mr. " + Bob["lname"] + "! How are you doing?"
+	Bob.setName("Rob")
+	Ryan: "Hello " + Bob + "! How are you doing?"
+	//io.print(test 122 + 7)
 	
+	// Ryan: "I am good"
+	// John: "Hi " + Ryan + " how are you?"
+	// sqrt 144 + 10
+	// speed 
 
-
-[John:char]
-	lname = "Johnson"
-	age = 16
-	money = 100000
-	known = true
+[test:function(n)]
+	return n + 1
 
 [Ryan:char]
 	lname = "Ward"
@@ -27,10 +29,16 @@ using extendedDefine
 	known = true
 	money = 0
 
+[John:char]
+	lname = "Johnson"
+	age = 16
+	money = 100000
+	known = true
+
 [Bob:char]
 	//fname = "Bob"
 	//known = true // defaults to false
-	//lname = "Johnson" // defaults to ""
+	lname = "Johnson" // defaults to ""
 	unknown = "Some Random Guy"
 	age = 24
 	money = 100

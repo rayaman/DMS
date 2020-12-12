@@ -93,6 +93,7 @@ namespace dms {
 		bool match_process_for(tokenstream* stream);
 		bool match_process_number(tokenstream* stream, value& v);
 		bool match_process_asm(tokenstream* stream);
+		bool match_process_1afunc(tokenstream* stream, value& v);
 
 		// Build
 		void buildGoto(std::string g, bool v = false);

@@ -43,6 +43,12 @@ namespace dms {
 				c->args.push(value(key, datatypes::variable));
 				c->args.push(value(key, datatypes::block));
 				chunks["$INIT"]->addCmd(c);
+				if (val->type == bt_character) {
+					c = new cmd;
+					c->opcode = codes::CHAR;
+					c->args.push(value(key));
+					chunks["$INIT"]->addCmd(c);
+				}
 				c = new cmd;
 			}
 			else if (val->type == bt_method) {
@@ -141,7 +147,7 @@ namespace dms {
 
 	bool dms_state::injectEnv(std::string name, enviroment* env)
 	{
-		std::string ename = std::string("$ENV_") + name;
+		std::string ename = name;
 		assign(value(name, datatypes::variable), value(ename, datatypes::block));
 		environments.insert_or_assign(ename, env);
 		chunk* c = new chunk;
@@ -160,8 +166,8 @@ namespace dms {
 			push_error(errors::error{ errors::unknown ,val.s });
 			return false;
 		}
-		if(val.state==nullptr)
-			val.state = this;
+		val.state = this;
+		var.state = this;
 		(*getMem())[var.getPrintable()] = val;
 		return true;
 	}

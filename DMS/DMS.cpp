@@ -46,10 +46,11 @@ int main()
     enviroment* envio = new enviroment;
     LineParser parser = LineParser("test.dms");
     dms_state* state = parser.Parse();
+    state->dump();
     envio->registerFunction("print", print);
     state->invoker.registerFunction("print", print);
     state->injectEnv("io",envio);
-    state->dump();
+    
     state->run();
 
 

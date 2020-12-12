@@ -2,7 +2,7 @@
 #include "utils.h"
 namespace dms {
 	value character_setName(void* self, dms_state* state, dms_args* args) {
-		if(utils::typeassert(*args, datatypes::string)) {
+		if(args->args[0].type == datatypes::string){
 			character* me = (character*)self;
 			me->set("fname", args->args[0]);
 		}

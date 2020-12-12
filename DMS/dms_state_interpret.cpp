@@ -254,7 +254,7 @@ namespace dms {
 					break;
 				case OFUN:
 					{
-						std::string obj = c->args.args[0].resolve(this).getPrintable();
+						std::string obj = c->args.args[0].getPrintable();
 						if (obj=="nil") {
 							obj = c->args.args[0].getPrintable();
 						}
@@ -410,13 +410,13 @@ namespace dms {
 						value assn = c->args.args[0];
 						value env = c->args.args[1];
 						value indx = c->args.args[2].resolve(this);
-						if (env.type == datatypes::block && blockExists(env.getPrintable())) { // If this is a block let's handle this 
+						if (env.type == datatypes::block && blockExists(env.s)) { // If this is a block let's handle this 
 							enviroment* e = nullptr;
-							if (environments.count(env.getPrintable())) {
-								e = environments[env.getPrintable()];
+							if (environments.count(env.s)) {
+								e = environments[env.s];
 							}
-							else if (characters.count(env.getPrintable())) {
-								e = characters[env.getPrintable()];
+							else if (characters.count(env.s)) {
+								e = characters[env.s];
 							}
 							if(!assign( assn, e->values[indx.getPrintable()])) {
 								return false;
@@ -540,15 +540,18 @@ namespace dms {
 					}
 					break;
 				case APND:
-					//FIX STRING STER
-					if (!handler->handleMessageAppend(this, c->args.args[0].s))
+					if (!handler->handleMessageAppend(this, c->args.args[0].resolve(this).getPrintable()))
 						return false;
 					break;
+				case CHAR: 
+					{
+						std::string cha = c->args.args[0].s;
+						getCharacter(cha);
+						break;
+					}
 				case DISP:
 					{
-						//FIX STRING STER
-						value disp = c->args.args[0].resolve(this).getPrintable();
-						if (!handler->handleMessageDisplay(this, c->args.args[0].s))
+						if (!handler->handleMessageDisplay(this, c->args.args[0].resolve(this).getPrintable()))
 							return false;
 					}
 					break;

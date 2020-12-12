@@ -21,9 +21,6 @@ Line <6> name 		 savestate
 Line <6> newline 		 
 Line <6> newline 		 
 Line <7> newline 		 
-Line <8> flag 		 
-Line <8> name 		 debugging
-Line <8> newline 		 
 Line <8> newline 		 
 Line <9> newline 		 
 Line <10> flag 		 
@@ -41,110 +38,149 @@ Line <12> newline
 Line <12> newline 		 
 Line <13> name 		 Ryan
 Line <13> colon 		 :
-Line <13> string 		 I am good
+Line <13> string 		 Hello Mr. 
+Line <13> plus 		 +
+Line <13> name 		 Bob
+Line <13> bracketo 		 [
+Line <13> string 		 lname
+Line <13> bracketc 		 ]
+Line <13> plus 		 +
+Line <13> string 		 ! How are you doing?
 Line <13> newline 		 
 Line <13> newline 		 
-Line <14> name 		 John
-Line <14> colon 		 :
-Line <14> string 		 Hi 
-Line <14> plus 		 +
-Line <14> name 		 Ryan
-Line <14> plus 		 +
-Line <14> string 		  how are you?
+Line <14> name 		 Bob
+Line <14> dot 		 .
+Line <14> name 		 setName
+Line <14> parao 		 (
+Line <14> string 		 Rob
+Line <14> parac 		 )
 Line <14> newline 		 
 Line <14> newline 		 
+Line <15> name 		 Ryan
+Line <15> colon 		 :
+Line <15> string 		 Hello 
+Line <15> plus 		 +
+Line <15> name 		 Bob
+Line <15> plus 		 +
+Line <15> string 		 ! How are you doing?
 Line <15> newline 		 
 Line <15> newline 		 
 Line <16> newline 		 
-Line <16> newline 		 
 Line <17> newline 		 
 Line <17> newline 		 
-Line <18> bracketo 		 [
-Line <18> name 		 John
-Line <18> colon 		 :
-Line <18> name 		 char
-Line <18> bracketc 		 ]
 Line <18> newline 		 
-Line <18> newline 		 
-Line <19> name 		 lname
-Line <19> equal 		 =
-Line <19> string 		 Johnson
 Line <19> newline 		 
-Line <19> newline 		 
-Line <20> name 		 age
-Line <20> equal 		 =
-Line <20> number 		 16
 Line <20> newline 		 
-Line <20> newline 		 
-Line <21> name 		 money
-Line <21> equal 		 =
-Line <21> number 		 100000
 Line <21> newline 		 
-Line <21> newline 		 
-Line <22> name 		 known
-Line <22> equal 		 =
-Line <22> true 		 true
 Line <22> newline 		 
 Line <22> newline 		 
+Line <23> bracketo 		 [
+Line <23> name 		 test
+Line <23> colon 		 :
+Line <23> name 		 function
+Line <23> parao 		 (
+Line <23> name 		 n
+Line <23> parac 		 )
+Line <23> bracketc 		 ]
 Line <23> newline 		 
 Line <23> newline 		 
-Line <24> bracketo 		 [
-Line <24> name 		 Ryan
-Line <24> colon 		 :
-Line <24> name 		 char
-Line <24> bracketc 		 ]
+Line <24> ret 		 
+Line <24> name 		 n
+Line <24> plus 		 +
+Line <24> number 		 1
 Line <24> newline 		 
 Line <24> newline 		 
-Line <25> name 		 lname
-Line <25> equal 		 =
-Line <25> string 		 Ward
 Line <25> newline 		 
 Line <25> newline 		 
-Line <26> name 		 age
-Line <26> equal 		 =
-Line <26> number 		 24
+Line <26> bracketo 		 [
+Line <26> name 		 Ryan
+Line <26> colon 		 :
+Line <26> name 		 char
+Line <26> bracketc 		 ]
 Line <26> newline 		 
 Line <26> newline 		 
-Line <27> name 		 known
+Line <27> name 		 lname
 Line <27> equal 		 =
-Line <27> true 		 true
+Line <27> string 		 Ward
 Line <27> newline 		 
 Line <27> newline 		 
-Line <28> name 		 money
+Line <28> name 		 age
 Line <28> equal 		 =
-Line <28> number 		 0
+Line <28> number 		 24
 Line <28> newline 		 
 Line <28> newline 		 
+Line <29> name 		 known
+Line <29> equal 		 =
+Line <29> true 		 true
 Line <29> newline 		 
 Line <29> newline 		 
-Line <30> bracketo 		 [
-Line <30> name 		 Bob
-Line <30> colon 		 :
-Line <30> name 		 char
-Line <30> bracketc 		 ]
+Line <30> name 		 money
+Line <30> equal 		 =
+Line <30> number 		 0
 Line <30> newline 		 
 Line <30> newline 		 
 Line <31> newline 		 
+Line <31> newline 		 
+Line <32> bracketo 		 [
+Line <32> name 		 John
+Line <32> colon 		 :
+Line <32> name 		 char
+Line <32> bracketc 		 ]
 Line <32> newline 		 
+Line <32> newline 		 
+Line <33> name 		 lname
+Line <33> equal 		 =
+Line <33> string 		 Johnson
 Line <33> newline 		 
-Line <34> name 		 unknown
+Line <33> newline 		 
+Line <34> name 		 age
 Line <34> equal 		 =
-Line <34> string 		 Some Random Guy
+Line <34> number 		 16
 Line <34> newline 		 
 Line <34> newline 		 
-Line <35> name 		 age
+Line <35> name 		 money
 Line <35> equal 		 =
-Line <35> number 		 24
+Line <35> number 		 100000
 Line <35> newline 		 
 Line <35> newline 		 
-Line <36> name 		 money
+Line <36> name 		 known
 Line <36> equal 		 =
-Line <36> number 		 100
+Line <36> true 		 true
 Line <36> newline 		 
 Line <36> newline 		 
-Line <37> name 		 excited
-Line <37> colon 		 :
-Line <37> string 		 path/to/file
 Line <37> newline 		 
 Line <37> newline 		 
-Line <37> eof 		 
+Line <38> bracketo 		 [
+Line <38> name 		 Bob
+Line <38> colon 		 :
+Line <38> name 		 char
+Line <38> bracketc 		 ]
+Line <38> newline 		 
+Line <38> newline 		 
+Line <39> newline 		 
+Line <40> newline 		 
+Line <41> name 		 lname
+Line <41> equal 		 =
+Line <41> string 		 Johnson
+Line <41> newline 		 
+Line <42> name 		 unknown
+Line <42> equal 		 =
+Line <42> string 		 Some Random Guy
+Line <42> newline 		 
+Line <42> newline 		 
+Line <43> name 		 age
+Line <43> equal 		 =
+Line <43> number 		 24
+Line <43> newline 		 
+Line <43> newline 		 
+Line <44> name 		 money
+Line <44> equal 		 =
+Line <44> number 		 100
+Line <44> newline 		 
+Line <44> newline 		 
+Line <45> name 		 excited
+Line <45> colon 		 :
+Line <45> string 		 path/to/file
+Line <45> newline 		 
+Line <45> newline 		 
+Line <45> eof 		 

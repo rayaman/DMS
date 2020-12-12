@@ -55,6 +55,7 @@ namespace dms {
 	value::value(const value& other) {
 		if (this != &other) {
 			type = other.type;
+			state = other.state;
 			switch (other.type) {
 			case datatypes::block:
 				s = other.s;
@@ -97,6 +98,7 @@ namespace dms {
 		if (this != &other) {
 			nuke(); // Delete it all
 			type = other.type;
+			state = other.state;
 			switch (other.type) {
 			case datatypes::block:
 				s = other.s;
@@ -145,6 +147,7 @@ namespace dms {
 		if (this != &other) {
 			nuke();
 			type = other.type;
+			state = other.state;
 			switch (other.type) {
 			case datatypes::block:
 				s = other.s;
@@ -344,9 +347,9 @@ namespace dms {
 		}
 		return false;
 	}
-	value value::resolve(dms_state* state) {
-		if (type == datatypes::variable && (*this)!=(*state->getMem())[getPrintable()]) {
-			return (*state->getMem())[getPrintable()].resolve(state);
+	value value::resolve(dms_state* _state) {
+		if (type == datatypes::variable && (*this)!=(*_state->getMem())[s]) {
+			return (*_state->getMem())[s].resolve(_state);
 		}
 		return *this;
 	}
