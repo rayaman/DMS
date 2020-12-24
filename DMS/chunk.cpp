@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "chunk.h"
 namespace dms {
 	std::string getBlockType(const blocktype b) {

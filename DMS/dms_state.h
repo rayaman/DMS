@@ -1,8 +1,5 @@
 #pragma once
-#include <fstream>
-#include <string>
-#include <iostream>
-#include <unordered_map>
+#include "pch.h"
 #include "Invoker.h"
 #include "errors.h"
 #include "chunk.h"
@@ -10,7 +7,6 @@
 #include "Character.h"
 #include "enviroment.h"
 #include "memory.h"
-#include <stack>
 #include "dms_list.h"
 #include "comparisons.h"
 namespace dms {
@@ -30,6 +26,7 @@ namespace dms {
 		std::unordered_map<std::string, character*> characters;
 		std::unordered_map<std::string, enviroment*> environments;
 		std::unordered_map<std::string, size_t> labels;
+		std::unordered_map<std::string, Invoker*> inv_map;
 		std::string entry = "$undefined";
 		std::unordered_map<std::string, bool> enables;
 		std::size_t cur_line=0;
@@ -38,6 +35,7 @@ namespace dms {
 		const double Iversion = 1.0;
 		double Sversion; // The version of
 		errors::error err;
+		character* speaker = nullptr;
 
 		dms_state();
 		void dump(std::string fn = "dump.bin");
@@ -57,6 +55,7 @@ namespace dms {
 		character* getCharacter(std::string c);
 		enviroment* getEnvironment(std::string c);
 
+		bool assoiateType(std::string type, Invoker* inv);
 		bool injectEnv(std::string, enviroment*);
 		bool assign(value var, value val);
 		size_t seek(std::string label,std::vector<cmd*> cmds ,codes::op code, size_t pos);
@@ -71,6 +70,7 @@ namespace dms {
 		bool run();
 		bool run(std::string ent,memory* mem);
 		bool run(std::string instance);
+		bool error(std::string);
 		// This is called once and once only. Dynamically loading code is not a thing!
 		void init();
 		bool hasError();

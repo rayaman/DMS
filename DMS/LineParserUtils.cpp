@@ -1,5 +1,5 @@
+#include "pch.h"
 #include "LineParser.h"
-#include <random>
 using namespace dms::tokens;
 using namespace dms::utils;
 namespace dms {
@@ -247,6 +247,15 @@ namespace dms {
 			else if (utils::isalphanum(str) && str.size() > 0) {
 				t_vec->push_back(token{ tokens::name,codes::NOOP,stream->processBuffer(*buffer),line });
 				buffer->clear();
+				hasDec = false;
+			}
+			else if (str.find('.')!=std::string::npos) {
+				auto s = utils::split(str, ".");
+				t_vec->push_back(token{ tokens::name,codes::NOOP,s[0],line });
+				t_vec->push_back(token{ tokens::dot,codes::NOOP,"dot",line });
+				t_vec->push_back(token{ tokens::name,codes::NOOP,s[1],line });
+				buffer->clear();
+				isNum = false;
 				hasDec = false;
 			}
 			else {

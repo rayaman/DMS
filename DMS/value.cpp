@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "value.h"
 #include "dms_state.h"
 #include "utils.h"
@@ -5,6 +6,12 @@ namespace dms {
 	const std::string datatype[] = { "escape", "nil", "number", "int", "boolean", "env", "string", "custom", "variable", "block" , "error"};
 	value::value() {
 		// Nothing to do here!
+	}
+	value::value(void* cdata, std::string t)
+	{
+		type = datatypes::custom;
+		c = cdata;
+		ctype = t;
 	}
 	value::value(char const* str, datatypes t) {
 		type = t;
@@ -65,6 +72,8 @@ namespace dms {
 				break;
 			case datatypes::custom:
 				// Handle this later
+				c = other.c;
+				ctype = other.ctype;
 				break;
 			case datatypes::env:
 				// Handle this later
@@ -107,7 +116,8 @@ namespace dms {
 				b = other.b;
 				break;
 			case datatypes::custom:
-				// Handle this later
+				c = other.c;
+				ctype = other.ctype;
 				break;
 			case datatypes::env:
 				// Handle this later
@@ -156,7 +166,8 @@ namespace dms {
 				b = other.b;
 				break;
 			case datatypes::custom:
-				// Handle this later
+				c = other.c;
+				ctype = other.ctype;
 				break;
 			case datatypes::env:
 				// Handle this later
@@ -357,7 +368,13 @@ namespace dms {
 		return resolve(state);
 	}
 	void dms_args::push(value val) {
-		args.push_back(val);
+		args.emplace_back(val);
+	}
+	dms_args::dms_args(int n) {
+		args.reserve(n);
+	}
+	dms_args::dms_args() {
+		args.reserve(5);
 	}
 	size_t dms_args::size() {
 		return args.size();
@@ -415,12 +432,28 @@ namespace dms {
 	std::string value::toString() const {
 		return getPrintable();
 	}
+	double value::getDouble() const
+	{
+		if (type == datatypes::int64)
+			return (double)i;
+		else if (type == datatypes::number)
+			return n;
+		else
+			return nan("");
+	}
+	int64_t value::getInt() const
+	{
+		if (type == datatypes::int64)
+			return i;
+		else if (type == datatypes::number)
+			return (int64_t)n;
+		else
+			return INT_MIN;
+	}
 	// Compile time
 	void value::nuke() {
 		delete e;
-		delete c;
 		e = nullptr;
-		c = nullptr;
 	}
 	std::ostream& operator << (std::ostream& out, const value& c) {
 		if (c.type == string) {
@@ -491,10 +524,9 @@ namespace dms {
 		e = en;
 		type = env;
 	}
-	void dms::value::set(dms_custom* cus) {
+	void dms::value::set(void* cus) {
 		nuke();
 		c = cus;
-		c->_set(this);
 		type = custom;
 	}
 	void value::set() {

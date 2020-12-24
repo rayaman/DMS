@@ -1,8 +1,8 @@
 #pragma once
+#include "pch.h"
 #include "value.h"
 #include "utils.h"
 #include "character.h"
-#include <iostream>
 namespace dms {
 	struct Handler
 	{

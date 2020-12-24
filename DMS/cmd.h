@@ -1,8 +1,7 @@
 #pragma once
+#include "pch.h"
 #include "value.h"
 #include "codes.h"
-#include <ostream>
-#include <vector>
 namespace dms {
 	struct cmd
 	{

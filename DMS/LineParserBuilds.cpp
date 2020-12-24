@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "LineParser.h"
 namespace dms {
 	void LineParser::buildGoto(std::string g, bool v) {

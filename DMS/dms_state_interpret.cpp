@@ -1,8 +1,7 @@
+#include "pch.h"
 #include "dms_state.h"
 #include "utils.h"
 #include "Handlers.h"
-#include <iostream>
-#include <chrono>
 using namespace dms::utils;
 using namespace dms::exceptions;
 using namespace dms::codes;
@@ -113,6 +112,11 @@ namespace dms {
 		//Spawn thread and run
 		return true;
 	}
+	bool dms_state::error(std::string err)
+	{
+		push_error(errors::error{ errors::unknown ,err });
+		return false;
+	}
 	bool dms_state::run() {
 		if (stop)
 			return false;
@@ -138,7 +142,6 @@ namespace dms {
 		//TODO: parse the cmds and do stuff
 		// If this is running in a thread then stop will force this loop to stop
 		size_t ln = 0;
-		character* speaker = nullptr;
 		std::string temp;
 		while (!stop || !halt) {
 			c = cmds[pos++];
@@ -216,7 +219,7 @@ namespace dms {
 							if (!cmp.b || cmp.isNil()) {
 								pos = seek(gt.getPrintable(), cmds, LABL, pos);
 							}
-						} 
+						}
 						break;
 					}
 				case GOTO:
@@ -254,30 +257,54 @@ namespace dms {
 					break;
 				case OFUN:
 					{
-						std::string obj = c->args.args[0].getPrintable();
-						if (obj=="nil") {
-							obj = c->args.args[0].getPrintable();
-						}
-						std::string funcname = c->args.args[1].getPrintable();
-						value assn = c->args.args[2];
-						dms_args args;
+						if (c->args.args[0].resolve(this).type == datatypes::custom) {
+							auto cust = c->args.args[0].resolve(this);
+							auto fname = c->args.args[1].s;
+							auto assn = c->args.args[2];
+							dms_args args;
 
-						for (int i = 3; i < c->args.args.size(); i++) {
-							args.push(c->args.args[i]);
+							for (int i = 3; i < c->args.args.size(); i++) {
+								args.push(c->args.args[i]);
+							}
+							if (inv_map.count(cust.ctype)) {
+								Invoker* inv = inv_map[cust.ctype];
+								auto ret = inv->Invoke(fname, cust.c, this, &args);
+								if (assn.type != datatypes::nil) {
+									if (!assign(assn, ret)) {
+										return false;
+									}
+								}
+							}
+							else {
+								error("Custom object not assoiated with any functions!");
+							}
 						}
-						
-						value ret;
-						if (characterExists(obj)) {
-							ret = getCharacter(obj)->Invoke(funcname, this, &args);
-						}
-						else if (environmentExists(obj)) {
-							ret = getEnvironment(obj)->Invoke(funcname, this, &args);
-						}
-						if (ret.type == datatypes::error)
-							return false;
-						if (assn.type != datatypes::nil) {
-							if(!assign(assn, ret)) {
+						else {
+							std::string obj = c->args.args[0].getPrintable();
+							if (obj == "nil") {
+								obj = c->args.args[0].getPrintable();
+							}
+							std::string funcname = c->args.args[1].getPrintable();
+							value assn = c->args.args[2];
+							dms_args args;
+
+							for (int i = 3; i < c->args.args.size(); i++) {
+								args.push(c->args.args[i]);
+							}
+
+							value ret;
+							if (characterExists(obj)) {
+								ret = getCharacter(obj)->Invoke(funcname, this, &args);
+							}
+							else if (environmentExists(obj)) {
+								ret = getEnvironment(obj)->Invoke(funcname, this, &args);
+							}
+							if (ret.type == datatypes::error)
 								return false;
+							if (assn.type != datatypes::nil) {
+								if (!assign(assn, ret)) {
+									return false;
+								}
 							}
 						}
 					}
@@ -313,15 +340,15 @@ namespace dms {
 					value env = c->args.args[1];
 					value indx = c->args.args[2].resolve(this);
 					value assn = c->args.args[3].resolve(this);
-					if (env.type == datatypes::block && blockExists(env.getPrintable())) { // If this is a block let's handle this 
+					if (env.type == datatypes::block && blockExists(env.s)) { // If this is a block let's handle this 
 						enviroment* e = nullptr;
-						if (environments.count(env.getPrintable())) {
-							e = environments[env.getPrintable()];
+						if (environments.count(env.s)) {
+							e = environments[env.s];
 						}
-						else if (characters.count(env.getPrintable())) {
-							e = characters[env.getPrintable()];
+						else if (characters.count(env.s)) {
+							e = characters[env.s];
 						}
-						e->values[indx.getPrintable()] = assn;
+						e->values[indx.s] = assn;
 					}
 					else if (env.type == datatypes::env) {
 						if (indx.type == datatypes::number) {
@@ -333,7 +360,7 @@ namespace dms {
 						}
 					}
 					else if (env.type == datatypes::custom) {
-						env.c->NewIndex(indx, assn);
+						//env.c->NewIndex(indx, assn);
 						//if(!assign( assn, env->c->Index(indx));
 						// Call the method within the custom data
 					}
@@ -434,9 +461,9 @@ namespace dms {
 							}
 						}
 						else if (env.type == datatypes::custom) {
-							if(!assign( assn, env.c->Index(indx))) {
-								return false;
-							}
+							//if(!assign( assn, env.c->Index(indx))) {
+							//	return false;
+							//}
 							// Call the method within the custom data
 						}
 					}

@@ -1,9 +1,5 @@
 #pragma once
-#include <iostream>
-#include <sstream>
-#include <vector>
-#include <unordered_map>
-#include <map>
+#include "pch.h"
 
 namespace dms {
 	struct dms_list;
@@ -41,9 +37,11 @@ namespace dms {
 		int64_t i=0;
 		std::string s;
 		dms_list* e = nullptr;
-		dms_custom* c = nullptr;
+		void* c = nullptr; // A custom link to void data. Must be void* for compatiablity with c-API
+		std::string ctype; // The type of the custom data
 		dms_state* state = nullptr;
 		value();
+		value(void* cdata,std::string t);
 		value(datatypes);
 		value(char const*,datatypes);
 		value(std::string, datatypes);
@@ -79,15 +77,19 @@ namespace dms {
 		void set(bool bo);
 		void set(double num);
 		void set(dms_list* en);
-		void set(dms_custom* cus);
+		void set(void* cus);
 		void set();
 		bool typeMatch(const value* o) const;
 		std::string getPrintable() const;
 		std::string toString() const;
+		double getDouble() const;
+		int64_t getInt() const;
 		friend std::ostream& operator << (std::ostream& out, const value& c);
 	};
 
 	struct dms_args {
+		dms_args(int n);
+		dms_args();
 		std::vector<value> args;
 		void push(value val);
 		size_t size();

@@ -14,4 +14,8 @@
 #include "Invoker.h"
 #include "memory.h"
 #include "dms_list.h"
+#include "s_value.h"
+#include "wrapper.h"
+#include "sound.h"
+#include "comparisons.h"
 

@@ -3,15 +3,6 @@
 	money = 0
 	test = nil
 
-[Ryan:char]
-	age = 21
-	money = 1000
-	lname = "Ward"
-	known = true
-	// Inside a character block this syntax defines animation/image file for an emotion
-	calm: "./path/to/file"
-	excited: "./path/to/file"
-
 [step:function(a,b,c)]
 	"Testing..." // testing
 	//d = (100 + b) / c

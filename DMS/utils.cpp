@@ -1,7 +1,22 @@
+#include "pch.h"
 #include "utils.h"
 namespace dms::utils {
 	void print(const value val) {
 		printf(val.getPrintable().c_str());
+	}
+	std::vector<std::string> split(const std::string& str, const std::string& delim)
+	{
+		std::vector<std::string> tokens;
+		size_t prev = 0, pos = 0;
+		do
+		{
+			pos = str.find(delim, prev);
+			if (pos == std::string::npos) pos = str.length();
+			std::string token = str.substr(prev, pos - prev);
+			if (!token.empty()) tokens.push_back(token);
+			prev = pos + delim.length();
+		} while (pos < str.length() && prev < str.length());
+		return tokens;
 	}
 	std::string concat(value& v1, value& v2, value& v3, value& v4, value& v5, value& v7, value& v8, value& v9, value& v10, value& v11, value& v12) {
 		std::vector<value> list{v1,v2,v3,v4,v5,v7,v8,v9,v10,v11,v12};

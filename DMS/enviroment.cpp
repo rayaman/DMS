@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "enviroment.h"
 namespace dms {
 	bool enviroment::has(std::string index) {

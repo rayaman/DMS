@@ -1,5 +1,8 @@
+#include "pch.h"
 #include "dms_state.h"
 #include "Handlers.h"
+#include "core.h"
+#include "sound.h"
 namespace dms {
 	value dms::blockInvoke(void* self, dms_state* state, dms_args* args) {
 		std::string func = state->call_stack.top();
@@ -35,6 +38,7 @@ namespace dms {
 	void dms_state::init() {
 		if (init_init || stop)
 			return;
+
 		init_init = true;
 		cmd* c = new cmd;
 		for (const auto& [key, val] : chunks) {
@@ -65,6 +69,7 @@ namespace dms {
 		else
 			c->args.push(value(chunks.begin()->first));
 		chunks["$INIT"]->addCmd(c);
+		dms::core::init(this);
 		if (!handler->OnStateInit(this))
 			stop = true;
 	}
@@ -72,7 +77,12 @@ namespace dms {
 		return &mem_stack.top();
 	}
 	void dms_state::pushMem() {
-		mem_stack.push(memory());
+		memory mem = memory();
+		if (!mem_stack.empty()) {
+			
+			mem.parent = getMem();
+		}
+		mem_stack.push(mem);
 	}
 	void dms_state::pushMem(memory &mem) {
 		mem_stack.push(mem);
@@ -143,6 +153,15 @@ namespace dms {
 
 	bool dms_state::Inject(std::string var, value* val) {
 		return false;
+	}
+
+	bool dms_state::assoiateType(std::string type, Invoker* inv)
+	{
+		if(inv_map.count(type)) // Already exists!
+			return false;
+
+		inv_map.insert_or_assign(type,inv); // Create it
+		return true;
 	}
 
 	bool dms_state::injectEnv(std::string name, enviroment* env)

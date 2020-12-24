@@ -19,17 +19,35 @@
     <Filter Include="Source Files\DMS">
       <UniqueIdentifier>{e3410a7b-6408-4022-b606-2c14cfaac52c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\DMS\blocks">
-      <UniqueIdentifier>{978b41cd-27e4-4b8c-874e-3b6e927b3d4d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\DMS\blocks">
-      <UniqueIdentifier>{4c0bb4c5-388c-4f15-abb7-143cb6d6232f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\DMS\C-API">
       <UniqueIdentifier>{f71964f6-66b3-4d8c-a8da-56d703ad1c2a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\DMS\C-API">
       <UniqueIdentifier>{32abbbfd-6359-488c-83be-f61da8fd8f4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DMS\standardMethods">
+      <UniqueIdentifier>{10d9f698-b08c-40c5-b6b1-e6d903f4b279}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DMS\standardMethods">
+      <UniqueIdentifier>{4757b859-2680-4c9a-83e8-be3bf06f192e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DMS\parser">
+      <UniqueIdentifier>{be440a96-7b07-48b3-a84e-64b10775c979}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DMS\state">
+      <UniqueIdentifier>{9490aa5b-7d9d-415c-a263-ef1ecd8dd188}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DMS\objects">
+      <UniqueIdentifier>{4c0bb4c5-388c-4f15-abb7-143cb6d6232f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DMS\objects">
+      <UniqueIdentifier>{978b41cd-27e4-4b8c-874e-3b6e927b3d4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DMS\platformdep">
+      <UniqueIdentifier>{39dc0943-16ca-48a6-b04e-04ba994cfb8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DMS\platformdep">
+      <UniqueIdentifier>{ef57bfaf-35f9-4b3e-8642-7ee96fb82139}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -42,9 +60,6 @@
     <ClCompile Include="dms_exceptions.cpp">
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
-    <ClCompile Include="number_utils.cpp">
-      <Filter>Source Files\DMS</Filter>
-    </ClCompile>
     <ClCompile Include="utils.cpp">
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
@@ -54,43 +69,52 @@
     <ClCompile Include="DMS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dms_state.cpp">
-      <Filter>Source Files\DMS</Filter>
-    </ClCompile>
     <ClCompile Include="chunk.cpp">
-      <Filter>Source Files\DMS</Filter>
-    </ClCompile>
-    <ClCompile Include="LineParserMatchProcess.cpp">
-      <Filter>Source Files\DMS</Filter>
-    </ClCompile>
-    <ClCompile Include="LineParserParse.cpp">
-      <Filter>Source Files\DMS</Filter>
-    </ClCompile>
-    <ClCompile Include="LineParserUtils.cpp">
-      <Filter>Source Files\DMS</Filter>
-    </ClCompile>
-    <ClCompile Include="LineParserBuilds.cpp">
-      <Filter>Source Files\DMS</Filter>
-    </ClCompile>
-    <ClCompile Include="dms_state_interpret.cpp">
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
     <ClCompile Include="Handlers.cpp">
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
     <ClCompile Include="character.cpp">
-      <Filter>Source Files\DMS\blocks</Filter>
+      <Filter>Source Files\DMS\objects</Filter>
     </ClCompile>
     <ClCompile Include="enviroment.cpp">
-      <Filter>Source Files\DMS\blocks</Filter>
+      <Filter>Source Files\DMS\objects</Filter>
     </ClCompile>
     <ClCompile Include="dms_custom.cpp">
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
-    <ClCompile Include="Invoker.cpp">
+    <ClCompile Include="memory.cpp">
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
-    <ClCompile Include="memory.cpp">
+    <ClCompile Include="core.cpp">
+      <Filter>Source Files\DMS\standardMethods</Filter>
+    </ClCompile>
+    <ClCompile Include="LineParserBuilds.cpp">
+      <Filter>Source Files\DMS\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="LineParserMatchProcess.cpp">
+      <Filter>Source Files\DMS\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="LineParserParse.cpp">
+      <Filter>Source Files\DMS\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="LineParserUtils.cpp">
+      <Filter>Source Files\DMS\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="dms_state.cpp">
+      <Filter>Source Files\DMS\state</Filter>
+    </ClCompile>
+    <ClCompile Include="dms_state_interpret.cpp">
+      <Filter>Source Files\DMS\state</Filter>
+    </ClCompile>
+    <ClCompile Include="Invoker.cpp">
+      <Filter>Source Files\DMS\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>Source Files\DMS\standardMethods</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
   </ItemGroup>
@@ -132,13 +156,10 @@
       <Filter>Header Files\DMS</Filter>
     </ClInclude>
     <ClInclude Include="character.h">
-      <Filter>Header Files\DMS\blocks</Filter>
+      <Filter>Header Files\DMS\objects</Filter>
     </ClInclude>
     <ClInclude Include="enviroment.h">
-      <Filter>Header Files\DMS\blocks</Filter>
-    </ClInclude>
-    <ClInclude Include="Invoker.h">
-      <Filter>Header Files\DMS</Filter>
+      <Filter>Header Files\DMS\objects</Filter>
     </ClInclude>
     <ClInclude Include="memory.h">
       <Filter>Header Files\DMS</Filter>
@@ -151,6 +172,21 @@
     </ClInclude>
     <ClInclude Include="wrapper.h">
       <Filter>Header Files\DMS\C-API</Filter>
+    </ClInclude>
+    <ClInclude Include="Invoker.h">
+      <Filter>Header Files\DMS\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="core.h">
+      <Filter>Header Files\DMS\standardMethods</Filter>
+    </ClInclude>
+    <ClInclude Include="s_value.h">
+      <Filter>Header Files\DMS\C-API</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>Header Files\DMS\standardMethods</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files\DMS</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

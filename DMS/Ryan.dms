@@ -1,0 +1,5 @@
+filetype char // Define this file as a char, the default makes all all blocks "block"
+// This definition allows us to do some cool things, like adding our own methods into the base character object
+[setNickname:function(name)]
+	nickname = name
+	

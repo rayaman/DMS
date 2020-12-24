@@ -1,7 +1,5 @@
 #pragma once
-#include <unordered_map>
-#include <string>
-#include <vector>
+#include "pch.h"
 #include "value.h"
 namespace dms {
 	struct memory
@@ -10,6 +8,9 @@ namespace dms {
 		void erase(std::string);
 		value& operator[](std::string);
 		std::vector<value> examine(datatypes dt);
+		memory* parent = nullptr;
+		memory(const memory& other);
+		memory();
 	private:
 		std::unordered_map<std::string, value> mem;
 	};

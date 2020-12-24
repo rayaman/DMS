@@ -1,8 +1,6 @@
 #pragma once
+#include "pch.h"
 #include "cmd.h"
-#include <string>
-#include <vector>
-#include <map>
 namespace dms {
 	enum blocktype {
 		bt_block,

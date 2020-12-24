@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 #include "Codes.h"
 const std::string dms::codes::list[] = {
 	"NOOP",

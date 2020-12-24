@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Handlers.h"
 namespace dms {
 	uint8_t Handler::handleChoice(dms_state* state, std::string prompt, std::vector<std::string> args) const {

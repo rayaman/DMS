@@ -1,12 +1,7 @@
 #pragma once
 #include <vector>
 #include <fstream>
-#include <string>
-#include <iostream>
-#include <iterator>
-#include <stdio.h>
-#include <ctype.h>
-#include <stack>
+#include "pch.h"
 #include "codes.h"
 #include "cmd.h"
 #include "dms_state.h"
@@ -94,6 +89,7 @@ namespace dms {
 		bool match_process_number(tokenstream* stream, value& v);
 		bool match_process_asm(tokenstream* stream);
 		bool match_process_1afunc(tokenstream* stream, value& v);
+		bool match_process_ooxoo(tokenstream* stream, value& v);
 
 		// Build
 		void buildGoto(std::string g, bool v = false);

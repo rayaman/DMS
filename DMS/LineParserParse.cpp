@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "LineParser.h"
 using namespace dms::tokens;
 using namespace dms::utils;
@@ -239,12 +240,12 @@ namespace dms {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
 				t_vec.push_back(token{ tokens::anglebracketO,codes::NOOP,"<",line });
 			}
-			else if (data == '\t') {
+			/*else if (data == '\t') {
 				doCheck(&stream, &t_vec, line, isNum, hasDec, &buffer);
 				t_vec.push_back(token{ tokens::tab,codes::NOOP,"\t",line });
-			}
+			}*/
 
-			if ((data == ' ' || data == '(') && !isStr) { // tokens end with a space
+			if ((data == ' ' || data == '(' || data == '\t') && !isStr) { // tokens end with a space
 				std::string str = stream.processBuffer(buffer);
 				tolower(str);
 				if (str == "enable") {
@@ -531,8 +532,8 @@ namespace dms {
 			if (stream->match(newline) || stream->match(eof)) {
 				current = stream->next();
 			}
-			
 		}
+		return true;
 	}
 	void LineParser::_Parse(tokenstream* stream) {
 		if (stop) return;

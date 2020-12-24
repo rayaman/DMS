@@ -4,30 +4,85 @@ disable omniscient
 disable fullname
 enable forwardlabels // Do most of your labels exist ahead?
 enable savestate
+//loadfile "Ryan.dms"
 //enable leaking
 //enable debugging
 //loadfile "loadtest.dms"
 version 0.2
 using extendedDefine
+// this code will reside within
+music = loadMusic("test2.ogg")
+music2 = loadMusic("test.ogg")
 [main]
-	Ryan: "Hello Mr. " + Bob["lname"] + "! How are you doing?"
-	Bob.setName("Rob")
-	Ryan: "Hello " + Bob + "! How are you doing?"
-	//io.print(test 122 + 7)
-	
-	// Ryan: "I am good"
-	// John: "Hi " + Ryan + " how are you?"
-	// sqrt 144 + 10
-	// speed 
+	a = 10
+	tester()
+	print("a = " + a)
+	// music.setPitch(.7)
+	// print(music.getStatus())
+	// music.play()
+	// print(music.getStatus())
+	// print("Type: " + type(music2))
+	// while(music.getStatus()!="stopped"){
+		// wait 1
+	// }
+	// print("Done")
+	// a = 0
+	// while (true){
+		// asm {
+			// add %a %a 1
+			// add %p "a = " %a
+			// func %print nil %p
+		// }
+		// a = a + 1
+		// print("a = " + a)
+	// }
+	// while(true){
+		// song = SelectSong()
+		// player(song)
+	// }
 
-[test:function(n)]
-	return n + 1
+[tester:function()]
+	print(a)
+
+[SelectSong:function()]
+	choice "Pick song:" {
+		"Music 1" {
+			return music
+		}
+		"Music 2" {
+			return music2
+		}
+	}
+
+[player:function(song)]
+	choice "What you wanna do?" {
+		"play/resume" {
+			song.play()
+			player(song)
+		}
+		"pause" {
+			song.pause()
+			player(song)
+		}
+		"stop" {
+			song.stop()
+			player(song)
+		}
+		"newSong" {
+			song.stop()
+			player(song)
+		}
+		"quit" exit 0
+	}
 
 [Ryan:char]
+	age = 21
+	money = 1000
 	lname = "Ward"
-	age = 24
 	known = true
-	money = 0
+	// Inside a character block this syntax defines animation/image file for an emotion
+	calm: "./path/to/file"
+	excited: "./path/to/file"
 
 [John:char]
 	lname = "Johnson"

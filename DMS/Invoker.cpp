@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Invoker.h"
 #include "dms_state.h"
 #include "utils.h"
@@ -21,7 +22,19 @@ namespace dms {
             if(args->size())
                 for (int i = 0; i < args->args.size() - 1; i++)
                     args->args[i] = args->args[i].resolve(state);
+
             return funcs[str](self, state, args);
+        }
+        state->push_error(errors::error{ errors::non_existing_function, utils::concat("Attempt to call '",str,"' a nil value!") });
+        return value(datatypes::error);
+    }
+    value Invoker::Invoke(std::string str,void* ref, dms_state* state, dms_args* args) {
+        if (funcs.count(str)) {
+            if (args->size())
+                for (int i = 0; i < args->args.size() - 1; i++)
+                    args->args[i] = args->args[i].resolve(state);
+
+            return funcs[str](ref, state, args);
         }
         state->push_error(errors::error{ errors::non_existing_function, utils::concat("Attempt to call '",str,"' a nil value!") });
         return value(datatypes::error);
