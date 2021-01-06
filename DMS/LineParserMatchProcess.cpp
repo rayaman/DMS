@@ -43,7 +43,7 @@ namespace dms {
 					c->opcode = codes::KNOT;
 					c->args.push(assn);
 					current_chunk->addCmd(c);
-					v.set(assn.s);
+					v.set(assn.getString());
 					v.type = variable;
 					return true;
 				}
@@ -64,7 +64,7 @@ namespace dms {
 			tokenstream tempstream(&toks);
 			value var(datatypes::variable);
 			if (match_process_standard(&tempstream, var)) {
-				v.set(var.s);
+				v.set(var.getString());
 				v.type = datatypes::variable;
 				return true;
 			}
@@ -178,7 +178,7 @@ namespace dms {
 		value var = value(datatypes::variable);
 		// We have some work to do here
 		if (match_process_standard(stream, right)) {
-			v.set(var.s);
+			v.set(var.getString());
 			v.type = datatypes::variable;
 			cmd* c = new cmd;
 			c->opcode = code;
@@ -242,7 +242,7 @@ namespace dms {
 		value var = value(datatypes::variable);
 		// COMP cmp out v1 v2
 		if (match_process_standard(stream,right)) {
-			v.set(var.s);
+			v.set(var.getString());
 			v.type = datatypes::variable;
 			cmd* c = new cmd;
 			c->opcode = codes::COMP;

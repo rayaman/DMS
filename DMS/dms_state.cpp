@@ -19,7 +19,7 @@ namespace dms {
 			if (!state->run(func, Fmem)) {
 				std::vector<value> err = Fmem->examine(datatypes::error);
 				if (err.size() > 0)
-					state->push_error(errors::error{ errors::unknown ,err[0].s });
+					state->push_error(errors::error{ errors::unknown ,err[0].getString() });
 				else
 					state->push_error(errors::error{ errors::unknown ,"Function Returned an error!" });
 				state->popMem();// We need to restore the stack
@@ -182,7 +182,7 @@ namespace dms {
 	bool dms_state::assign(value var, value val) {
 		if (val.type == datatypes::error) {
 			(*getMem())[var.getPrintable()] = val;
-			push_error(errors::error{ errors::unknown ,val.s });
+			push_error(errors::error{ errors::unknown ,val.getString() });
 			return false;
 		}
 		val.state = this;

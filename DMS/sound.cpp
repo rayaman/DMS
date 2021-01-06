@@ -82,7 +82,7 @@ namespace dms::audio {
 		if (args->size() || args->args[0].resolve(state).type == datatypes::string) {
 			
 			sf::Music* music = new sf::Music;
-			if (!music->openFromFile(args->args[0].s)) {
+			if (!music->openFromFile(args->args[0].getString())) {
 				return value("Cannot open audio stream!", datatypes::error);
 			}
 			return value(music, "audiostream");

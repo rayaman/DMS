@@ -259,7 +259,7 @@ namespace dms {
 					{
 						if (c->args.args[0].resolve(this).type == datatypes::custom) {
 							auto cust = c->args.args[0].resolve(this);
-							auto fname = c->args.args[1].s;
+							auto fname = c->args.args[1].getString();
 							auto assn = c->args.args[2];
 							dms_args args;
 
@@ -340,15 +340,15 @@ namespace dms {
 					value env = c->args.args[1];
 					value indx = c->args.args[2].resolve(this);
 					value assn = c->args.args[3].resolve(this);
-					if (env.type == datatypes::block && blockExists(env.s)) { // If this is a block let's handle this 
+					if (env.type == datatypes::block && blockExists(env.getString())) { // If this is a block let's handle this 
 						enviroment* e = nullptr;
-						if (environments.count(env.s)) {
-							e = environments[env.s];
+						if (environments.count(env.getString())) {
+							e = environments[env.getString()];
 						}
-						else if (characters.count(env.s)) {
-							e = characters[env.s];
+						else if (characters.count(env.getString())) {
+							e = characters[env.getString()];
 						}
-						e->values[indx.s] = assn;
+						e->values[indx.getString()] = assn;
 					}
 					else if (env.type == datatypes::env) {
 						if (indx.type == datatypes::number) {
@@ -437,13 +437,13 @@ namespace dms {
 						value assn = c->args.args[0];
 						value env = c->args.args[1];
 						value indx = c->args.args[2].resolve(this);
-						if (env.type == datatypes::block && blockExists(env.s)) { // If this is a block let's handle this 
+						if (env.type == datatypes::block && blockExists(env.getString())) { // If this is a block let's handle this 
 							enviroment* e = nullptr;
-							if (environments.count(env.s)) {
-								e = environments[env.s];
+							if (environments.count(env.getString())) {
+								e = environments[env.getString()];
 							}
-							else if (characters.count(env.s)) {
-								e = characters[env.s];
+							else if (characters.count(env.getString())) {
+								e = characters[env.getString()];
 							}
 							if(!assign( assn, e->values[indx.getPrintable()])) {
 								return false;
@@ -556,13 +556,13 @@ namespace dms {
 					break;
 				case SSPK:
 					//Because we are using void* we must cast our pointers
-					if (characterExists(c->args.args[0].s)){
-						speaker = getCharacter(c->args.args[0].s);
+					if (characterExists(c->args.args[0].getString())){
+						speaker = getCharacter(c->args.args[0].getString());
 						if (!handler->handleSpeaker(this, speaker))
 							return false;
 					}
 					else {
-						push_error(errors::error{ errors::disp_unknown,concat("Unknown character '",c->args.args[0].s,"'!")});
+						push_error(errors::error{ errors::disp_unknown,concat("Unknown character '",c->args.args[0].getString(),"'!")});
 						return false;
 					}
 					break;
@@ -572,7 +572,7 @@ namespace dms {
 					break;
 				case CHAR: 
 					{
-						std::string cha = c->args.args[0].s;
+						std::string cha = c->args.args[0].getString();
 						getCharacter(cha);
 						break;
 					}
@@ -596,10 +596,10 @@ namespace dms {
 					//Because we are using void* we must cast our pointers
 					{
 						std::vector<std::string> args;
-						std::string prompt = c->args.args[0].s;
-						std::string fn = c->args.args[1].s;
+						std::string prompt = c->args.args[0].getString();
+						std::string fn = c->args.args[1].getString();
 						for (size_t i = 2; i < c->args.args.size(); i++)
-							args.push_back(c->args.args[i].resolve(this).s);
+							args.push_back(c->args.args[i].resolve(this).getString());
 						size_t npos = handler->handleChoice(this, prompt, args);
 						size_t nnpos = seek(concat("CHOI_", fn, "_", npos),cmds,LABL,pos);
 						if (!nnpos) {
@@ -614,7 +614,7 @@ namespace dms {
 				case JUMP:
 					// Value assert resolves the data so a variable must eventually equal a string
 					if (utils::valueassert(c->args, this, datatypes::string)) {
-						std::string block = c->args.args[0].resolve(this).s;
+						std::string block = c->args.args[0].resolve(this).getString();
 						if (chunks[block] == NULL) {
 							push_error(errors::error{ errors::non_existing_block ,utils::concat("Attempted to Jump to a non existing block [",block,"]") });
 							return false;

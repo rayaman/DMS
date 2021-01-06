@@ -11,21 +11,23 @@ enable savestate
 version 0.2
 using extendedDefine
 // this code will reside within
+
 music = loadMusic("test2.ogg")
 music2 = loadMusic("test.ogg")
+
 [main]
-	a = 10
-	tester()
-	print("a = " + a)
-	// music.setPitch(.7)
-	// print(music.getStatus())
-	// music.play()
-	// print(music.getStatus())
-	// print("Type: " + type(music2))
-	// while(music.getStatus()!="stopped"){
-		// wait 1
-	// }
-	// print("Done")
+	// Let's extend the base feature set
+	
+	
+	music.setPitch(.7)
+	print(music.getStatus())
+	music.play()
+	print(music.getStatus())
+	print("Type: " + type(music2))
+	while(music.getStatus()!="stopped"){
+		wait 1
+	}
+	print("Done")
 	// a = 0
 	// while (true){
 		// asm {
@@ -40,9 +42,6 @@ music2 = loadMusic("test.ogg")
 		// song = SelectSong()
 		// player(song)
 	// }
-
-[tester:function()]
-	print(a)
 
 [SelectSong:function()]
 	choice "Pick song:" {

@@ -22,6 +22,9 @@ namespace dms {
             }
             return "nil";
         }
+        value concat(void* self, dms_state* state, dms_args* args) {
+            
+        }
         void init(dms_state* state) {
             state->invoker.registerFunction("print", print);
             state->invoker.registerFunction("type", type);

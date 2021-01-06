@@ -359,8 +359,8 @@ namespace dms {
 		return false;
 	}
 	value value::resolve(dms_state* _state) {
-		if (type == datatypes::variable && (*this)!=(*_state->getMem())[s]) {
-			return (*_state->getMem())[s].resolve(_state);
+		if (type == datatypes::variable && (*this)!=(*_state->getMem())[getString()]) {
+			return (*_state->getMem())[getString()].resolve(_state);
 		}
 		return *this;
 	}
@@ -412,17 +412,17 @@ namespace dms {
 			return "custom";
 		}
 		else if (type == block) {
-			if (state->characterExists(s)) {
-				auto cha = state->getCharacter(s);
+			if (state->characterExists(getString())) {
+				auto cha = state->getCharacter(getString());
 				return cha->getName();
 			}
-			return s;
+			return getString();
 		}
 		else if (type == datatypes::variable) {
-			return s; // Do the lookup
+			return getString(); // Do the lookup
 		}
 		else if (type == datatypes::error) {
-			return std::string("ERROR: ") + s;
+			return std::string("ERROR: ") + getString();
 		}
 		else if (type == datatypes::escape) {
 			return "";
@@ -450,6 +450,10 @@ namespace dms {
 		else
 			return INT_MIN;
 	}
+	std::string value::getString() const
+	{
+		return s;
+	}
 	// Compile time
 	void value::nuke() {
 		delete e;
@@ -457,7 +461,7 @@ namespace dms {
 	}
 	std::ostream& operator << (std::ostream& out, const value& c) {
 		if (c.type == string) {
-			out << (char)c.type << c.s << (char)0;
+			out << (char)c.type << c.getString() << (char)0;
 		}
 		else if (c.type == number) {
 			out << (char)c.type << c.n;
@@ -481,10 +485,10 @@ namespace dms {
 			out << (char)c.type << "Custom Data: " << c;
 		}
 		else if (c.type == block) {
-			out << (char)c.type << c.s;
+			out << (char)c.type << c.getString();
 		}
 		else if (c.type == datatypes::variable) {
-			out << (char)c.type << c.s; // Do the lookup
+			out << (char)c.type << c.getString(); // Do the lookup
 		}
 		else if (c.type == datatypes::escape) {
 			out << (char)0;

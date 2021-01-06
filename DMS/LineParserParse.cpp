@@ -459,7 +459,7 @@ namespace dms {
 							// We got a name which is refering to a variable so lets build one
 							value v;
 							v.type = datatypes::variable; // Special type, it writes data to the string portion, but is interperted as a lookup
-							v.s = tokens[i].name;
+							v.getString() = tokens[i].name;
 							args.push(v);
 						}
 						else if (tokens[i].type == tokens::seperator) {

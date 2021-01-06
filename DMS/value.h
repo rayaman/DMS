@@ -84,6 +84,7 @@ namespace dms {
 		std::string toString() const;
 		double getDouble() const;
 		int64_t getInt() const;
+		std::string getString() const;
 		friend std::ostream& operator << (std::ostream& out, const value& c);
 	};
 

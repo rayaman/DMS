@@ -111,11 +111,11 @@
     <ClCompile Include="Invoker.cpp">
       <Filter>Source Files\DMS\objects</Filter>
     </ClCompile>
-    <ClCompile Include="sound.cpp">
-      <Filter>Source Files\DMS\standardMethods</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files\DMS</Filter>
+    </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>Source Files\DMS\platformdep</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -182,11 +182,11 @@
     <ClInclude Include="s_value.h">
       <Filter>Header Files\DMS\C-API</Filter>
     </ClInclude>
-    <ClInclude Include="sound.h">
-      <Filter>Header Files\DMS\standardMethods</Filter>
-    </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Header Files\DMS</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>Header Files\DMS\platformdep</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
