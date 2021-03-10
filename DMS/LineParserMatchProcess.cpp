@@ -940,7 +940,13 @@ namespace dms {
 		if (stream->match(cbracketo)) {
 			size_t last_line = stream->last().line_num;
 			std::vector<token> t = stream->next(cbracketo, cbracketc); // Consume and get tokens
-			t.pop_back();
+			if (t.size() == 1) {
+				t.pop_back();
+				t.push_back(token{tokens::newline});
+			}
+			else {
+				t.pop_back();
+			}
 			tokenstream tempstream(&t);
 			if (notBalanced(t, last_line, stream, "{", "}"))
 				return false;

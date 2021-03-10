@@ -1,5 +1,4 @@
 #pragma once
-#include "pch.h"
 #include <SFML/Audio.hpp>
 #include "dms_state.h"
 namespace dms::audio {

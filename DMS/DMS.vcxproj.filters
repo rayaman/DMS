@@ -43,11 +43,14 @@
     <Filter Include="Header Files\DMS\objects">
       <UniqueIdentifier>{978b41cd-27e4-4b8c-874e-3b6e927b3d4d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\DMS\platformdep">
-      <UniqueIdentifier>{39dc0943-16ca-48a6-b04e-04ba994cfb8d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\DMS\platformdep">
       <UniqueIdentifier>{ef57bfaf-35f9-4b3e-8642-7ee96fb82139}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\multi">
+      <UniqueIdentifier>{b3c47fc7-ce47-46c5-86b4-827acf0bcbbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DMS\libraries">
+      <UniqueIdentifier>{584d8d2d-e56e-4a89-a1fe-08a13c3d08a9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +118,9 @@
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
     <ClCompile Include="sound.cpp">
+      <Filter>Source Files\DMS\platformdep</Filter>
+    </ClCompile>
+    <ClCompile Include="window.cpp">
       <Filter>Source Files\DMS\platformdep</Filter>
     </ClCompile>
   </ItemGroup>
@@ -185,8 +191,17 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files\DMS</Filter>
     </ClInclude>
+    <ClInclude Include="Connection.h">
+      <Filter>Header Files\multi</Filter>
+    </ClInclude>
+    <ClInclude Include="gui.h">
+      <Filter>Header Files\DMS\libraries</Filter>
+    </ClInclude>
     <ClInclude Include="sound.h">
-      <Filter>Header Files\DMS\platformdep</Filter>
+      <Filter>Header Files\DMS\libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="window.h">
+      <Filter>Header Files\DMS\libraries</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

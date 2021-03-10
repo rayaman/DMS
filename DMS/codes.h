@@ -17,7 +17,7 @@ namespace dms {
 			CHOI, // Done
 			BLCK, // 
 			CHAR, // Done
-			WHLE,
+			WHLE, // Scraped
 			FUNC, // Done
 			IFFF, // Done
 			KNOT, // Done
@@ -29,9 +29,9 @@ namespace dms {
 			JMPZ, // Scraped see [COMP]
 			INST, // Done
 			ERRO,
-			GOTO,
+			GOTO, // Done
 			JUMP, // Done
-			RETN,
+			RETN, // Done
 			EXIT, // Done
 			DEBG,
 			DSPD, // Todo
@@ -48,7 +48,7 @@ namespace dms {
 			LIST, // Done
 			LINE, // Done
 			HALT, // Todo
-			FILE,
+			FILE, // Done
 			GC,
 			ASID, // Done
 			OFUN // Done

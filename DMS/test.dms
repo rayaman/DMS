@@ -17,17 +17,11 @@ music2 = loadMusic("test.ogg")
 
 [main]
 	// Let's extend the base feature set
-	
-	
-	music.setPitch(.7)
-	print(music.getStatus())
 	music.play()
-	print(music.getStatus())
-	print("Type: " + type(music2))
-	while(music.getStatus()!="stopped"){
-		wait 1
-	}
-	print("Done")
+	music.setVolume(5)
+	while(music.getStatus()!="stopped"){}
+	print("Sound finished!")
+	
 	// a = 0
 	// while (true){
 		// asm {
@@ -53,7 +47,7 @@ music2 = loadMusic("test.ogg")
 		}
 	}
 
-[player:function(song)]
+[player:function(song,food)]
 	choice "What you wanna do?" {
 		"play/resume" {
 			song.play()

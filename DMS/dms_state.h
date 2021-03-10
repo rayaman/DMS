@@ -36,6 +36,7 @@ namespace dms {
 		double Sversion; // The version of
 		errors::error err;
 		character* speaker = nullptr;
+		
 
 		dms_state();
 		void dump(std::string fn = "dump.bin");
@@ -68,6 +69,7 @@ namespace dms {
 		void pushMem();
 		void popMem();
 		bool run();
+		bool next(memory* mem);
 		bool run(std::string ent,memory* mem);
 		bool run(std::string instance);
 		bool error(std::string);
@@ -77,6 +79,17 @@ namespace dms {
 	private:
 		// From what I gathered
 		//std::mutex memory_mutex;
+
+		// Next links
+		codes::op n_code;
+		cmd* n_c = nullptr;
+		bool n_halt = false;
+		size_t n_pos = 0;
+		size_t n_max = 0;
+		std::vector<cmd*> n_cmds;
+		size_t n_ln = 0;
+		std::string n_temp;
+		//
 		void pushMem(memory&);
 		bool stop = false;
 		bool init_init = false;

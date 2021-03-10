@@ -457,9 +457,7 @@ namespace dms {
 					for (size_t i = 0; i < tokens.size() - 1; i++) {//The lase symbol is parac since that was the consume condition
 						if (tokens[i].type == tokens::name) {
 							// We got a name which is refering to a variable so lets build one
-							value v;
-							v.type = datatypes::variable; // Special type, it writes data to the string portion, but is interperted as a lookup
-							v.getString() = tokens[i].name;
+							value v(tokens[i].name, datatypes::variable);
 							args.push(v);
 						}
 						else if (tokens[i].type == tokens::seperator) {
@@ -475,6 +473,10 @@ namespace dms {
 					}
 					// If all went well the 'args' now has all of tha params for the method we will be working with
 					current_chunk->params = args;
+					for (size_t i = 0; i < args.size(); i++) {
+						current_chunk->cmds.back()->args.push(args.args[i]);
+					}
+					
 					// Thats should be all we need to do
 					if (stream->peek().type != tokens::bracketc) {
 						state->push_error(errors::error{ errors::badtoken, "Incomplete function block declaration! Expected ']' to close the block!",true,line,current_chunk });
