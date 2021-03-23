@@ -3,16 +3,16 @@
 #include <SFML/System.hpp>
 #include "pch.h"
 #include "dms.h"
+#include "gui.h"
+#include "actors.h"
 
 using namespace dms;
 int main()
 {
     // TODO fix disp cmd to handle the standard
-
-
-    /*milliseconds ms = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
-    utils::print(ms.count());*/
     
+    multi::runner run;
+
     LineParser parser = LineParser("test.dms");
     dms_state* state = parser.Parse();
     // Load audio stuff
@@ -22,30 +22,40 @@ int main()
 
     sf::RenderWindow window(sf::VideoMode(1024, 768, 32), "Background Test");
 
-    sf::Texture texture;
-    texture.loadFromFile("background.jpg");
-    sf::Sprite sprite;
-    sf::Vector2u size = texture.getSize();
-    sprite.setTexture(texture);
-    sprite.setOrigin(0, 0);
+    gui::gui& root = gui::Root();
+    //gui::framebase testframe(gui::DualDim(0, 0, 100, 100), gui::DualDim(0, 0, 0, 0));
+    
+    gui::gui& test = root.newFrame(gui::DualDim(0, 0, 100, 100), gui::DualDim(0, 0, 0, 0));
+    multi::alarm<multi::seconds> alarmtest(&run, 3, [&](multi::alarm<multi::seconds>* a) {
+        test.Offset.Position.Set(10, 10);
+    });
+    //std::cout << "Testing " << test.Parent;
+    //gui::framebase frame(gui::DualDim(0,0,100,100), gui::DualDim(0, 0, 0, 0));
 
-    sf::Font font;
-    font.loadFromFile("font.ttf");
+    //sf::Texture texture;
+    //texture.loadFromFile("background.jpg");
+    //sf::Sprite sprite;
+    //sf::Vector2u size = texture.getSize();
+    //sprite.setTexture(texture);
+    //sprite.setOrigin(0, 0);
 
-    sf::Text text("Hello this is a test|!", font);
-    text.setCharacterSize(30);
-    text.setStyle(sf::Text::Bold);
-    text.setFillColor(sf::Color::Black);
-    auto test = text.getGlobalBounds();
-    std::cout << test.left << "," << test.top << "," << test.width << "," << test.height << std::endl;
-    text.setPosition(11, 768 - 110 - (test.height-test.top));
-    //std::cout << test << std::endl;
+    //sf::Font font;
+    //font.loadFromFile("font.ttf");
 
-    sf::RectangleShape rectangle;
-    rectangle.setSize(sf::Vector2f(1004, 100));
-    rectangle.setOutlineColor(sf::Color::Red);
-    rectangle.setOutlineThickness(1);
-    rectangle.setPosition(10, 768-110);
+    //sf::Text text("Hello this is a test|!", font);
+    //text.setCharacterSize(30);
+    //text.setStyle(sf::Text::Bold);
+    //text.setFillColor(sf::Color::Black);
+    //auto test = text.getGlobalBounds();
+    //std::cout << test.left << "," << test.top << "," << test.width << "," << test.height << std::endl;
+    //text.setPosition(11, 768 - 110 - (test.height-test.top));
+    ////std::cout << test << std::endl;
+
+    //sf::RectangleShape rectangle;
+    //rectangle.setSize(sf::Vector2f(1004, 100));
+    //rectangle.setOutlineColor(sf::Color::Red);
+    //rectangle.setOutlineThickness(1);
+    //rectangle.setPosition(10, 768-110);
 
     //// run the program as long as the window is open
     while (window.isOpen())
@@ -66,11 +76,17 @@ int main()
             // We should clean up some stuff here!
             break;
         }
+        // Update the runner
+        run.update();
 
         // draw everything here...
-        window.draw(sprite);
-        window.draw(rectangle);
-        window.draw(text);
+        
+        gui::Draw(&window);
+
+        //testframe.Draw(&window);
+        //window.draw(sprite);
+        //window.draw(rectangle);
+        //window.draw(text);
 
         // end the current frame
         window.display();

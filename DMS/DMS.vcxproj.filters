@@ -52,6 +52,15 @@
     <Filter Include="Header Files\DMS\libraries">
       <UniqueIdentifier>{584d8d2d-e56e-4a89-a1fe-08a13c3d08a9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\multi">
+      <UniqueIdentifier>{f3de0fc4-d3ed-4241-9432-4b9136f0b672}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DMS\gui">
+      <UniqueIdentifier>{8b07822b-59fb-4826-89ce-7481977f640b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\gui">
+      <UniqueIdentifier>{490b48c7-06fe-4e6f-9b95-93a0b01a963c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cmd.cpp">
@@ -120,8 +129,11 @@
     <ClCompile Include="sound.cpp">
       <Filter>Source Files\DMS\platformdep</Filter>
     </ClCompile>
-    <ClCompile Include="window.cpp">
-      <Filter>Source Files\DMS\platformdep</Filter>
+    <ClCompile Include="multiimpl.cpp">
+      <Filter>Source Files\multi</Filter>
+    </ClCompile>
+    <ClCompile Include="guiimpl.cpp">
+      <Filter>Source Files\gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -194,14 +206,17 @@
     <ClInclude Include="Connection.h">
       <Filter>Header Files\multi</Filter>
     </ClInclude>
-    <ClInclude Include="gui.h">
-      <Filter>Header Files\DMS\libraries</Filter>
-    </ClInclude>
     <ClInclude Include="sound.h">
       <Filter>Header Files\DMS\libraries</Filter>
     </ClInclude>
-    <ClInclude Include="window.h">
-      <Filter>Header Files\DMS\libraries</Filter>
+    <ClInclude Include="actors.h">
+      <Filter>Header Files\multi</Filter>
+    </ClInclude>
+    <ClInclude Include="multibase.h">
+      <Filter>Header Files\multi</Filter>
+    </ClInclude>
+    <ClInclude Include="gui.h">
+      <Filter>Header Files\DMS\gui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

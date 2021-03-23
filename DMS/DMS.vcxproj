@@ -168,6 +168,7 @@
     <ClCompile Include="core.cpp" />
     <ClCompile Include="dms_custom.cpp" />
     <ClCompile Include="enviroment.cpp" />
+    <ClCompile Include="guiimpl.cpp" />
     <ClCompile Include="Handlers.cpp" />
     <ClCompile Include="chunk.cpp" />
     <ClCompile Include="cmd.cpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="DMS.cpp" />
     <ClCompile Include="dms_state.cpp" />
     <ClCompile Include="dms_state_interpret.cpp" />
+    <ClCompile Include="multiimpl.cpp" />
     <ClCompile Include="Invoker.cpp" />
     <ClCompile Include="LineParserBuilds.cpp" />
     <ClCompile Include="LineParserMatchProcess.cpp" />
@@ -190,9 +192,9 @@
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="value.cpp" />
-    <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="actors.h" />
     <ClInclude Include="character.h" />
     <ClInclude Include="comparisons.h" />
     <ClInclude Include="Connection.h" />
@@ -211,13 +213,13 @@
     <ClInclude Include="errors.h" />
     <ClInclude Include="dms.h" />
     <ClInclude Include="LineParser.h" />
+    <ClInclude Include="multibase.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="s_value.h" />
     <ClInclude Include="token.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="value.h" />
-    <ClInclude Include="window.h" />
     <ClInclude Include="wrapper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
