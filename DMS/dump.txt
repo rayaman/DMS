@@ -35,7 +35,7 @@ Line <12> newline
 Line <13> newline 		 
 Line <14> newline 		 
 Line <14> newline 		 
-Line <15> name 		 music
+Line <15> name 		 music2
 Line <15> equal 		 =
 Line <15> name 		 loadMusic
 Line <15> parao 		 (
@@ -43,7 +43,7 @@ Line <15> string 		 test2.ogg
 Line <15> parac 		 )
 Line <15> newline 		 
 Line <15> newline 		 
-Line <16> name 		 music2
+Line <16> name 		 music
 Line <16> equal 		 =
 Line <16> name 		 loadMusic
 Line <16> parao 		 (
@@ -59,308 +59,334 @@ Line <18> bracketc 		 ]
 Line <18> newline 		 
 Line <18> newline 		 
 Line <19> newline 		 
-Line <20> name 		 music
-Line <20> dot 		 dot
-Line <20> name 		 play
-Line <20> parao 		 (
-Line <20> parac 		 )
 Line <20> newline 		 
-Line <20> newline 		 
-Line <21> name 		 music
-Line <21> dot 		 .
-Line <21> name 		 setVolume
-Line <21> parao 		 (
-Line <21> number 		 5
-Line <21> parac 		 )
 Line <21> newline 		 
-Line <21> newline 		 
-Line <22> name 		 while
-Line <22> parao 		 (
-Line <22> name 		 music
-Line <22> dot 		 .
-Line <22> name 		 getStatus
-Line <22> parao 		 (
-Line <22> parac 		 )
-Line <22> not 		 !
-Line <22> equal 		 =
-Line <22> string 		 stopped
-Line <22> parac 		 )
-Line <22> cbracketo 		 {
-Line <22> cbracketc 		 }
 Line <22> newline 		 
-Line <22> newline 		 
-Line <23> name 		 print
-Line <23> parao 		 (
-Line <23> string 		 Sound finished!
-Line <23> parac 		 )
 Line <23> newline 		 
-Line <23> newline 		 
+Line <24> name 		 wait
+Line <24> number 		 1
 Line <24> newline 		 
 Line <24> newline 		 
+Line <25> name 		 setBG
+Line <25> parao 		 (
+Line <25> string 		 background2.jpg
+Line <25> parac 		 )
+Line <25> newline 		 
 Line <25> newline 		 
 Line <26> newline 		 
+Line <26> newline 		 
+Line <27> name 		 Ryan
+Line <27> colon 		 :
+Line <27> string 		 Hello how are you?
 Line <27> newline 		 
+Line <27> newline 		 
+Line <28> name 		 wait
+Line <28> number 		 2
 Line <28> newline 		 
+Line <28> newline 		 
+Line <29> name 		 Bob
+Line <29> colon 		 :
+Line <29> string 		 I'm good how are you?
 Line <29> newline 		 
+Line <29> newline 		 
+Line <30> name 		 wait
+Line <30> number 		 2
 Line <30> newline 		 
+Line <30> newline 		 
+Line <31> name 		 Ryan
+Line <31> colon 		 :
+Line <31> string 		 I am great :D
+Line <31> newline 		 
 Line <31> newline 		 
 Line <32> newline 		 
+Line <32> newline 		 
+Line <33> name 		 a
+Line <33> equal 		 =
+Line <33> number 		 0
+Line <33> newline 		 
 Line <33> newline 		 
 Line <34> newline 		 
+Line <35> name 		 while
+Line <35> parao 		 (
+Line <35> true 		 true
+Line <35> parac 		 )
+Line <35> cbracketo 		 {
 Line <35> newline 		 
+Line <35> newline 		 
+Line <36> name 		 a
+Line <36> equal 		 =
+Line <36> name 		 a
+Line <36> plus 		 +
+Line <36> number 		 1
 Line <36> newline 		 
+Line <36> newline 		 
+Line <37> cbracketc 		 }
+Line <37> newline 		 
 Line <37> newline 		 
 Line <38> newline 		 
 Line <39> newline 		 
-Line <39> newline 		 
-Line <40> bracketo 		 [
-Line <40> name 		 SelectSong
-Line <40> colon 		 :
-Line <40> name 		 function
-Line <40> parao 		 (
-Line <40> parac 		 )
-Line <40> bracketc 		 ]
 Line <40> newline 		 
-Line <40> newline 		 
-Line <41> control 		 
-Line <41> string 		 Pick song:
-Line <41> cbracketo 		 {
 Line <41> newline 		 
-Line <41> newline 		 
-Line <42> string 		 Music 1
-Line <42> cbracketo 		 {
 Line <42> newline 		 
-Line <42> newline 		 
-Line <43> ret 		 
-Line <43> name 		 music
 Line <43> newline 		 
-Line <43> newline 		 
-Line <44> cbracketc 		 }
 Line <44> newline 		 
-Line <44> newline 		 
-Line <45> string 		 Music 2
-Line <45> cbracketo 		 {
 Line <45> newline 		 
-Line <45> newline 		 
-Line <46> ret 		 
-Line <46> name 		 music2
 Line <46> newline 		 
-Line <46> newline 		 
-Line <47> cbracketc 		 }
 Line <47> newline 		 
-Line <47> newline 		 
-Line <48> cbracketc 		 }
-Line <48> newline 		 
 Line <48> newline 		 
 Line <49> newline 		 
-Line <49> newline 		 
-Line <50> bracketo 		 [
-Line <50> name 		 player
-Line <50> colon 		 :
-Line <50> name 		 function
-Line <50> parao 		 (
-Line <50> name 		 song
-Line <50> seperator 		 ,
-Line <50> name 		 food
-Line <50> parac 		 )
-Line <50> bracketc 		 ]
 Line <50> newline 		 
-Line <50> newline 		 
-Line <51> control 		 
-Line <51> string 		 What you wanna do?
-Line <51> cbracketo 		 {
 Line <51> newline 		 
-Line <51> newline 		 
-Line <52> string 		 play/resume
-Line <52> cbracketo 		 {
 Line <52> newline 		 
 Line <52> newline 		 
-Line <53> name 		 song
-Line <53> dot 		 dot
-Line <53> name 		 play
+Line <53> bracketo 		 [
+Line <53> name 		 SelectSong
+Line <53> colon 		 :
+Line <53> name 		 function
 Line <53> parao 		 (
 Line <53> parac 		 )
+Line <53> bracketc 		 ]
 Line <53> newline 		 
 Line <53> newline 		 
-Line <54> name 		 player
-Line <54> parao 		 (
-Line <54> name 		 song
-Line <54> parac 		 )
+Line <54> control 		 
+Line <54> string 		 Pick song:
+Line <54> cbracketo 		 {
 Line <54> newline 		 
 Line <54> newline 		 
-Line <55> cbracketc 		 }
+Line <55> string 		 Music 1
+Line <55> cbracketo 		 {
 Line <55> newline 		 
 Line <55> newline 		 
-Line <56> string 		 pause
-Line <56> cbracketo 		 {
+Line <56> ret 		 
+Line <56> name 		 music
 Line <56> newline 		 
 Line <56> newline 		 
-Line <57> name 		 song
-Line <57> dot 		 .
-Line <57> name 		 pause
-Line <57> parao 		 (
-Line <57> parac 		 )
+Line <57> cbracketc 		 }
 Line <57> newline 		 
 Line <57> newline 		 
-Line <58> name 		 player
-Line <58> parao 		 (
-Line <58> name 		 song
-Line <58> parac 		 )
+Line <58> string 		 Music 2
+Line <58> cbracketo 		 {
 Line <58> newline 		 
 Line <58> newline 		 
-Line <59> cbracketc 		 }
+Line <59> ret 		 
+Line <59> name 		 music2
 Line <59> newline 		 
 Line <59> newline 		 
-Line <60> string 		 stop
-Line <60> cbracketo 		 {
+Line <60> cbracketc 		 }
 Line <60> newline 		 
 Line <60> newline 		 
-Line <61> name 		 song
-Line <61> dot 		 .
-Line <61> name 		 stop
-Line <61> parao 		 (
-Line <61> parac 		 )
+Line <61> cbracketc 		 }
 Line <61> newline 		 
 Line <61> newline 		 
-Line <62> name 		 player
-Line <62> parao 		 (
-Line <62> name 		 song
-Line <62> parac 		 )
 Line <62> newline 		 
 Line <62> newline 		 
-Line <63> cbracketc 		 }
+Line <63> bracketo 		 [
+Line <63> name 		 player
+Line <63> colon 		 :
+Line <63> name 		 function
+Line <63> parao 		 (
+Line <63> name 		 song
+Line <63> seperator 		 ,
+Line <63> name 		 food
+Line <63> parac 		 )
+Line <63> bracketc 		 ]
 Line <63> newline 		 
 Line <63> newline 		 
-Line <64> string 		 newSong
+Line <64> control 		 
+Line <64> string 		 What you wanna do?
 Line <64> cbracketo 		 {
 Line <64> newline 		 
 Line <64> newline 		 
-Line <65> name 		 song
-Line <65> dot 		 .
-Line <65> name 		 stop
-Line <65> parao 		 (
-Line <65> parac 		 )
+Line <65> string 		 play/resume
+Line <65> cbracketo 		 {
 Line <65> newline 		 
 Line <65> newline 		 
-Line <66> name 		 player
-Line <66> parao 		 (
 Line <66> name 		 song
+Line <66> dot 		 dot
+Line <66> name 		 play
+Line <66> parao 		 (
 Line <66> parac 		 )
 Line <66> newline 		 
 Line <66> newline 		 
-Line <67> cbracketc 		 }
+Line <67> name 		 player
+Line <67> parao 		 (
+Line <67> name 		 song
+Line <67> parac 		 )
 Line <67> newline 		 
 Line <67> newline 		 
-Line <68> string 		 quit
-Line <68> exit 		 
-Line <68> number 		 0
+Line <68> cbracketc 		 }
 Line <68> newline 		 
 Line <68> newline 		 
-Line <69> cbracketc 		 }
+Line <69> string 		 pause
+Line <69> cbracketo 		 {
 Line <69> newline 		 
 Line <69> newline 		 
+Line <70> name 		 song
+Line <70> dot 		 .
+Line <70> name 		 pause
+Line <70> parao 		 (
+Line <70> parac 		 )
 Line <70> newline 		 
 Line <70> newline 		 
-Line <71> bracketo 		 [
-Line <71> name 		 Ryan
-Line <71> colon 		 :
-Line <71> name 		 char
-Line <71> bracketc 		 ]
+Line <71> name 		 player
+Line <71> parao 		 (
+Line <71> name 		 song
+Line <71> parac 		 )
 Line <71> newline 		 
 Line <71> newline 		 
-Line <72> name 		 age
-Line <72> equal 		 =
-Line <72> number 		 21
+Line <72> cbracketc 		 }
 Line <72> newline 		 
 Line <72> newline 		 
-Line <73> name 		 money
-Line <73> equal 		 =
-Line <73> number 		 1000
+Line <73> string 		 stop
+Line <73> cbracketo 		 {
 Line <73> newline 		 
 Line <73> newline 		 
-Line <74> name 		 lname
-Line <74> equal 		 =
-Line <74> string 		 Ward
+Line <74> name 		 song
+Line <74> dot 		 .
+Line <74> name 		 stop
+Line <74> parao 		 (
+Line <74> parac 		 )
 Line <74> newline 		 
 Line <74> newline 		 
-Line <75> name 		 known
-Line <75> equal 		 =
-Line <75> true 		 true
+Line <75> name 		 player
+Line <75> parao 		 (
+Line <75> name 		 song
+Line <75> parac 		 )
 Line <75> newline 		 
 Line <75> newline 		 
+Line <76> cbracketc 		 }
 Line <76> newline 		 
-Line <77> name 		 calm
-Line <77> colon 		 :
-Line <77> string 		 ./path/to/file
+Line <76> newline 		 
+Line <77> string 		 newSong
+Line <77> cbracketo 		 {
 Line <77> newline 		 
 Line <77> newline 		 
-Line <78> name 		 excited
-Line <78> colon 		 :
-Line <78> string 		 ./path/to/file
+Line <78> name 		 song
+Line <78> dot 		 .
+Line <78> name 		 stop
+Line <78> parao 		 (
+Line <78> parac 		 )
 Line <78> newline 		 
 Line <78> newline 		 
+Line <79> name 		 player
+Line <79> parao 		 (
+Line <79> name 		 song
+Line <79> parac 		 )
 Line <79> newline 		 
 Line <79> newline 		 
-Line <80> bracketo 		 [
-Line <80> name 		 John
-Line <80> colon 		 :
-Line <80> name 		 char
-Line <80> bracketc 		 ]
+Line <80> cbracketc 		 }
 Line <80> newline 		 
 Line <80> newline 		 
-Line <81> name 		 lname
-Line <81> equal 		 =
-Line <81> string 		 Johnson
+Line <81> string 		 quit
+Line <81> exit 		 
+Line <81> number 		 0
 Line <81> newline 		 
 Line <81> newline 		 
-Line <82> name 		 age
-Line <82> equal 		 =
-Line <82> number 		 16
+Line <82> cbracketc 		 }
 Line <82> newline 		 
 Line <82> newline 		 
-Line <83> name 		 money
-Line <83> equal 		 =
-Line <83> number 		 100000
 Line <83> newline 		 
 Line <83> newline 		 
-Line <84> name 		 known
-Line <84> equal 		 =
-Line <84> true 		 true
+Line <84> bracketo 		 [
+Line <84> name 		 Ryan
+Line <84> colon 		 :
+Line <84> name 		 char
+Line <84> bracketc 		 ]
 Line <84> newline 		 
 Line <84> newline 		 
+Line <85> name 		 age
+Line <85> equal 		 =
+Line <85> number 		 21
 Line <85> newline 		 
 Line <85> newline 		 
-Line <86> bracketo 		 [
-Line <86> name 		 Bob
-Line <86> colon 		 :
-Line <86> name 		 char
-Line <86> bracketc 		 ]
+Line <86> name 		 money
+Line <86> equal 		 =
+Line <86> number 		 1000
 Line <86> newline 		 
 Line <86> newline 		 
+Line <87> name 		 lname
+Line <87> equal 		 =
+Line <87> string 		 Ward
 Line <87> newline 		 
+Line <87> newline 		 
+Line <88> name 		 known
+Line <88> equal 		 =
+Line <88> true 		 true
 Line <88> newline 		 
-Line <89> name 		 lname
-Line <89> equal 		 =
-Line <89> string 		 Johnson
+Line <88> newline 		 
 Line <89> newline 		 
-Line <90> name 		 unknown
-Line <90> equal 		 =
-Line <90> string 		 Some Random Guy
+Line <90> name 		 calm
+Line <90> colon 		 :
+Line <90> string 		 ./path/to/file
 Line <90> newline 		 
 Line <90> newline 		 
-Line <91> name 		 age
-Line <91> equal 		 =
-Line <91> number 		 24
+Line <91> name 		 excited
+Line <91> colon 		 :
+Line <91> string 		 ./path/to/file
 Line <91> newline 		 
 Line <91> newline 		 
-Line <92> name 		 money
-Line <92> equal 		 =
-Line <92> number 		 100
 Line <92> newline 		 
 Line <92> newline 		 
-Line <93> name 		 excited
+Line <93> bracketo 		 [
+Line <93> name 		 John
 Line <93> colon 		 :
-Line <93> string 		 path/to/file
+Line <93> name 		 char
+Line <93> bracketc 		 ]
 Line <93> newline 		 
 Line <93> newline 		 
-Line <93> eof 		 
+Line <94> name 		 lname
+Line <94> equal 		 =
+Line <94> string 		 Johnson
+Line <94> newline 		 
+Line <94> newline 		 
+Line <95> name 		 age
+Line <95> equal 		 =
+Line <95> number 		 16
+Line <95> newline 		 
+Line <95> newline 		 
+Line <96> name 		 money
+Line <96> equal 		 =
+Line <96> number 		 100000
+Line <96> newline 		 
+Line <96> newline 		 
+Line <97> name 		 known
+Line <97> equal 		 =
+Line <97> true 		 true
+Line <97> newline 		 
+Line <97> newline 		 
+Line <98> newline 		 
+Line <98> newline 		 
+Line <99> bracketo 		 [
+Line <99> name 		 Bob
+Line <99> colon 		 :
+Line <99> name 		 char
+Line <99> bracketc 		 ]
+Line <99> newline 		 
+Line <99> newline 		 
+Line <100> newline 		 
+Line <101> newline 		 
+Line <102> name 		 lname
+Line <102> equal 		 =
+Line <102> string 		 Johnson
+Line <102> newline 		 
+Line <103> name 		 unknown
+Line <103> equal 		 =
+Line <103> string 		 Some Random Guy
+Line <103> newline 		 
+Line <103> newline 		 
+Line <104> name 		 age
+Line <104> equal 		 =
+Line <104> number 		 24
+Line <104> newline 		 
+Line <104> newline 		 
+Line <105> name 		 money
+Line <105> equal 		 =
+Line <105> number 		 100
+Line <105> newline 		 
+Line <105> newline 		 
+Line <106> name 		 excited
+Line <106> colon 		 :
+Line <106> string 		 path/to/file
+Line <106> newline 		 
+Line <106> newline 		 
+Line <106> eof 		 

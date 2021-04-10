@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "actors.h"
 namespace multi {
 	bool runner::update() {

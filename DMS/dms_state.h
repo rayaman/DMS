@@ -9,7 +9,12 @@
 #include "memory.h"
 #include "dms_list.h"
 #include "comparisons.h"
+#include "Connection.h"
 namespace dms {
+	struct message {
+		character* chara;
+		std::string text;
+	};
 	struct Handler;
 	value blockInvoke(void*, dms_state*, dms_args*);
 	struct dms_state
@@ -76,6 +81,10 @@ namespace dms {
 		// This is called once and once only. Dynamically loading code is not a thing!
 		void init();
 		bool hasError();
+		// Connections
+		multi::connection<message> OnText;
+		multi::connection<message> OnAppendText;
+		multi::connection<dms_state*> HandleHalt;
 	private:
 		// From what I gathered
 		//std::mutex memory_mutex;

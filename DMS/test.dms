@@ -12,16 +12,29 @@ version 0.2
 using extendedDefine
 // this code will reside within
 
-music = loadMusic("test2.ogg")
-music2 = loadMusic("test.ogg")
+music2 = loadMusic("test2.ogg")
+music = loadMusic("test.ogg")
 
 [main]
 	// Let's extend the base feature set
-	music.play()
-	music.setVolume(5)
-	while(music.getStatus()!="stopped"){}
-	print("Sound finished!")
+	//music.play()
+	//music.setVolume(50)
+	//while(music.getStatus()!="stopped"){}
+	//print("Sound finished!")
+	wait 1
+	setBG("background2.jpg")
 	
+	Ryan: "Hello how are you?"
+	wait 2
+	Bob: "I'm good how are you?"
+	wait 2
+	Ryan: "I am great :D"
+	
+	a=0
+	// {} Still errors out, this needs to be fixed!!!
+	while(true){
+		a=a+1
+	}
 	// a = 0
 	// while (true){
 		// asm {

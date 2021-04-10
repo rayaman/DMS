@@ -24,7 +24,7 @@ namespace multi {
 			this->milli = milli;
 			t.start();
 		}
-		alarm(runner* run, void(*func)(alarm*)) : mbase(mtype::mAlarm,run) {
+		alarm(runner* run, std::function<void(alarm*)> func) : mbase(mtype::mAlarm,run) {
 			OnRing += func;
 			milli = 1000;
 			t.start();
@@ -93,7 +93,7 @@ namespace multi {
 	};
 	class loop : public mbase {
 	public:
-		loop(runner* run,void(*func)(loop*)) : mbase(mtype::mLoop,run) {
+		loop(runner* run, std::function<void(loop*)> func) : mbase(mtype::mLoop,run) {
 			OnLoop += func;
 		}
 		void act(int id) override {
@@ -161,7 +161,7 @@ namespace multi {
 		long long milli;
 		timer<T> t;
 	public:
-		tloop(runner* run, long long milli, void(*func)(tloop*)) : mbase(mtype::mTLoop, run) {
+		tloop(runner* run, long long milli, std::function<void(tloop*)> func) : mbase(mtype::mTLoop, run) {
 			OnLoop += func;
 			this->milli = milli;
 		}

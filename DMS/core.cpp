@@ -23,7 +23,7 @@ namespace dms {
             return "nil";
         }
         value concat(void* self, dms_state* state, dms_args* args) {
-            
+            return dms::value();
         }
         void init(dms_state* state) {
             state->invoker.registerFunction("print", print);

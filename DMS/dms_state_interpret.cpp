@@ -271,7 +271,7 @@ namespace dms {
 								auto ret = inv->Invoke(fname, cust.c, this, &args);
 								if (assn.type != datatypes::nil) {
 									if (!assign(assn, ret)) {
-										return false;
+										return error(ret.getString());
 									}
 								}
 							}
@@ -300,7 +300,7 @@ namespace dms {
 								ret = getEnvironment(obj)->Invoke(funcname, this, &args);
 							}
 							if (ret.type == datatypes::error)
-								return false;
+								return error(ret.getString());
 							if (assn.type != datatypes::nil) {
 								if (!assign(assn, ret)) {
 									return false;
@@ -567,8 +567,12 @@ namespace dms {
 					}
 					break;
 				case APND:
-					if (!handler->handleMessageAppend(this, c->args.args[0].resolve(this).getPrintable()))
-						return false;
+					OnAppendText.fire(message{
+						speaker,
+						c->args.args[0].resolve(this).getPrintable()
+					});
+					//if (!handler->handleMessageAppend(this, c->args.args[0].resolve(this).getPrintable()))
+					//	return false;
 					break;
 				case CHAR: 
 					{
@@ -578,8 +582,12 @@ namespace dms {
 					}
 				case DISP:
 					{
-						if (!handler->handleMessageDisplay(this, c->args.args[0].resolve(this).getPrintable()))
-							return false;
+						OnText.fire(message{
+							speaker,
+							c->args.args[0].resolve(this).getPrintable()
+						});
+						/*if (!handler->handleMessageDisplay(this, c->args.args[0].resolve(this).getPrintable()))
+							return false;*/
 					}
 					break;
 				case ASGN:
@@ -807,7 +815,7 @@ namespace dms {
 					ret = getEnvironment(obj)->Invoke(funcname, this, &args);
 				}
 				if (ret.type == datatypes::error)
-					return false;
+					return error(ret.getString());
 				if (assn.type != datatypes::nil) {
 					if (!assign(assn, ret)) {
 						return false;
@@ -833,8 +841,9 @@ namespace dms {
 			else {
 				ret = invoker.Invoke(funcname, this, &args);
 			}
-			if (ret.type == datatypes::error)
-				return false;
+			if (ret.type == datatypes::error) {
+				return error(ret.getString());
+			}
 			if (assn.type != datatypes::nil) {
 				if (!assign(assn, ret)) {
 					return false;
@@ -1048,6 +1057,7 @@ namespace dms {
 			//wait();
 			//sleep(700);
 			std::cout << std::endl;
+			//HandleHalt.fire(this); // We need a way to keep things running while also stopping the state from running. Shouldn't be too bad
 			break;
 		case WAIT:
 			sleep((int)(n_c->args.args[0].n * 1000));
@@ -1074,8 +1084,12 @@ namespace dms {
 			}
 			break;
 		case APND:
-			if (!handler->handleMessageAppend(this, n_c->args.args[0].resolve(this).getPrintable()))
-				return false;
+			OnAppendText.fire(message{
+				speaker,
+				n_c->args.args[0].resolve(this).getPrintable()
+			});
+			//if (!handler->handleMessageAppend(this, c->args.args[0].resolve(this).getPrintable()))
+			//	return false;
 			break;
 		case CHAR:
 		{
@@ -1085,8 +1099,12 @@ namespace dms {
 		}
 		case DISP:
 		{
-			if (!handler->handleMessageDisplay(this, n_c->args.args[0].resolve(this).getPrintable()))
-				return false;
+			OnText.fire(message{
+				speaker,
+				n_c->args.args[0].resolve(this).getPrintable()
+			});
+			/*if (!handler->handleMessageDisplay(this, c->args.args[0].resolve(this).getPrintable()))
+				return false;*/
 		}
 		break;
 		case ASGN:

@@ -3,14 +3,14 @@
 #include "dms_state.h"
 #include "utils.h"
 namespace dms {
-    bool Invoker::registerFunction(std::string str, value (*f)(void*, dms_state*, dms_args*)) {
+    bool Invoker::registerFunction(std::string str, dms_func f) {
         if (preventOverwriting && funcs.count(str)) {
             return false;
         }
         funcs.insert_or_assign(str, f);
         return true;
     }
-    bool Invoker::registerFunction(std::string str, value (*f)(void*, dms_state*, dms_args*), bool preventoverride) {
+    bool Invoker::registerFunction(std::string str, dms_func f, bool preventoverride) {
         if (preventoverride && funcs.count(str)) {
             return false;
         }
@@ -39,10 +39,10 @@ namespace dms {
         state->push_error(errors::error{ errors::non_existing_function, utils::concat("Attempt to call '",str,"' a nil value!") });
         return value(datatypes::error);
     }
-    std::unordered_map<std::string, value (*)(void*, dms_state*, dms_args*)> Invoker::Export() {
+    std::unordered_map<std::string, dms_func> Invoker::Export() {
         return funcs;
     }
-    void Invoker::Import(std::unordered_map<std::string, value (*)(void*, dms_state*, dms_args*)> tempf) {
+    void Invoker::Import(std::unordered_map<std::string, dms_func> tempf) {
         for (auto const& x : tempf)
         {
             // Copy the contents of the imported invoker into

@@ -6,12 +6,11 @@
 #include <SFML/System.hpp>
 #include "multibase.h"
 namespace gui {
+	struct gframe;
+	struct gtext;
+	struct gimage;
 	using namespace std;
 	using namespace dms;
-	/// <summary>
-	/// This is the number of gui elements that exist! It isn't constant, but set as a read only variable.
-	/// </summary>
-	const int GuiElementCount = 0;
 	/*
 		textbox
 		textbutton
@@ -31,11 +30,14 @@ namespace gui {
 	struct Dim {
 		const float x = 0;
 		const float y = 0;
-		Dim() : x(0), y(0) {}
-		Dim(const Dim &d) : x(d.x),y(d.y) {}
-		Dim(float x, float y) : x(x),y(y) {}
-		inline void Set(Dim d) { const_cast<float&>(x) = d.x; const_cast<float&>(y) = d.y; OnValueChanged.fire(this); }
-		inline void Set(float x, float y) { const_cast<float&>(this->x) = x; const_cast<float&>(this->y) = y; OnValueChanged.fire(this);}
+		void init() {
+			OnValueChanged = multi::connection<Dim*>("DimConnection");
+		}
+		Dim() : x(0), y(0) { init(); }
+		Dim(const Dim &d) : x(d.x),y(d.y) { init(); }
+		Dim(float x, float y) : x(x),y(y) { init(); }
+		inline void Set(Dim d) { if (x == d.x && y == d.y) return; const_cast<float&>(x) = d.x; const_cast<float&>(y) = d.y; OnValueChanged.fire(this); }
+		inline void Set(float x, float y) { if (this->x == x && this->y == y) return; const_cast<float&>(this->x) = x; const_cast<float&>(this->y) = y; OnValueChanged.fire(this);}
 		void operator=(const Dim& dd) {
 			Set(dd);
 		}
@@ -54,10 +56,13 @@ namespace gui {
 		Dim Position;
 		Dim Size;
 		void init() {
+			OnValueChanged = multi::connection<DualDim*>("DualDimConnection");
 			Position.OnValueChanged += [&](Dim* d) {
+				std::cout << "Hi ddp" << std::endl;
 				OnValueChanged.fire(this);
 			};
 			Size.OnValueChanged += [&](Dim* d) {
+				std::cout << "Hi dds" << std::endl;
 				OnValueChanged.fire(this);
 			};
 		}
@@ -65,11 +70,12 @@ namespace gui {
 		DualDim(const DualDim& d) : Position(d.Position.x,d.Position.y), Size(d.Size.x,d.Size.y) {init(); }
 		DualDim(Dim pos, Dim size) : Position(pos.x,pos.y), Size(size.x,size.y) { init(); }
 		DualDim(float x, float y, float x2, float y2) : Position(x,y),Size(x2,y2) { init(); }
-		inline void Set(DualDim d){ Position.Set(d.Position); Size.Set(d.Size);OnValueChanged.fire(this);}
-		inline void Set(Dim pos, Dim size) { Position.Set(pos); Size.Set(size); OnValueChanged.fire(this);}
-		inline void Set(float x, float y, float x2, float y2) { Position.Set(x, y), Size.Set(x2, y2); OnValueChanged.fire(this);}
+		inline void Set(DualDim d){ if (d.Position.x == this->Position.x && d.Position.y == this->Position.y && d.Size.x == this->Size.x && d.Size.y == this->Size.y) return; Position.Set(d.Position); Size.Set(d.Size);}
+		inline void Set(Dim pos, Dim size) { Position.Set(pos); Size.Set(size);}
+		inline void Set(float x, float y, float x2, float y2) { Position.Set(x, y), Size.Set(x2, y2); }
 		DualDim operator=(const DualDim& dd) {
 			Set(dd);
+			return *this;
 		}
 		multi::connection<DualDim*> OnValueChanged;
 	};
@@ -112,44 +118,37 @@ namespace gui {
 		gui* Parent = nullptr;
 		vector<gui*> Children;
 		bool Visible = true;
+		bool Active = true;
 
 		//map<string, gui*> Named;
 
-		gui() {
-			const_cast<int&>(GuiElementCount) += 1;
-		
-		}
+		gui();
 		gui(DualDim offset, DualDim scale) : gui() { Offset.Set(offset); Scale.Set(scale);}
 		gui(float x,float y,float w,float h,float sx,float sy,float sw,float sh) : gui() {
 			Offset.Set(x, y, w, h);
 			Scale.Set(sx, sy, sw, sh);
 		}
-		void SetDualDim(DualDim offset,DualDim scale) {Offset = offset;Scale.Set(scale);}
 		
 		virtual void Draw(sf::RenderWindow* window) {
 			return; // Override this.
 		}
-
-		inline vector<gui*>& GetChildren() {return Children;}
-		inline void GetAllChildren(vector<gui*>& ref) {
-			auto temp = GetChildren();
-			for (int i = 0; i < temp.size(); i++) {
-				ref.push_back(temp[i]);
-				temp[i]->GetAllChildren(ref);
+		virtual void updateValues(DualDim offset, DualDim scale) {
+			return; // Override this.
+		}
+		inline vector<gui*>* GetChildren() {return &Children;}
+		inline void GetAllChildren(vector<gui*>* ref) {
+			vector<gui*>* temp = GetChildren();
+			for (size_t i = 0; i < temp->size(); i++) {
+				ref->push_back((*temp)[i]);
+				(*temp)[i]->GetAllChildren(ref);
 			}
 		}
-		inline vector<gui*> GetAllChildren() {
-			auto temp = GetChildren();
-			vector<gui*> everything;
-			everything.reserve(GuiElementCount); // Reserve Space for all the current elements that exist
-			for (int i = 0; i < temp.size(); i++) {
-				everything.push_back(temp[i]);
-				temp[i]->GetAllChildren(everything);
-			}
-			return everything;
-		}
+		// Constructors
+		gframe& newFrame(DualDim offset, DualDim scale = { 0,0,0,0 });
 
-		gui& newFrame(DualDim offset, DualDim scale);
+		//Standard mathods
+		virtual void setColor(sf::Color c) {};
+		void SetDualDim(DualDim offset, DualDim scale) { Offset.Set(offset); Scale.Set(scale); }
 
 		//Connections and objects to inheret
 		multi::connection<MouseStats> OnPressed;
@@ -162,35 +161,51 @@ namespace gui {
 		multi::connection<MouseStats> OnMouseEnter;
 		multi::connection<MouseStats> OnMouseExit;
 
-
 		multi::connection<gui*> OnUpdate;
 	};
 
 	
 
-	struct framebase : public gui {
+	struct gframe : public gui {
 		sf::RectangleShape rect;
-		framebase(DualDim offset, DualDim scale) : gui(offset,scale) {
+		gframe(DualDim offset, DualDim scale, gui* parent) : gui(offset, scale) {
+			Parent = parent;
 			Type = gui_types::frame;
-			rect.setFillColor(sf::Color(120, 120, 120, 255));
-			rect.setOutlineColor(sf::Color::Red);
-			rect.setSize(offset.Size);
-			rect.setPosition(offset.Position);
-			Offset.OnValueChanged += [&](DualDim* o) {
-				rect.setSize(o->Size);
-				rect.setPosition(o->Position);
-			};
-			Scale.OnValueChanged += [](DualDim* s) {
-
-			};
+			updateValues(Offset, Scale);
+			//rect.setSize(offset.Size);
+			//rect.setPosition(offset.Position);
 		}
-		void Draw(sf::RenderWindow* window) override {
-			window->draw(rect);
+		inline void SetColor(sf::Color& c) {
+			rect.setFillColor(c);
+		}
+		inline void SetBorderColor(sf::Color& c) {
+			rect.setOutlineColor(c);
+		}
+		inline void SetBorderSize(float bs) {
+			rect.setOutlineThickness(bs);
+		}
+		inline void SetAlpha(float alpha) {
+			auto c = rect.getFillColor();
+			c.a = alpha;
+			SetColor(c);
+			c = rect.getOutlineColor();
+			c.a = alpha;
+			SetBorderColor(c);
+		}
+		inline void Draw(sf::RenderWindow* window) override {
+			window->draw(this->rect);
+		}
+	private:
+		void updateValues(DualDim offset, DualDim scale) override {
+			AbsolutePosition = Dim(Parent->AbsolutePosition.x*scale.Position.x+offset.Position.x,Parent->AbsolutePosition.y*scale.Position.y+offset.Position.y);
+			AbsoluteSize = Dim(Parent->AbsoluteSize.x * scale.Size.x + offset.Size.x, Parent->AbsoluteSize.y * scale.Size.y + offset.Size.y);
+			rect.setPosition(AbsolutePosition);
+			rect.setSize(AbsoluteSize);
 		}
 	};
-	struct imagebase : public framebase {
+	struct gimage : public gframe {
 		sf::Texture texture;
-		imagebase(std::string imagepath, DualDim offset, DualDim scale) : framebase(offset,scale) {
+		gimage(std::string imagepath, DualDim offset, DualDim scale, gui* parent) : gframe(offset,scale,parent) {
 			Type = gui_types::image;
 			texture.loadFromFile(imagepath);
 			sf::Sprite sprite;
@@ -199,8 +214,8 @@ namespace gui {
 			sprite.setOrigin(0, 0);
 		}
 	};
-	struct textbase : public framebase {
-		textbase(std::string text, sf::Font font, DualDim offset, DualDim scale) : framebase(offset, scale) {
+	struct gtext : public gframe {
+		gtext(std::string text, sf::Font font, DualDim offset, DualDim scale,gui* parent) : gframe(offset, scale, parent) {
 			Type = gui_types::text;
 		}
 	};
