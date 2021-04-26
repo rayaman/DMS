@@ -11,7 +11,7 @@
 	g = false
 	return d
 
-[inv:env]
+[testINV:env]
 	slot1 = "S1"
 	slot2 = "S2"
 	slot3 = "S3"

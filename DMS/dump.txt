@@ -23,6 +23,9 @@ Line <6> newline
 Line <7> newline 		 
 Line <8> newline 		 
 Line <9> newline 		 
+Line <10> flag 		 
+Line <10> string 		 loadtest.dms
+Line <10> newline 		 
 Line <10> newline 		 
 Line <11> flag 		 
 Line <11> number 		 0.2
@@ -37,6 +40,8 @@ Line <14> newline
 Line <14> newline 		 
 Line <15> name 		 music2
 Line <15> equal 		 =
+Line <15> name 		 audio
+Line <15> dot 		 dot
 Line <15> name 		 loadMusic
 Line <15> parao 		 (
 Line <15> string 		 test2.ogg
@@ -45,6 +50,8 @@ Line <15> newline
 Line <15> newline 		 
 Line <16> name 		 music
 Line <16> equal 		 =
+Line <16> name 		 audio
+Line <16> dot 		 .
 Line <16> name 		 loadMusic
 Line <16> parao 		 (
 Line <16> string 		 test.ogg
@@ -59,67 +66,94 @@ Line <18> bracketc 		 ]
 Line <18> newline 		 
 Line <18> newline 		 
 Line <19> newline 		 
+Line <20> name 		 music2
+Line <20> dot 		 dot
+Line <20> name 		 play
+Line <20> parao 		 (
+Line <20> parac 		 )
 Line <20> newline 		 
+Line <20> newline 		 
+Line <21> name 		 music2
+Line <21> dot 		 dot
+Line <21> name 		 setVolume
+Line <21> parao 		 (
+Line <21> number 		 50
+Line <21> parac 		 )
 Line <21> newline 		 
+Line <21> newline 		 
+Line <22> name 		 Ryan
+Line <22> colon 		 :
+Line <22> string 		 Hello how are you?
 Line <22> newline 		 
+Line <22> newline 		 
+Line <23> name 		 Bob
+Line <23> colon 		 :
+Line <23> string 		 Slot 3 = 
+Line <23> plus 		 +
+Line <23> name 		 testINV
+Line <23> bracketo 		 [
+Line <23> string 		 slot3
+Line <23> bracketc 		 ]
 Line <23> newline 		 
-Line <24> name 		 wait
-Line <24> number 		 1
+Line <23> newline 		 
 Line <24> newline 		 
 Line <24> newline 		 
-Line <25> name 		 setBG
-Line <25> parao 		 (
-Line <25> string 		 background2.jpg
-Line <25> parac 		 )
 Line <25> newline 		 
-Line <25> newline 		 
+Line <26> name 		 wait
+Line <26> number 		 5
 Line <26> newline 		 
 Line <26> newline 		 
-Line <27> name 		 Ryan
-Line <27> colon 		 :
-Line <27> string 		 Hello how are you?
+Line <27> name 		 setBG
+Line <27> parao 		 (
+Line <27> string 		 background2.jpg
+Line <27> parac 		 )
 Line <27> newline 		 
 Line <27> newline 		 
-Line <28> name 		 wait
-Line <28> number 		 2
 Line <28> newline 		 
 Line <28> newline 		 
-Line <29> name 		 Bob
+Line <29> name 		 Ryan
 Line <29> colon 		 :
-Line <29> string 		 I'm good how are you?
+Line <29> string 		 Hello how are you?
 Line <29> newline 		 
 Line <29> newline 		 
 Line <30> name 		 wait
-Line <30> number 		 2
+Line <30> number 		 3
 Line <30> newline 		 
 Line <30> newline 		 
-Line <31> name 		 Ryan
+Line <31> name 		 Bob
 Line <31> colon 		 :
-Line <31> string 		 I am great :D
+Line <31> string 		 I'm good how are you?
 Line <31> newline 		 
 Line <31> newline 		 
+Line <32> name 		 wait
+Line <32> number 		 3
 Line <32> newline 		 
 Line <32> newline 		 
-Line <33> name 		 a
-Line <33> equal 		 =
-Line <33> number 		 0
+Line <33> name 		 Ryan
+Line <33> colon 		 :
+Line <33> string 		 I am great :D
 Line <33> newline 		 
 Line <33> newline 		 
 Line <34> newline 		 
-Line <35> name 		 while
-Line <35> parao 		 (
-Line <35> true 		 true
-Line <35> parac 		 )
-Line <35> cbracketo 		 {
+Line <34> newline 		 
+Line <35> name 		 a
+Line <35> equal 		 =
+Line <35> number 		 0
 Line <35> newline 		 
 Line <35> newline 		 
-Line <36> name 		 a
-Line <36> equal 		 =
-Line <36> name 		 a
-Line <36> plus 		 +
-Line <36> number 		 1
 Line <36> newline 		 
-Line <36> newline 		 
+Line <37> name 		 while
+Line <37> parao 		 (
+Line <37> name 		 music2
+Line <37> dot 		 dot
+Line <37> name 		 getStatus
+Line <37> parao 		 (
+Line <37> parac 		 )
+Line <37> not 		 !
+Line <37> equal 		 =
+Line <37> string 		 stopped
+Line <37> parac 		 )
+Line <37> cbracketo 		 {
 Line <37> cbracketc 		 }
 Line <37> newline 		 
 Line <37> newline 		 
@@ -390,3 +424,111 @@ Line <106> string 		 path/to/file
 Line <106> newline 		 
 Line <106> newline 		 
 Line <106> eof 		 
+Line <1> newline 		 
+Line <1> newline 		 
+Line <1> bracketo 		 [
+Line <1> name 		 default
+Line <1> colon 		 :
+Line <1> name 		 char
+Line <1> bracketc 		 ]
+Line <1> newline 		 
+Line <1> newline 		 
+Line <2> newline 		 
+Line <3> name 		 money
+Line <3> equal 		 =
+Line <3> number 		 0
+Line <3> newline 		 
+Line <3> newline 		 
+Line <4> name 		 test
+Line <4> equal 		 =
+Line <4> nil 		 nil
+Line <4> newline 		 
+Line <4> newline 		 
+Line <5> newline 		 
+Line <5> newline 		 
+Line <6> bracketo 		 [
+Line <6> name 		 step
+Line <6> colon 		 :
+Line <6> name 		 function
+Line <6> parao 		 (
+Line <6> name 		 a
+Line <6> seperator 		 ,
+Line <6> name 		 b
+Line <6> seperator 		 ,
+Line <6> name 		 c
+Line <6> parac 		 )
+Line <6> bracketc 		 ]
+Line <6> newline 		 
+Line <6> newline 		 
+Line <7> string 		 Testing...
+Line <7> newline 		 
+Line <8> newline 		 
+Line <9> name 		 e
+Line <9> equal 		 =
+Line <9> string 		 somestring
+Line <9> newline 		 
+Line <9> newline 		 
+Line <10> name 		 e
+Line <10> equal 		 =
+Line <10> nil 		 nil
+Line <10> newline 		 
+Line <10> newline 		 
+Line <11> name 		 g
+Line <11> equal 		 =
+Line <11> false 		 false
+Line <11> newline 		 
+Line <11> newline 		 
+Line <12> ret 		 
+Line <12> name 		 d
+Line <12> newline 		 
+Line <12> newline 		 
+Line <13> newline 		 
+Line <13> newline 		 
+Line <14> bracketo 		 [
+Line <14> name 		 testINV
+Line <14> colon 		 :
+Line <14> name 		 env
+Line <14> bracketc 		 ]
+Line <14> newline 		 
+Line <14> newline 		 
+Line <15> name 		 slot1
+Line <15> equal 		 =
+Line <15> string 		 S1
+Line <15> newline 		 
+Line <15> newline 		 
+Line <16> name 		 slot2
+Line <16> equal 		 =
+Line <16> string 		 S2
+Line <16> newline 		 
+Line <16> newline 		 
+Line <17> name 		 slot3
+Line <17> equal 		 =
+Line <17> string 		 S3
+Line <17> newline 		 
+Line <17> newline 		 
+Line <18> name 		 slot4
+Line <18> equal 		 =
+Line <18> string 		 S4
+Line <18> newline 		 
+Line <18> newline 		 
+Line <19> name 		 slot5
+Line <19> equal 		 =
+Line <19> string 		 S5
+Line <19> newline 		 
+Line <19> newline 		 
+Line <20> name 		 slot6
+Line <20> equal 		 =
+Line <20> string 		 S6
+Line <20> newline 		 
+Line <20> newline 		 
+Line <21> name 		 slot7
+Line <21> equal 		 =
+Line <21> string 		 S7
+Line <21> newline 		 
+Line <21> newline 		 
+Line <22> name 		 slot8
+Line <22> equal 		 =
+Line <22> string 		 S8
+Line <22> newline 		 
+Line <22> newline 		 
+Line <22> eof 		 

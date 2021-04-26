@@ -15,6 +15,16 @@ namespace dms {
 		character* chara;
 		std::string text;
 	};
+	struct statedata {
+		codes::op code;
+		cmd* c = nullptr;
+		bool halt = false;
+		size_t pos = 0;
+		size_t max = 0;
+		std::vector<cmd*> cmds;
+		size_t ln = 0;
+		std::string temp;
+	};
 	struct Handler;
 	value blockInvoke(void*, dms_state*, dms_args*);
 	struct dms_state
@@ -25,8 +35,8 @@ namespace dms {
 		Invoker invoker;
 		std::stack<std::string> call_stack;
 		std::stack<value> return_stack;
-		std::stack<memory> mem_stack;
-		std::vector<value*> garbage;
+		std::stack<memory*> mem_stack;
+		std::stack<statedata> statedata_stack;
 		std::unordered_map<std::string, chunk*> chunks;
 		std::unordered_map<std::string, character*> characters;
 		std::unordered_map<std::string, enviroment*> environments;
@@ -73,6 +83,8 @@ namespace dms {
 		memory* getMem();
 		void pushMem();
 		void popMem();
+		void pushStateData();
+		void popStateData();
 		bool run();
 		bool next(memory* mem);
 		bool run(std::string ent,memory* mem);
@@ -99,7 +111,7 @@ namespace dms {
 		size_t n_ln = 0;
 		std::string n_temp;
 		//
-		void pushMem(memory&);
+		void pushMem(memory*);
 		bool stop = false;
 		bool init_init = false;
 		void init(chunk* chunk, size_t &pos,size_t &max, std::vector<cmd*>& cmds);

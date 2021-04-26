@@ -53,6 +53,9 @@ namespace dms {
 					c->args.push(value(key));
 					chunks["$INIT"]->addCmd(c);
 				}
+				else {
+					getEnvironment(key);
+				}
 				c = new cmd;
 			}
 			else if (val->type == bt_method) {
@@ -74,21 +77,38 @@ namespace dms {
 			stop = true;
 	}
 	memory* dms_state::getMem() {
-		return &mem_stack.top();
+		return mem_stack.top();
 	}
 	void dms_state::pushMem() {
-		memory mem = memory();
+		memory* mem = new memory;
 		if (!mem_stack.empty()) {
 			
-			mem.parent = getMem();
+			mem->parent = getMem();
 		}
 		mem_stack.push(mem);
 	}
-	void dms_state::pushMem(memory &mem) {
+	void dms_state::pushMem(memory* mem) {
 		mem_stack.push(mem);
 	}
 	void dms_state::popMem() {
 		mem_stack.pop();
+	}
+	void dms_state::pushStateData()
+	{
+		statedata_stack.push({ n_code,n_c,n_halt,n_pos,n_max,n_cmds,n_ln,n_temp });
+	}
+	void dms_state::popStateData()
+	{
+		statedata temp = statedata_stack.top();
+		statedata_stack.pop();
+		n_code = temp.code;
+		n_c = temp.c;
+		n_halt = temp.halt;
+		n_pos = temp.pos;
+		n_max = temp.max;
+		n_cmds = temp.cmds;
+		n_ln = temp.ln;
+		n_temp = temp.temp;
 	}
 	dms_state::dms_state() {
 		// We should define the defaults for the enables

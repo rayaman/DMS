@@ -7,34 +7,34 @@ enable savestate
 //loadfile "Ryan.dms"
 //enable leaking
 //enable debugging
-//loadfile "loadtest.dms"
+loadfile "loadtest.dms"
 version 0.2
 using extendedDefine
 // this code will reside within
 
-music2 = loadMusic("test2.ogg")
-music = loadMusic("test.ogg")
+music2 = audio.loadMusic("test2.ogg")
+music = audio.loadMusic("test.ogg")
 
 [main]
 	// Let's extend the base feature set
-	//music.play()
-	//music.setVolume(50)
-	//while(music.getStatus()!="stopped"){}
+	music2.play()
+	music2.setVolume(50)
+	Ryan: "Hello how are you?"
+	Bob: "Slot 3 = " + testINV["slot3"]
+	
 	//print("Sound finished!")
-	wait 1
+	wait 5
 	setBG("background2.jpg")
 	
 	Ryan: "Hello how are you?"
-	wait 2
+	wait 3
 	Bob: "I'm good how are you?"
-	wait 2
+	wait 3
 	Ryan: "I am great :D"
 	
 	a=0
 	// {} Still errors out, this needs to be fixed!!!
-	while(true){
-		a=a+1
-	}
+	while(music2.getStatus()!="stopped"){}
 	// a = 0
 	// while (true){
 		// asm {

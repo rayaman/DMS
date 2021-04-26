@@ -9,8 +9,8 @@
 //music.play();
 
 namespace dms::audio {
+	// Self, since it is a custom object will be equal to whatever we declared to the c pointer!
 	value play(void* self, dms_state* state, dms_args* args) {
-		// Self, since it is a custom object will be equal to whatever we declared to the c pointer!
 		sf::Music* music = (sf::Music*)self;
 		music->play();
 		return value();
@@ -73,8 +73,12 @@ namespace dms::audio {
 		inv->registerFunction("setVolume", setVolume);
 		inv->registerFunction("getStatus", getStatus);
 
+		auto* env = new enviroment;
+		env->registerFunction("loadMusic", loadMusic);
 		state->assoiateType("audiostream",inv);
-		state->invoker.registerFunction("loadMusic", loadMusic);
+		state->injectEnv("audio",env);
+
+		//state->invoker.registerFunction("loadMusic", loadMusic);
 	}
 
 	value loadMusic(void* self, dms_state* state, dms_args* args)
