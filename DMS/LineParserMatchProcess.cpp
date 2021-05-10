@@ -4,6 +4,97 @@ using namespace dms::tokens;
 using namespace dms::utils;
 // TODO: process if elseif else statements, for loops and while loops
 namespace dms {
+	bool LineParser::match_process_blocks(tokenstream* stream) {
+		if (stream->match(tokens::bracketo, tokens::name, tokens::bracketc, tokens::newline)) {
+			stream->next();
+			std::string name = stream->next().name;
+			createBlock(name, bt_block);
+			line = stream->next().line_num; // Consume
+			return true;
+		}
+		// This handles a few block types since they all follow a similar format
+		else if (stream->match(tokens::bracketo, tokens::name, tokens::colon, tokens::name, tokens::bracketc)) {
+			stream->next();
+			std::string name = stream->next().name;
+			line = stream->next().line_num;
+			std::string temp = stream->next().name;
+			// Characters are a feature I want to have intergrated into the language
+			if (temp == "char") {
+				createBlock(name, bt_character);
+			}
+			// Enviroments are sortof like objects, they can be uses as an object. They are a cleaner way to build a hash map like object
+			else if (temp == "env") {
+				createBlock(name, bt_env);
+			}
+			// Menus are what they say on the tin. They provide the framework for having menus within your game
+			else if (temp == "menu") {
+				createBlock(name, bt_menu);
+			}
+			else {
+				std::vector<token>* toks = new std::vector<token>;
+				while (!match_process_blocks(stream) && stream->peek().type != tokens::eof && stream->peek().type != tokens::none) {
+					toks->push_back(stream->next());
+				}
+				tokenstream* ts = new tokenstream(toks);
+				customBlock* cb = new customBlock(temp,ts);
+				state->OnCustomBlock.fire(cb);
+			}
+			stream->next();
+			return true;
+		}
+		// Function block type
+		else if (stream->match(tokens::bracketo, tokens::name, tokens::colon, tokens::name, tokens::parao)) {
+			std::stringstream str;
+			stream->next();
+			std::string name = stream->next().name;
+			line = stream->next().line_num; // The color, not needed after the inital match, but we still need to consume it
+			std::string b = stream->next().name;
+			if (b == "function") {
+				createBlock(name, bt_method); // We have a method let's set the block type to that, but we aren't done yet
+				// We need to set the params if any so the method can be supplied with arguments
+				stream->next(); // parao
+				std::vector<token> tokens = stream->next(tokens::parac); // Consume until we see parac
+				dms_args args;
+				for (size_t i = 0; i < tokens.size() - 1; i++) {//The lase symbol is parac since that was the consume condition
+					if (tokens[i].type == tokens::name) {
+						// We got a name which is refering to a variable so lets build one
+						value v(tokens[i].name, datatypes::variable);
+						args.push(v);
+					}
+					else if (tokens[i].type == tokens::seperator) {
+						// We just ignore this
+					}
+					else {
+						std::stringstream str;
+						str << "Unexpected symbol: " << tokens[i];
+						state->push_error(errors::error{ errors::badtoken,str.str(),true,line,current_chunk });
+						return false;
+					}
+				}
+				// If all went well the 'args' now has all of tha params for the method we will be working with
+				current_chunk->params = args;
+				for (size_t i = 0; i < args.size(); i++) {
+					current_chunk->cmds.back()->args.push(args.args[i]);
+				}
+
+				// Thats should be all we need to do
+				if (stream->peek().type != tokens::bracketc) {
+					state->push_error(errors::error{ errors::badtoken, "Incomplete function block declaration! Expected ']' to close the block!",true,line,current_chunk });
+					return false;
+				}
+				else {
+					stream->next();
+					return true;
+				}
+			}
+			else {
+				str << "'function' keyword expected got " << b;
+				state->push_error(errors::error{ errors::badtoken, str.str(),true,line,current_chunk });
+				return false;
+			}
+		}
+		return false;
+	}
 	bool LineParser::match_process_standard(tokenstream* stream, value& v) {
 		stream->chomp(newline);
 		//utils::debug(stream->peek());

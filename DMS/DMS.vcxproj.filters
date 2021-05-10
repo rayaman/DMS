@@ -19,29 +19,8 @@
     <Filter Include="Source Files\DMS">
       <UniqueIdentifier>{e3410a7b-6408-4022-b606-2c14cfaac52c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\DMS\C-API">
-      <UniqueIdentifier>{f71964f6-66b3-4d8c-a8da-56d703ad1c2a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\DMS\C-API">
-      <UniqueIdentifier>{32abbbfd-6359-488c-83be-f61da8fd8f4d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\DMS\standardMethods">
-      <UniqueIdentifier>{10d9f698-b08c-40c5-b6b1-e6d903f4b279}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\DMS\standardMethods">
-      <UniqueIdentifier>{4757b859-2680-4c9a-83e8-be3bf06f192e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\DMS\parser">
       <UniqueIdentifier>{be440a96-7b07-48b3-a84e-64b10775c979}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\DMS\state">
-      <UniqueIdentifier>{9490aa5b-7d9d-415c-a263-ef1ecd8dd188}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\DMS\objects">
-      <UniqueIdentifier>{4c0bb4c5-388c-4f15-abb7-143cb6d6232f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\DMS\objects">
-      <UniqueIdentifier>{978b41cd-27e4-4b8c-874e-3b6e927b3d4d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\DMS\platformdep">
       <UniqueIdentifier>{ef57bfaf-35f9-4b3e-8642-7ee96fb82139}</UniqueIdentifier>
@@ -55,11 +34,11 @@
     <Filter Include="Source Files\multi">
       <UniqueIdentifier>{f3de0fc4-d3ed-4241-9432-4b9136f0b672}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\DMS\gui">
-      <UniqueIdentifier>{8b07822b-59fb-4826-89ce-7481977f640b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\gui">
       <UniqueIdentifier>{490b48c7-06fe-4e6f-9b95-93a0b01a963c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\gui">
+      <UniqueIdentifier>{8b07822b-59fb-4826-89ce-7481977f640b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -87,20 +66,11 @@
     <ClCompile Include="Handlers.cpp">
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
-    <ClCompile Include="character.cpp">
-      <Filter>Source Files\DMS\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="enviroment.cpp">
-      <Filter>Source Files\DMS\objects</Filter>
-    </ClCompile>
     <ClCompile Include="dms_custom.cpp">
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
     <ClCompile Include="memory.cpp">
       <Filter>Source Files\DMS</Filter>
-    </ClCompile>
-    <ClCompile Include="core.cpp">
-      <Filter>Source Files\DMS\standardMethods</Filter>
     </ClCompile>
     <ClCompile Include="LineParserBuilds.cpp">
       <Filter>Source Files\DMS\parser</Filter>
@@ -114,15 +84,6 @@
     <ClCompile Include="LineParserUtils.cpp">
       <Filter>Source Files\DMS\parser</Filter>
     </ClCompile>
-    <ClCompile Include="dms_state.cpp">
-      <Filter>Source Files\DMS\state</Filter>
-    </ClCompile>
-    <ClCompile Include="dms_state_interpret.cpp">
-      <Filter>Source Files\DMS\state</Filter>
-    </ClCompile>
-    <ClCompile Include="Invoker.cpp">
-      <Filter>Source Files\DMS\objects</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files\DMS</Filter>
     </ClCompile>
@@ -134,6 +95,24 @@
     </ClCompile>
     <ClCompile Include="guiimpl.cpp">
       <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="character.cpp">
+      <Filter>Source Files\DMS</Filter>
+    </ClCompile>
+    <ClCompile Include="enviroment.cpp">
+      <Filter>Source Files\DMS</Filter>
+    </ClCompile>
+    <ClCompile Include="Invoker.cpp">
+      <Filter>Source Files\DMS</Filter>
+    </ClCompile>
+    <ClCompile Include="dms_state.cpp">
+      <Filter>Source Files\DMS</Filter>
+    </ClCompile>
+    <ClCompile Include="dms_state_interpret.cpp">
+      <Filter>Source Files\DMS</Filter>
+    </ClCompile>
+    <ClCompile Include="core.cpp">
+      <Filter>Source Files\DMS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -173,12 +152,6 @@
     <ClInclude Include="Handlers.h">
       <Filter>Header Files\DMS</Filter>
     </ClInclude>
-    <ClInclude Include="character.h">
-      <Filter>Header Files\DMS\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="enviroment.h">
-      <Filter>Header Files\DMS\objects</Filter>
-    </ClInclude>
     <ClInclude Include="memory.h">
       <Filter>Header Files\DMS</Filter>
     </ClInclude>
@@ -187,18 +160,6 @@
     </ClInclude>
     <ClInclude Include="comparisons.h">
       <Filter>Header Files\DMS</Filter>
-    </ClInclude>
-    <ClInclude Include="wrapper.h">
-      <Filter>Header Files\DMS\C-API</Filter>
-    </ClInclude>
-    <ClInclude Include="Invoker.h">
-      <Filter>Header Files\DMS\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="core.h">
-      <Filter>Header Files\DMS\standardMethods</Filter>
-    </ClInclude>
-    <ClInclude Include="s_value.h">
-      <Filter>Header Files\DMS\C-API</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Header Files\DMS</Filter>
@@ -216,7 +177,19 @@
       <Filter>Header Files\multi</Filter>
     </ClInclude>
     <ClInclude Include="gui.h">
-      <Filter>Header Files\DMS\gui</Filter>
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="character.h">
+      <Filter>Header Files\DMS</Filter>
+    </ClInclude>
+    <ClInclude Include="enviroment.h">
+      <Filter>Header Files\DMS</Filter>
+    </ClInclude>
+    <ClInclude Include="Invoker.h">
+      <Filter>Header Files\DMS</Filter>
+    </ClInclude>
+    <ClInclude Include="core.h">
+      <Filter>Header Files\DMS</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

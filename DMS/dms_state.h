@@ -11,10 +11,22 @@
 #include "comparisons.h"
 #include "Connection.h"
 namespace dms {
+	struct tokenstream;
+	struct customBlock {
+		dms::chunk* chnk;
+		std::string type;
+		dms::tokenstream* toks;
+		customBlock(std::string s, dms::tokenstream* ts) {
+			type = s;
+			toks = ts;
+		}
+	};
+
 	struct message {
 		character* chara;
 		std::string text;
 	};
+
 	struct statedata {
 		codes::op code;
 		cmd* c = nullptr;
@@ -25,6 +37,7 @@ namespace dms {
 		size_t ln = 0;
 		std::string temp;
 	};
+
 	struct Handler;
 	value blockInvoke(void*, dms_state*, dms_args*);
 	struct dms_state
@@ -97,6 +110,7 @@ namespace dms {
 		multi::connection<message> OnText;
 		multi::connection<message> OnAppendText;
 		multi::connection<dms_state*> HandleHalt;
+		multi::connection<customBlock*> OnCustomBlock;
 	private:
 		// From what I gathered
 		//std::mutex memory_mutex;

@@ -58,6 +58,12 @@ namespace dms::audio {
 			return "stopped";
 		}
 	}
+	value isPlaying(void* self, dms_state* state, dms_args* args) {
+		return ((sf::Music*)self)->getStatus() == sf::Music::Status::Playing;
+	}
+	value isPaused(void* self, dms_state* state, dms_args* args) {
+		return ((sf::Music*)self)->getStatus() == sf::Music::Status::Paused;
+	}
 	// The customtype will be "sound"
 	// We need to assoiate the sound type with an invoker so the interperter knows how to handle it
 
@@ -72,19 +78,18 @@ namespace dms::audio {
 		inv->registerFunction("setPitch", setPitch);
 		inv->registerFunction("setVolume", setVolume);
 		inv->registerFunction("getStatus", getStatus);
+		inv->registerFunction("isPlaying", isPlaying);
+		inv->registerFunction("isPaused", isPaused);
 
 		auto* env = new enviroment;
 		env->registerFunction("loadMusic", loadMusic);
 		state->assoiateType("audiostream",inv);
 		state->injectEnv("audio",env);
-
-		//state->invoker.registerFunction("loadMusic", loadMusic);
 	}
 
 	value loadMusic(void* self, dms_state* state, dms_args* args)
 	{
 		if (args->size() || args->args[0].resolve(state).type == datatypes::string) {
-			
 			sf::Music* music = new sf::Music;
 			if (!music->openFromFile(args->args[0].getString())) {
 				return value("Cannot open audio stream!", datatypes::error);

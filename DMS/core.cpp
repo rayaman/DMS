@@ -28,6 +28,7 @@ namespace dms {
         void init(dms_state* state) {
             state->invoker.registerFunction("print", print);
             state->invoker.registerFunction("type", type);
+            //state->invoker.registerFunction("concat", concat);
         }
     }
 }

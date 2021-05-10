@@ -17,69 +17,12 @@ music = audio.loadMusic("test.ogg")
 
 [main]
 	// Let's extend the base feature set
-	music2.play()
-	music2.setVolume(50)
-	Ryan: "Hello how are you?"
-	Bob: "Slot 3 = " + testINV["slot3"]
+	music.play()
+	while(music.isPlaying()){}
 	
-	//print("Sound finished!")
-	wait 5
-	setBG("background2.jpg")
-	
-	Ryan: "Hello how are you?"
-	wait 3
-	Bob: "I'm good how are you?"
-	wait 3
-	Ryan: "I am great :D"
-	
-	a=0
-	// {} Still errors out, this needs to be fixed!!!
-	while(music2.getStatus()!="stopped"){}
-	// a = 0
-	// while (true){
-		// asm {
-			// add %a %a 1
-			// add %p "a = " %a
-			// func %print nil %p
-		// }
-		// a = a + 1
-		// print("a = " + a)
-	// }
-	// while(true){
-		// song = SelectSong()
-		// player(song)
-	// }
-
-[SelectSong:function()]
-	choice "Pick song:" {
-		"Music 1" {
-			return music
-		}
-		"Music 2" {
-			return music2
-		}
-	}
-
-[player:function(song,food)]
-	choice "What you wanna do?" {
-		"play/resume" {
-			song.play()
-			player(song)
-		}
-		"pause" {
-			song.pause()
-			player(song)
-		}
-		"stop" {
-			song.stop()
-			player(song)
-		}
-		"newSong" {
-			song.stop()
-			player(song)
-		}
-		"quit" exit 0
-	}
+[testblock:metest]
+	"Hello World"
+	a = 10
 
 [Ryan:char]
 	age = 21

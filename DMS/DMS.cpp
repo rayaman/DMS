@@ -4,19 +4,46 @@
 #include "pch.h"
 #include "dms.h"
 #include "actors.h"
+#include <Windows.h>
 
+typedef int(__cdecl* MYPROC)(int);
 using namespace dms;
 int main()
 {
+    //HINSTANCE hinstLib;
+    //MYPROC ProcAdd;
+    //BOOL fFreeResult, fRunTimeLinkSuccess = FALSE;
+    //hinstLib = LoadLibrary(TEXT("Test.dll"));
+
+    //if (hinstLib != NULL) {
+    //    ProcAdd = (MYPROC)GetProcAddress(hinstLib, "Init");
+
+    //    // If the function address is valid, call the function.
+
+    //    if (NULL != ProcAdd)
+    //    {
+    //        fRunTimeLinkSuccess = TRUE;
+    //        (ProcAdd)(100);
+    //    }
+    //    // Free the DLL module.
+
+    //    fFreeResult = FreeLibrary(hinstLib);
+    //}
+    //exit(0);
     // TODO fix disp cmd to handle the standard
     
     multi::runner run;
-
-    LineParser parser = LineParser("test.dms");
-    dms_state* state = parser.Parse();
+    dms_state* state = new dms_state();
+    state->OnCustomBlock += [](customBlock* cb) {
+        std::cout << "Block Type: " << cb->type << std::endl;
+        std::cout << "Stringed Block: " << cb->toks->toString() << std::endl;
+    };
+    LineParser parser;
+    state = parser.Parse(state,"test.dms");
     // Load audio stuff
     dms::audio::init(state);
     state->dump();
+    
     memory* mem = state->getMem();
 
     sf::RenderWindow window(sf::VideoMode(1024, 768, 32), "Background Test");
@@ -53,10 +80,12 @@ int main()
     ////std::cout << test << std::endl;
 
     state->OnText += [&](dms::message msg) {
-        text.setString(dms::utils::concat(msg.chara->getName(),": ",msg.text));
+        std::cout << dms::utils::concat(msg.chara->getName(), ": ", msg.text) << std::endl;
+        //text.setString(dms::utils::concat(msg.chara->getName(),": ",msg.text));
     };
     state->OnAppendText += [&](dms::message msg) {
-        text.setString(dms::utils::concat(text.getString().toAnsiString(), msg.text));
+        std::cout << dms::utils::concat(text.getString().toAnsiString(), msg.text) << std::endl;
+        //text.setString(dms::utils::concat(text.getString().toAnsiString(), msg.text));
     };
 
     sf::RectangleShape rectangle;

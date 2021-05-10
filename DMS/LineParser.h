@@ -63,6 +63,8 @@ namespace dms {
 		void _Parse(tokenstream* stream);
 		bool ParseLoop(tokenstream* stream, size_t count=0);
 		std::stack<std::string> lastCall;
+		// Block Handling Code
+		bool match_process_blocks(tokenstream* stream);
 		// Match Process Code
 		bool match_process_debug(tokenstream* stream);
 		bool match_process_disp(tokenstream* stream);
